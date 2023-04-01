@@ -1,0 +1,8 @@
+.settings
+.vscode
+configuration/settings.xml
+.classpath
+doc
+target
+sapjco3-3.0(notFromSAP).jar
+sapjco3-install
