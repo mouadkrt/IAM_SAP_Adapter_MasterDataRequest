@@ -6,7 +6,7 @@
   <artifactId>Muis-Fuse-SAP-Adapter</artifactId>
   <version>1.0.0</version>
   <name>Munisys :: IAM :: RedHat FUSE :: Spring-Boot</name>
-  <description>This app is intented to be run as a pod on openShift, which should expose an internal OCP cluster service to be used as a 3scale backend, responsible for translating ARIBA requests into SAP RFC calls </description>
+  <description>This app is intented to be run as a pod on openShift, which should expose an internal OCP cluster service to be used as a 3scale backend, responsible for translating ARIBA requests into SAP RFC calls (Based on sapjco library) </description>
   <properties>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,13 +26,20 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
   <dependencies>
-  
     <dependency>
         <groupId>org.apache.camel</groupId>
         <artifactId>camel-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.sap</groupId>
+      <artifactId>sapjco3</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/sapjco31P_7-20009381-win64/sapjco3.jar</systemPath>
+  </dependency>
+   <!--  <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-netty4-http</artifactId>
       <version>2.23.2.fuse-7_11_1-00015-redhat-00002</version>
@@ -56,12 +63,21 @@
           <groupId>org.hibersap</groupId>
           <artifactId>com.sap.conn.jco.sapjco3</artifactId>
           <version>3.0.15</version>
-      </dependency>
+      </dependency> -->
     <!-- https://mvnrepository.com/artifact/org.fusesource/camel-sap -->
     <dependency>
-        <groupId>org.fusesource</groupId>
-        <artifactId>camel-sap</artifactId>
-        <version>7.11.1.fuse-sb2-7_11_1-00013-redhat-00002</version>
+      <groupId>org.fusesource</groupId>
+      <artifactId>camel-sap-starter</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.sap.conn.idoc</groupId>
+          <artifactId>sapidoc3</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sap.conn.jco</groupId>
+          <artifactId>sapjco3</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
   <repositories>
@@ -119,10 +135,40 @@
   <build>
     <defaultGoal>spring-boot:run</defaultGoal>
     <plugins>
-     <!--  <plugin>
-        <groupId>org.eclipse.jkube</groupId>
-        <artifactId>openshift-maven-plugin</artifactId>
-        <version>1.10.1</version>
+    <!--   <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+            <archive>
+                <manifestEntries>
+                    <Class-Path>lib/${os.arch}/sapjco3.jar lib/${os.arch}/sapidoc3.jar</Class-Path>
+                </manifestEntries>
+            </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+       <artifactId>maven-resources-plugin</artifactId>
+       <executions>
+          <execution>
+             <id>copy-resources01</id>
+             <phase>process-classes</phase>
+             <goals>
+                <goal>copy-resources</goal>
+             </goals>
+             <configuration>
+                <outputDirectory>${basedir}/target/lib</outputDirectory>
+                <encoding>UTF-8</encoding>
+                <resources>
+                   <resource>
+                      <directory>${basedir}/lib</directory>
+                      <includes>
+                         <include>**/**</include>
+                      </includes>
+                   </resource>
+                </resources>
+             </configuration>
+          </execution>
+       </executions>
       </plugin> -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

@@ -2,7 +2,9 @@
 .vscode
 configuration/settings.xml
 .classpath
-doc
+sapdoc
 target
 sapjco3-3.0(notFromSAP).jar
-sapjco3-install
+sapjco31P_7-20009381-win64
+sapjco31P_7-70004517-linux64
+sapjidoc31P_3-80004914
