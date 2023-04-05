@@ -1,3 +1,5 @@
+
+
 package ma.munisys;
 
 import com.sap.conn.jco.ext.DestinationDataProvider;
@@ -16,13 +18,10 @@ import com.sap.conn.jco.ext.DestinationDataProvider;
 public class DestinationConcept
 {
 
-    public static class SomeSampleDestinations
+    public static class SAPqualif
     {
 
         public static final String ABAP_AS1="ABAP_AS1";
-        public static final String ABAP_MS="ABAP_MS";
-        public static final String ABAP_WS="ABAP_WS";
 
-        // public static final String ABAP_AS2 = "<put any name for the destination here>";
     }
 }

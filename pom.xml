@@ -37,7 +37,7 @@
       <artifactId>sapjco3</artifactId>
       <version>1.0</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/sapjco31P_7-20009381-win64/sapjco3.jar</systemPath>
+      <systemPath>${project.basedir}/sap-libs/sapjco3.jar</systemPath>
   </dependency>
    <!--  <dependency>
       <groupId>org.apache.camel</groupId>
