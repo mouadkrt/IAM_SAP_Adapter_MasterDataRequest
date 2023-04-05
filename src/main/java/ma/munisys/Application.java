@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 
@@ -29,11 +30,34 @@ import com.sap.conn.jco.ext.Environment;
 //@ImportResource({"classpath:spring/camel-context.xml"})
 public class Application extends RouteBuilder {
 
+	 public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+	
 	@Override
-	public void configure() { }
+	public void configure() {
+		 from("netty4-http:proxy://0.0.0.0:8088")
+            .process(Application::sapRFC)
+            .toD("netty-http:"
+                + "${headers." + Exchange.HTTP_SCHEME + "}://"
+                + "${headers." + Exchange.HTTP_HOST + "}:"
+                + "${headers." + Exchange.HTTP_PORT + "}"
+                + "${headers." + Exchange.HTTP_PATH + "}")
+        .end();
+	}
 
-    public static void main(String[] args)
+	private static void processARIBAmsg(final Exchange exchange) 
+	{
+		final Message message = exchange.getIn();
+        final String body = message.getBody(String.class);
+		System.out.println(body);
+        //message.setBody(body.toUpperCase(Locale.US));
+	}
+	
+    private static void sapRFC(final Exchange exchange)
     {
+		processARIBAmsg(exchange);
+		
         InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
 
         // register the provider with the JCo environment;
@@ -170,11 +194,11 @@ public class Application extends RouteBuilder {
 					String repoName  =dest.getRepository().getName();
 					System.out.println("MUIS : Reposiroty name =  " + repoName);
 					
-				String[] sapFunctionsStr = {"ZARIBA_PLANT", "ZARIBA_PURCHASE_ORG", "ZARIBA_PURCHASE_GROUP", "ZARIBA_PLANT_PORG", "ZARIBA_ASSET", "ZARIBA_GENERAL_LEDGER", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_ACCOUNT_CATEGORY", "ZARIBA_ACC_FIELD_STATUS", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_MATERIAL_GROUP", "ZARIBA_CURRENCY_CONVERSION", "ZARIBA_VENDOR", "ZARIBA_MINORITY_VENDOR", "ZARIBA_TAX_CODE", "ZARIBA_COMPANY", "ZARIBA_VENDOR", "ZARIBA_COST_CENTER", "ZARIBA_ACCOUNT_CAT_NAMES", "ZARIBA_MATERIAL_GROUP_NAMES", "ZARIBA_COST_CENTER_NAMES", "ZARIBA_GENERAL_LEDGER_NAMES", "ZARIBA_TAX_CODE_NAMES", "ZARIBA_VENDOR_INC", "ZARIBA_ASSET_INC", "ZARIBA_MATERIAL_ACC ", "ZARIBA_MATERIAL_ALT", "ZARIBA_MATERIAL_MRP", "ZARIBA_MATERIAL_CCR", "ZARIBA_MATERIAL_GEN", "ZARIBA_MATERIAL_STO", "ZARIBA_MATERIAL_PUR", "ZARIBA_MATERIAL_DSU", "ZARIBA_WAREHOUSE"};
+				/*String[] sapFunctionsStr = {"ZARIBA_PLANT", "ZARIBA_PURCHASE_ORG", "ZARIBA_PURCHASE_GROUP", "ZARIBA_PLANT_PORG", "ZARIBA_ASSET", "ZARIBA_GENERAL_LEDGER", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_ACCOUNT_CATEGORY", "ZARIBA_ACC_FIELD_STATUS", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_MATERIAL_GROUP", "ZARIBA_CURRENCY_CONVERSION", "ZARIBA_VENDOR", "ZARIBA_MINORITY_VENDOR", "ZARIBA_TAX_CODE", "ZARIBA_COMPANY", "ZARIBA_VENDOR", "ZARIBA_COST_CENTER", "ZARIBA_ACCOUNT_CAT_NAMES", "ZARIBA_MATERIAL_GROUP_NAMES", "ZARIBA_COST_CENTER_NAMES", "ZARIBA_GENERAL_LEDGER_NAMES", "ZARIBA_TAX_CODE_NAMES", "ZARIBA_VENDOR_INC", "ZARIBA_ASSET_INC", "ZARIBA_MATERIAL_ACC ", "ZARIBA_MATERIAL_ALT", "ZARIBA_MATERIAL_MRP", "ZARIBA_MATERIAL_CCR", "ZARIBA_MATERIAL_GEN", "ZARIBA_MATERIAL_STO", "ZARIBA_MATERIAL_PUR", "ZARIBA_MATERIAL_DSU", "ZARIBA_WAREHOUSE"};
 				for(String sapFunctionStr: sapFunctionsStr) {
 					JCoFunction sapFunction=dest.getRepository().getFunction(sapFunctionStr);
 					System.out.println(sapFunctionStr + " as XML : " + sapFunction.toXML() );
-				}
+				}*/
 				
 				//String sapFunction = "RFC_PING";
 				//String sapFunction = "STFC_CONNECTION";
