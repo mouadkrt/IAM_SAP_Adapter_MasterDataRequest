@@ -164,22 +164,24 @@ public class Application extends RouteBuilder {
             JCoDestination dest=JCoDestinationManager.getDestination(destName);
             // Ping SAP :
 				dest.ping();
-				System.out.println("Destination "+destName+" works");
+				System.out.println("MUIS : PING destination "+destName+" OK");
 			// or execute any other remote sap function :
 				
 					String repoName  =dest.getRepository().getName();
-					System.out.println("Reposiroty name =  " + repoName);
+					System.out.println("MUIS : Reposiroty name =  " + repoName);
 					
-					String[] cachedFunctionTemplateNames  =dest.getRepository().getCachedFunctionTemplateNames();
-					System.out.println("Reposiroty cachedFunctionTemplateNames length  =  " + cachedFunctionTemplateNames.length);
-					System.out.println("Reposiroty cachedFunctionTemplateNames =  " + String.join(", ", cachedFunctionTemplateNames));
-					
+				String[] sapFunctionsStr = {"ZARIBA_PLANT", "ZARIBA_PURCHASE_ORG", "ZARIBA_PURCHASE_GROUP", "ZARIBA_PLANT_PORG", "ZARIBA_ASSET", "ZARIBA_GENERAL_LEDGER", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_ACCOUNT_CATEGORY", "ZARIBA_ACC_FIELD_STATUS", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_MATERIAL_GROUP", "ZARIBA_CURRENCY_CONVERSION", "ZARIBA_VENDOR", "ZARIBA_MINORITY_VENDOR", "ZARIBA_TAX_CODE", "ZARIBA_COMPANY", "ZARIBA_VENDOR", "ZARIBA_COST_CENTER", "ZARIBA_ACCOUNT_CAT_NAMES", "ZARIBA_MATERIAL_GROUP_NAMES", "ZARIBA_COST_CENTER_NAMES", "ZARIBA_GENERAL_LEDGER_NAMES", "ZARIBA_TAX_CODE_NAMES", "ZARIBA_VENDOR_INC", "ZARIBA_ASSET_INC", "ZARIBA_MATERIAL_ACC ", "ZARIBA_MATERIAL_ALT", "ZARIBA_MATERIAL_MRP", "ZARIBA_MATERIAL_CCR", "ZARIBA_MATERIAL_GEN", "ZARIBA_MATERIAL_STO", "ZARIBA_MATERIAL_PUR", "ZARIBA_MATERIAL_DSU", "ZARIBA_WAREHOUSE"};
+				for(String sapFunctionStr: sapFunctionsStr) {
+					JCoFunction sapFunction=dest.getRepository().getFunction(sapFunctionStr);
+					System.out.println(sapFunctionStr + " as XML : " + sapFunction.toXML() );
+				}
+				
 				//String sapFunction = "RFC_PING";
 				//String sapFunction = "STFC_CONNECTION";
-				String sapFunction = "ZARIBA_INTERNAL_ORDER";
+				/*String sapFunction = "ZARIBA_INTERNAL_ORDER";
 				JCoFunction function=dest.getRepository().getFunction(sapFunction);
 				System.out.println(sapFunction + " as XML : " + function.toXML() );
-
+			
 				if (function==null)
 						throw new RuntimeException(sapFunction + " not found in SAP.");
 				function.getImportParameterList().setValue("ENCODING", "UTF-8");
@@ -199,7 +201,7 @@ public class Application extends RouteBuilder {
 					{
 						System.out.println(e);
 						return;
-					}
+					}*/
         }
         catch (JCoException e)
         {
