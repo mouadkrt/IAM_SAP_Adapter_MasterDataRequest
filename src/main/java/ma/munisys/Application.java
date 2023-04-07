@@ -33,18 +33,35 @@ import com.sap.conn.jco.ext.Environment;
 
 import org.apache.camel.builder.xml.Namespaces;
 
+import com.github.underscore.U;
 
 @SpringBootApplication
 //@ImportResource({"classpath:spring/camel-context.xml"})
 public class Application extends RouteBuilder {
  
- 
-
-										  
-	 public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }												   
-		  
+ 	public static void main(String[] args) {
+        //SpringApplication.run(Application.class, args);
+		Map<String, Object> map = U.fromXmlMap(
+			"<Details>\r\n" + 
+			"    <detail-a>\r\n" + 
+			"\r\n" + 
+			"        <detail> attribute 1 of detail a </detail>\r\n" + 
+			"        <detail> attribute 2 of detail a </detail>\r\n" + 
+			"        <detail> attribute 3 of detail a </detail>\r\n" + 
+			"\r\n" + 
+			"    </detail-a>\r\n" + 
+			"\r\n" + 
+			"    <detail-b>\r\n" + 
+			"        <detail> attribute 1 of detail b </detail>\r\n" + 
+			"        <detail> attribute 2 of detail b </detail>\r\n" + 
+			"\r\n" + 
+			"    </detail-b>\r\n" + 
+			"\r\n" + 
+			"\r\n" + 
+			"</Details>");
+			
+		System.out.println(map);
+    }
 						  
 	@Override
 	public void configure() {
@@ -54,42 +71,22 @@ public class Application extends RouteBuilder {
 			.setHeader("partition", ns.xpath("//ns1:Z_ARIBA_GR_TRANSFER/ns1:Z_ARIBA_GR_TRANSFER/ns1:PARTITION/text()", String.class))
 			.setHeader("variant", ns.xpath("//ns1:Z_ARIBA_GR_TRANSFER/ns1:Z_ARIBA_GR_TRANSFER/ns1:VARIANT/text()", String.class))
 			.process(Application::sapRFC)
-            /*.toD("netty-http:"
-                + "${headers." + Exchange.HTTP_SCHEME + "}://"
-                + "${headers." + Exchange.HTTP_HOST + "}:"
-                + "${headers." + Exchange.HTTP_PORT + "}"
-                + "${headers." + Exchange.HTTP_PATH + "}")*/
         .end();
 	}
 													   
-	 
-										   
-														  
-															
-  
-																  
-															  
-								 
-																			  
-														
-													
-  
-																										 
-
-     private static void sapRFC(final Exchange exchange)
+	private static void sapRFC(final Exchange exchange)
     {
-	 
-   
-																			
-   
-																		  
-   
-																								
-										  
-																
-		 
+		final Message message = exchange.getIn();
+		String body = message.getBody(String.class);
+		System.out.println("MUIS : Received HTTP body : " + body);
+		String partition = message.getHeader("partition", String.class);
+		String variant = message.getHeader("variant", String.class);
+		message.getHeader("partition");
+		System.out.println("MUIS : Parsing HTTP XML Body : Extracted vars are  : ");
+		System.out.println("partition = " + partition);
+		System.out.println("variant = " + variant);
 
-        InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
+   		InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
 
         // register the provider with the JCo environment;
         // catch IllegalStateException if an instance is already registered
@@ -106,13 +103,7 @@ public class Application extends RouteBuilder {
 			executeCalls(DestinationConcept.SAPqualif.ABAP_AS1);
     }
 
-    /**
-     * The custom destination data provider implements DestinationDataProvider and provides an implementation for at
-     * least getDestinationProperties(String). Whenever possible the implementation should support events and notify the
-     * JCo runtime if a destination is being created, changed, or deleted. Otherwise JCo runtime will check regularly if
-     * a cached destination configuration is still valid which incurs a performance penalty.
-     */
-    private static class InMemoryDestinationDataProvider implements DestinationDataProvider
+	private static class InMemoryDestinationDataProvider implements DestinationDataProvider
     {
         private DestinationDataEventListener eL;
         private HashMap<String, Properties> secureDBStorage=new HashMap<String, Properties>();
@@ -240,32 +231,19 @@ public class Application extends RouteBuilder {
 				String repoName  =dest.getRepository().getName();
 				System.out.println("MUIS : Reposiroty name dest.getRepository().getName() =  " + repoName);
 					
-				/*String[] sapFunctionsStr_Master = {"ZARIBA_PLANT", "ZARIBA_PURCHASE_ORG", "ZARIBA_PURCHASE_GROUP", "ZARIBA_PLANT_PORG", "ZARIBA_ASSET", "ZARIBA_GENERAL_LEDGER", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_ACCOUNT_CATEGORY", "ZARIBA_ACC_FIELD_STATUS", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_MATERIAL_GROUP", "ZARIBA_CURRENCY_CONVERSION", "ZARIBA_VENDOR", "ZARIBA_MINORITY_VENDOR", "ZARIBA_TAX_CODE", "ZARIBA_COMPANY", "ZARIBA_VENDOR", "ZARIBA_COST_CENTER", "ZARIBA_ACCOUNT_CAT_NAMES", "ZARIBA_MATERIAL_GROUP_NAMES", "ZARIBA_COST_CENTER_NAMES", "ZARIBA_GENERAL_LEDGER_NAMES", "ZARIBA_TAX_CODE_NAMES", "ZARIBA_VENDOR_INC", "ZARIBA_ASSET_INC", "ZARIBA_MATERIAL_ACC ", "ZARIBA_MATERIAL_ALT", "ZARIBA_MATERIAL_MRP", "ZARIBA_MATERIAL_CCR", "ZARIBA_MATERIAL_GEN", "ZARIBA_MATERIAL_STO", "ZARIBA_MATERIAL_PUR", "ZARIBA_MATERIAL_DSU", "ZARIBA_WAREHOUSE"};
-				
-				String sapFunctionsStr_Trans={"Z_ARIBA_GR_PUSH", "Z_ARIBA_BAPI_PO_CHANGE","Z_ARIBA_BAPI_PO_CANCEL","Z_ARIBA_PO_HEADER_STATUS","Z_ARIBA_GR_TRANSFER","Z_ARIBA_GR_QUALITY","ZARIBA_INVOICED_PO_ITEMS_SOAP", "Z_ARIBA_BAPI_PO_CREATE"};
-				
-				for(String sapFunctionStr: sapFunctionsStr) {
+				//String[] sapFunctionsStr_Master 	= 	{"ZARIBA_PLANT", "ZARIBA_PURCHASE_ORG", "ZARIBA_PURCHASE_GROUP", "ZARIBA_PLANT_PORG", "ZARIBA_ASSET", "ZARIBA_GENERAL_LEDGER", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_ACCOUNT_CATEGORY", "ZARIBA_ACC_FIELD_STATUS", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_MATERIAL_GROUP", "ZARIBA_CURRENCY_CONVERSION", "ZARIBA_VENDOR", "ZARIBA_MINORITY_VENDOR", "ZARIBA_TAX_CODE", "ZARIBA_COMPANY", "ZARIBA_VENDOR", "ZARIBA_COST_CENTER", "ZARIBA_ACCOUNT_CAT_NAMES", "ZARIBA_MATERIAL_GROUP_NAMES", "ZARIBA_COST_CENTER_NAMES", "ZARIBA_GENERAL_LEDGER_NAMES", "ZARIBA_TAX_CODE_NAMES", "ZARIBA_VENDOR_INC", "ZARIBA_ASSET_INC", "ZARIBA_MATERIAL_ACC ", "ZARIBA_MATERIAL_ALT", "ZARIBA_MATERIAL_MRP", "ZARIBA_MATERIAL_CCR", "ZARIBA_MATERIAL_GEN", "ZARIBA_MATERIAL_STO", "ZARIBA_MATERIAL_PUR", "ZARIBA_MATERIAL_DSU", "ZARIBA_WAREHOUSE"};
+				//String sapFunctionsStr_Trans		=	{"Z_ARIBA_GR_PUSH", "Z_ARIBA_BAPI_PO_CHANGE","Z_ARIBA_BAPI_PO_CANCEL","Z_ARIBA_PO_HEADER_STATUS","Z_ARIBA_GR_TRANSFER","Z_ARIBA_GR_QUALITY","ZARIBA_INVOICED_PO_ITEMS_SOAP", "Z_ARIBA_BAPI_PO_CREATE"};
+				/*for(String sapFunctionStr: sapFunctionsStr) {
 					JCoFunction sapFunction=dest.getRepository().getFunction(sapFunctionStr);
 					System.out.println(sapFunctionStr + " as XML : " + sapFunction.toXML() );
 				}*/
 				
-				//String sapFunction = "RFC_PING"; testmouad
-				//String sapFunction = "STFC_CONNECTION";
-				String sapFunctionStr = "Z_ARIBA_GR_TRANSFER";
-				//String sapFunctionStr = "STFC_CONNECTION";
+				String sapFunctionStr = "Z_ARIBA_GR_TRANSFER"; // "RFC_PING", "STFC_CONNECTION"
 				JCoFunction sapFunction = dest.getRepository().getFunction(sapFunctionStr);
-				describeFunction(sapFunction);
-				
 				if (sapFunction==null)
 						throw new RuntimeException(sapFunction + " not found in SAP.");
 				
-				//sapFunction.getImportParameterList().getListMetaData();
-																						
-																					
-	
-				
-				//sapFunction.getImportParameterList().setValue("REQUTEXT", "Hello SAP from Munisys");
-					
+				describeFunction(sapFunction);
 				
 				//sapFunction.getImportParameterList().setValue("ENCODING", "UTF-8");
 				//sapFunction.getImportParameterList().setValue("FILE_NAME", "/exportQ11/DATAARIBA/Asset.csv");
@@ -302,15 +280,7 @@ public class Application extends RouteBuilder {
 					}
 				}
 				
-				
-				
-				try
-					{
-																																							   
-								
-   
-																														   
-					  
+				try {
 						sapFunction.execute(dest);
 						
 						//JCoStructure exportStructure = sapFunction.getTableParameterList().getStructure("GR_ITEM");
