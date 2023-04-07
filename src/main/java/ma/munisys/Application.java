@@ -249,13 +249,7 @@ public class Application extends RouteBuilder {
 					System.out.println(sapFunctionStr + " as XML : " + sapFunction.toXML() );
 				}*/
 				
-	
-	
-									  
-											 
-   
-			
-				//String sapFunction = "RFC_PING";
+				//String sapFunction = "RFC_PING"; testmouad
 				//String sapFunction = "STFC_CONNECTION";
 				String sapFunctionStr = "Z_ARIBA_GR_TRANSFER";
 				//String sapFunctionStr = "STFC_CONNECTION";
