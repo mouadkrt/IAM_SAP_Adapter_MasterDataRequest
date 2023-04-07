@@ -42,25 +42,10 @@ public class Application extends RouteBuilder {
  	public static void main(String[] args) {
         //SpringApplication.run(Application.class, args);
 		Map<String, Object> map = U.fromXmlMap(
-			"<Details>\r\n" + 
-			"    <detail-a>\r\n" + 
-			"\r\n" + 
-			"        <detail> attribute 1 of detail a </detail>\r\n" + 
-			"        <detail> attribute 2 of detail a </detail>\r\n" + 
-			"        <detail> attribute 3 of detail a </detail>\r\n" + 
-			"\r\n" + 
-			"    </detail-a>\r\n" + 
-			"\r\n" + 
-			"    <detail-b>\r\n" + 
-			"        <detail> attribute 1 of detail b </detail>\r\n" + 
-			"        <detail> attribute 2 of detail b </detail>\r\n" + 
-			"\r\n" + 
-			"    </detail-b>\r\n" + 
-			"\r\n" + 
-			"\r\n" + 
-			"</Details>");
+			"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ns1:Z_ARIBA_GR_TRANSFER xmlns:ns1=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER\"><ns1:Z_ARIBA_GR_TRANSFER><ns1:PARTITION>par1iam</ns1:PARTITION><ns1:VARIANT>var1iam</ns1:VARIANT><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM></ns1:Z_ARIBA_GR_TRANSFER></ns1:Z_ARIBA_GR_TRANSFER></soapenv:Body></soapenv:Envelope>");
 			
 		System.out.println(map);
+		//System.out.println((Map<String, Object>map.get("Details")).get("detail-a"));
     }
 						  
 	@Override
@@ -315,4 +300,4 @@ public class Application extends RouteBuilder {
     }
 
 }
-																					  
+																					 
