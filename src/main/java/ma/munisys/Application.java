@@ -30,47 +30,19 @@ import com.sap.conn.jco.ext.Environment;
 import org.apache.camel.builder.xml.Namespaces;
 
 import com.github.underscore.U;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 @SpringBootApplication
 //@ImportResource({"classpath:spring/camel-context.xml"})
 public class Application extends RouteBuilder {
  
  	public static void main(String[] args) {
-        //SpringApplication.run(Application.class, args);
-		// https://javadev.github.io/underscore-java/
-		Map<String, Object> map = U.fromXmlWithoutNamespacesMap(
-			"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ns1:Z_ARIBA_GR_TRANSFER xmlns:ns1=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER\"><ns1:Z_ARIBA_GR_TRANSFER><ns1:PARTITION>par1iam</ns1:PARTITION><ns1:VARIANT>var1iam</ns1:VARIANT><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM></ns1:Z_ARIBA_GR_TRANSFER></ns1:Z_ARIBA_GR_TRANSFER></soapenv:Body></soapenv:Envelope>");
-			
-		Z_ARIBA_GR_TRANSFER	z_ariba_gr_transfer = new Z_ARIBA_GR_TRANSFER();
-		//System.out.println(map);
-		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
-		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
-		Map<String, Object> Z_ARIBA_GR_TRANSFER = (Map<String, Object>) soap_body.get("Z_ARIBA_GR_TRANSFER");
-		Map<String, Object> Z_ARIBA_GR_TRANSFER2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFER.get("Z_ARIBA_GR_TRANSFER");
-		ArrayList<String> GR_ITEMs = (ArrayList<String>) Z_ARIBA_GR_TRANSFER2.get("GR_ITEM");
-		
-		z_ariba_gr_transfer.PARTITION = (String) Z_ARIBA_GR_TRANSFER2.get("PARTITION");
-		z_ariba_gr_transfer.VARIANT = (String) Z_ARIBA_GR_TRANSFER2.get("VARIANT");
-		//String[] GR_ITEMs = (String[]) Z_ARIBA_GR_TRANSFER2.get("ns1:GR_ITEM");
-		Iterator iter = GR_ITEMs.iterator();
-		
-		while (iter.hasNext()) {
-			Map<String, ArrayList> item = (Map<String, ArrayList>) iter.next();
-			LinkedHashMap itemm = (LinkedHashMap) item.get("item").get(0);
-			//System.out.print( itemm.get("BWTAR").getClass().getName());
-			//System.out.print( itemm.get("MBLNR").getClass().getName());
-			for (Object key : itemm.keySet()) 
-				if(  ! (itemm.get(key) instanceof java.lang.String) )
-					itemm.put(key, "");
-			
-			ObjectMapper mapper = new ObjectMapper();
-			//System.out.print(iter.next() + "\n");
-			GR_ITEM_item gr_item_item = mapper.convertValue(item.get("item").get(0),GR_ITEM_item.class);
-            System.out.print(gr_item_item.MBLNR);
-        }
-		
-		//System.out.println(envelope);
-		//System.out.println((Map<String, Object>map.get("Details")).get("detail-a"));
+	// SpringApplication.run(Application.class, args);
+	String httpBody = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ns1:Z_ARIBA_GR_TRANSFER xmlns:ns1=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER\"><ns1:Z_ARIBA_GR_TRANSFER><ns1:PARTITION>par1iam</ns1:PARTITION><ns1:VARIANT>var1iam</ns1:VARIANT><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM></ns1:Z_ARIBA_GR_TRANSFER></ns1:Z_ARIBA_GR_TRANSFER></soapenv:Body></soapenv:Envelope>";
+       createObjectFromXML(httpBody);
     }
 						  
 	@Override
@@ -83,7 +55,48 @@ public class Application extends RouteBuilder {
 			.process(Application::sapRFC)
         .end();
 	}
-													   
+	
+	// The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object as defined in the Z_ARIBA_GR_TRANSFER public class (Designed to mimic the http soap xml received)
+	// The resulting instance of the Z_ARIBA_GR_TRANSFER will be then handed over to the SAP function for processing
+	private static Z_ARIBA_GR_TRANSFER createObjectFromXML(String httpBody) { 
+		// https://javadev.github.io/underscore-java/
+			Map<String, Object> map = U.fromXmlWithoutNamespacesMap(httpBody);
+			//System.out.println(map);
+		
+		Z_ARIBA_GR_TRANSFER	z_ariba_gr_transfer = new Z_ARIBA_GR_TRANSFER();
+		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
+		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
+		Map<String, Object> Z_ARIBA_GR_TRANSFER = (Map<String, Object>) soap_body.get("Z_ARIBA_GR_TRANSFER");
+		Map<String, Object> Z_ARIBA_GR_TRANSFER2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFER.get("Z_ARIBA_GR_TRANSFER");
+		ArrayList<String> GR_ITEMs = (ArrayList<String>) Z_ARIBA_GR_TRANSFER2.get("GR_ITEM");
+		
+		z_ariba_gr_transfer.PARTITION = (String) Z_ARIBA_GR_TRANSFER2.get("PARTITION");
+		z_ariba_gr_transfer.VARIANT = (String) Z_ARIBA_GR_TRANSFER2.get("VARIANT");
+		z_ariba_gr_transfer.GR_ITEM = new GR_ITEM();
+		Iterator iter = GR_ITEMs.iterator();
+		
+		while (iter.hasNext()) {
+			Map<String, ArrayList> item = (Map<String, ArrayList>) iter.next();
+			LinkedHashMap itemm = (LinkedHashMap) item.get("item").get(0);
+			//System.out.print( itemm.get("BWTAR").getClass().getName());
+			//System.out.print( itemm.get("MBLNR").getClass().getName());
+			
+			//Set xml self-closed tags as empty strings  :
+				for (Object key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
+			
+			ObjectMapper mapper = new ObjectMapper();
+			//System.out.print(iter.next() + "\n");
+			GR_ITEM_item gr_item_item = mapper.convertValue(item.get("item").get(0),GR_ITEM_item.class);
+			z_ariba_gr_transfer.GR_ITEM.items.add(gr_item_item);
+        }
+		
+		// You may print the z_ariba_gr_transfer Java object back as a JSON format, to inspect it :
+		try { System.out.print(new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(z_ariba_gr_transfer)); }
+		catch (JsonProcessingException  e) { e.printStackTrace(); }
+
+		return z_ariba_gr_transfer;
+	}
+
 	private static void sapRFC(final Exchange exchange)
     {
 		final Message message = exchange.getIn();

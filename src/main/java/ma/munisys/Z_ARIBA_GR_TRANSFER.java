@@ -1,5 +1,7 @@
 package ma.munisys;
 
+import java.util.ArrayList;
+
 class Envelope { 
 	public Header Header;
 	public Body Body;
@@ -27,11 +29,14 @@ class ERROR_MSG_TABLE {
 }
 
 class GR_ITEM { 
-	public GR_ITEM_item[] item;
+	public ArrayList<GR_ITEM_item> items;
+    public GR_ITEM() {
+       this.items = new ArrayList<GR_ITEM_item>();
+      }
 }
 
 class GR_SERIAL { 
-	public GR_SERIAL_item[] item;
+	public ArrayList<GR_SERIAL_item> item;
 }
 
 class ibsinfo { 
