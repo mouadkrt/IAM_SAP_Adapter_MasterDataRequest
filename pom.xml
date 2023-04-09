@@ -14,6 +14,7 @@
     <docker.image.version>1.9</docker.image.version>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <fuse.version>7.11.1.fuse-sb2-7_11_1-00017-redhat-00002</fuse.version>
+    <jackson.version>2.15.0-rc1</jackson.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -49,6 +50,21 @@
       <artifactId>underscore</artifactId>
       <version>1.88</version>
     </dependency>
+    <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
 <!-- Thanks for using https://jar-download.com -->
 
    <!--  <dependency>
