@@ -1,5 +1,6 @@
 package ma.munisys;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.apache.camel.Exchange;
@@ -40,25 +41,26 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 public class Application extends RouteBuilder {
  
  	public static void main(String[] args) {
-	// SpringApplication.run(Application.class, args);
-	String httpBody = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ns1:Z_ARIBA_GR_TRANSFER xmlns:ns1=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER\"><ns1:Z_ARIBA_GR_TRANSFER><ns1:PARTITION>par1iam</ns1:PARTITION><ns1:VARIANT>var1iam</ns1:VARIANT><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM></ns1:Z_ARIBA_GR_TRANSFER></ns1:Z_ARIBA_GR_TRANSFER></soapenv:Body></soapenv:Envelope>";
-       createObjectFromXML(httpBody);
+		SpringApplication.run(Application.class, args);
+		//String httpBody = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ns1:Z_ARIBA_GR_TRANSFER xmlns:ns1=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER\"><ns1:Z_ARIBA_GR_TRANSFER><ns1:PARTITION>par1iam</ns1:PARTITION><ns1:VARIANT>var1iam</ns1:VARIANT><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM></ns1:Z_ARIBA_GR_TRANSFER></ns1:Z_ARIBA_GR_TRANSFER></soapenv:Body></soapenv:Envelope>";
+		//Z_ARIBA_GR_TRANSFER  z_ariba_gr_transfer = create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(httpBody);
+		
     }
 						  
 	@Override
 	public void configure() {
-		Namespaces ns = new Namespaces("ns1", "urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER");
+		//Namespaces ns = new Namespaces("ns1", "urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER");
 		 from("netty4-http:http://0.0.0.0:8088/")
 			.convertBodyTo(String.class)
-			.setHeader("partition", ns.xpath("//ns1:Z_ARIBA_GR_TRANSFER/ns1:Z_ARIBA_GR_TRANSFER/ns1:PARTITION/text()", String.class))
-			.setHeader("variant", ns.xpath("//ns1:Z_ARIBA_GR_TRANSFER/ns1:Z_ARIBA_GR_TRANSFER/ns1:VARIANT/text()", String.class))
+			//.setHeader("partition", ns.xpath("//ns1:Z_ARIBA_GR_TRANSFER/ns1:Z_ARIBA_GR_TRANSFER/ns1:PARTITION/text()", String.class))
+			//.setHeader("variant", ns.xpath("//ns1:Z_ARIBA_GR_TRANSFER/ns1:Z_ARIBA_GR_TRANSFER/ns1:VARIANT/text()", String.class))
 			.process(Application::sapRFC)
         .end();
 	}
 	
 	// The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object as defined in the Z_ARIBA_GR_TRANSFER public class (Designed to mimic the http soap xml received)
 	// The resulting instance of the Z_ARIBA_GR_TRANSFER will be then handed over to the SAP function for processing
-	private static Z_ARIBA_GR_TRANSFER createObjectFromXML(String httpBody) { 
+	private static Z_ARIBA_GR_TRANSFER create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(String httpBody) { 
 		// https://javadev.github.io/underscore-java/
 			Map<String, Object> map = U.fromXmlWithoutNamespacesMap(httpBody);
 			//System.out.println(map);
@@ -89,10 +91,6 @@ public class Application extends RouteBuilder {
 			GR_ITEM_item gr_item_item = mapper.convertValue(item.get("item").get(0),GR_ITEM_item.class);
 			z_ariba_gr_transfer.GR_ITEM.items.add(gr_item_item);
         }
-		
-		// You may print the z_ariba_gr_transfer Java object back as a JSON format, to inspect it :
-		try { System.out.print(new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(z_ariba_gr_transfer)); }
-		catch (JsonProcessingException  e) { e.printStackTrace(); }
 
 		return z_ariba_gr_transfer;
 	}
@@ -102,21 +100,23 @@ public class Application extends RouteBuilder {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
 		System.out.println("MUIS : Received HTTP body : " + body);
-		String partition = message.getHeader("partition", String.class);
-		String variant = message.getHeader("variant", String.class);
-		message.getHeader("partition");
+
+		Z_ARIBA_GR_TRANSFER  z_ariba_gr_transfer = create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(body);
+
+		//String partition = message.getHeader("partition", String.class);
+		//String variant = message.getHeader("variant", String.class);
+		
 		System.out.println("MUIS : Parsing HTTP XML Body : Extracted vars are : ");
-		System.out.println("partition = " + partition);
-		System.out.println("variant = " + variant);
+		System.out.println("MUIS : z_ariba_gr_transfer = \n" + z_ariba_gr_transfer);
 
-   		InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
+   		// InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
 
-        try { Environment.registerDestinationDataProvider(memoryProvider); } // register the provider with the JCo environment; catch IllegalStateException if an instance is already registered
-        catch (IllegalStateException providerAlreadyRegisteredException) { throw new Error(providerAlreadyRegisteredException); } // somebody else registered its implementation stop the execution, alternatively you could write it to your logs
+        // try { Environment.registerDestinationDataProvider(memoryProvider); } // register the provider with the JCo environment; catch IllegalStateException if an instance is already registered
+        // catch (IllegalStateException providerAlreadyRegisteredException) { throw new Error(providerAlreadyRegisteredException); } // somebody else registered its implementation stop the execution, alternatively you could write it to your logs
 
-        memoryProvider.changeProperties(DestinationConcept.SAPqualif.ABAP_AS1,  getDestinationPropertiesFromUI()); // set properties for the destination ABAP_AS1 and ...
+        // memoryProvider.changeProperties(DestinationConcept.SAPqualif.ABAP_AS1,  getDestinationPropertiesFromUI()); // set properties for the destination ABAP_AS1 and ...
 
-        executeCalls(DestinationConcept.SAPqualif.ABAP_AS1); // ... work with it
+        // execute_SapFunc_Z_ARIBA_GR_TRANSFER(DestinationConcept.SAPqualif.ABAP_AS1); // ... work with it
     }
 
 	private static class InMemoryDestinationDataProvider implements DestinationDataProvider
@@ -234,7 +234,7 @@ public class Application extends RouteBuilder {
 		}
 	}
 	
-    private static void executeCalls(String destName)
+    private static void execute_SapFunc_Z_ARIBA_GR_TRANSFER(String destName)
     {
         try
         {

@@ -2,6 +2,9 @@ package ma.munisys;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 class Envelope { 
 	public Header Header;
 	public Body Body;
@@ -22,6 +25,12 @@ public class Z_ARIBA_GR_TRANSFER {
 	public GR_ITEM GR_ITEM;
 	public GR_SERIAL GR_SERIAL;
 	public Z_ARIBA_GR_TRANSFER Z_ARIBA_GR_TRANSFER;
+
+    public String toString() {
+        // You may print the z_ariba_gr_transfer Java object back as a JSON format, to inspect it :
+		try { return new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(this); }
+		catch (JsonProcessingException  e) { e.printStackTrace(); return "ERROR casting Z_ARIBA_GR_TRANSFER object to String"; }
+    }
 }
 
 class ERROR_MSG_TABLE { 
