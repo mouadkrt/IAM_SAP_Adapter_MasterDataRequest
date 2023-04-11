@@ -15,6 +15,7 @@ import com.sap.conn.jco.JCoTable;
 import com.sap.conn.jco.JCoFieldIterator;
 import com.sap.conn.jco.JCoField;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -280,10 +281,12 @@ public class Application /*extends RouteBuilder*/ {
 			do {
 				//System.out.println(sapTbl.getString());
 				JCoFieldIterator it = sapTbl.getFieldIterator();
+				String rowString =	"Row : ";
 				while(it.hasNextField()) {
 					JCoField field = it.nextField();
-					System.out.println(field.getName() + " = " + field.getString() + ", ");
+					rowString += field.getName() + " = " + field.getString() + ", ";
 				}
+				System.out.println(rowString);
 			} while (sapTbl.nextRow());
 		}
 		else {
@@ -311,35 +314,46 @@ public class Application /*extends RouteBuilder*/ {
 				sapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_transfer.VARIANT);
 				
 				JCoTable GR_ITEM = sapFunction.getTableParameterList().getTable("GR_ITEM");
-				GR_ITEM.appendRow();
-				//GR_ITEM.setString(sapFunctionStr);
-				Map<String, String> a_gr_item = new HashMap<String, String>();
-					a_gr_item.put("MBLNR","5001744605");
-					a_gr_item.put("MJAHR","2021");
-					a_gr_item.put("ZEILE","0001");
-					a_gr_item.put("ZQACCEPT","2.00000");
-					a_gr_item.put("ZUACCEPT","ES");
-					a_gr_item.put("ZQREFUS","0.00000");
-					a_gr_item.put("ZUREFUS","ES");
-					//a_gr_item.put("BWTAR","");
-					//a_gr_item.put("GRUND","");
-					a_gr_item.put("ARIBA_GRNO","TR-RC329434");
-					a_gr_item.put("ARIBA_ITNO","1");
-					a_gr_item.put("NO_MORE_GR","X");
-
-				JCoFieldIterator it = GR_ITEM.getFieldIterator();
-				while(it.hasNextField()) {
-					JCoField field = it.nextField();
-					//System.out.println("-MUIS gr_item field = " + field.getName());
-					
-					for(Map.Entry<String, String> me : a_gr_item.entrySet()) {
-						//System.out.println("key : " + me.getKey());
-						if( field.getName().equals((String)me.getKey()) ) {
-							System.out.println("-MUIS setting " + field.getName() + " to " + me.getValue());
-							field.setValue(me.getValue());
+				
+				for (GR_ITEM_item grItem : z_ariba_gr_transfer.GR_ITEM.items) {
+					//for( Field f : grItem.getClass().getDeclaredFields() ) {}
+					GR_ITEM.appendRow();
+					JCoFieldIterator it = GR_ITEM.getFieldIterator();
+					while(it.hasNextField()) {
+						JCoField field = it.nextField();
+						try {
+							Field f = grItem.getClass().getDeclaredField(field.getName());
+							f.setAccessible(true);
+							field.setValue(f.get(grItem));
 						}
+						catch(NoSuchFieldException|IllegalAccessException e) { System.out.println(e.getMessage());}
+						//System.out.println("-MUIS gr_item field = " + field.getName());
+						// for(Map.Entry<String, String> me : a_gr_item.entrySet()) {
+						// 	//System.out.println("key : " + me.getKey());
+						// 	if( field.getName().equals((String)me.getKey()) ) {
+						// 		System.out.println("-MUIS setting " + field.getName() + " to " + me.getValue());
+						// 		field.setValue(me.getValue());
+						// 	}
+						// }
 					}
 				}
+				
+				//GR_ITEM.setString(sapFunctionStr);
+				// Map<String, String> a_gr_item = new HashMap<String, String>();
+				// 	a_gr_item.put("MBLNR","5001744605");
+				// 	a_gr_item.put("MJAHR","2021");
+				// 	a_gr_item.put("ZEILE","0001");
+				// 	a_gr_item.put("ZQACCEPT","2.00000");
+				// 	a_gr_item.put("ZUACCEPT","ES");
+				// 	a_gr_item.put("ZQREFUS","0.00000");
+				// 	a_gr_item.put("ZUREFUS","ES");
+				// 	//a_gr_item.put("BWTAR","");
+				// 	//a_gr_item.put("GRUND","");
+				// 	a_gr_item.put("ARIBA_GRNO","TR-RC329434");
+				// 	a_gr_item.put("ARIBA_ITNO","1");
+				// 	a_gr_item.put("NO_MORE_GR","X");
+
+				
 				
 				try {
 						sapFunction.execute(dest);
