@@ -274,9 +274,12 @@ public class Application /*extends RouteBuilder*/ {
 		JCoTable sapTbl = sapFunction.getTableParameterList().getTable(tblName);
 		
 		if( sapTbl.getNumRows() > 0 ) {
-			while(sapTbl.nextRow()) {
-					System.out.println(sapTbl.getString());
-			}
+			System.out.println("MUIS : Table " + tblName + ", num rows = " + sapTbl.getNumRows());
+			sapTbl.firstRow();
+			do {
+				System.out.println(sapTbl.getString());
+			} while (sapTbl.nextRow());
+
 			/*JCoFieldIterator it = sapTbl.getFieldIterator();
 			System.out.println("\n- MUIS : Displaying Table " + tblName + " :");
 			while(it.hasNextField()) {
@@ -347,9 +350,6 @@ public class Application /*extends RouteBuilder*/ {
 						//	System.out.println( "\n- MUIS2 :" + exportStructure.getMetaData().getName(i) + ":\t" + exportStructure.getString(i));
 						
 						System.out.println("\nMUIS : STATUS = " + sapFunction.getExportParameterList().getString("STATUS"));
-						System.out.println("MUIS : GR_ITEM num rows = " + sapFunction.getTableParameterList().getTable("GR_ITEM").getNumRows());
-						System.out.println("MUIS : GR_SERIAL num rows = " + sapFunction.getTableParameterList().getTable("GR_SERIAL").getNumRows());
-						System.out.println("MUIS : ERROR_MSG_TABLE num rows = " + sapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE").getNumRows());
 						getTableValues(sapFunction, "GR_ITEM");
 						getTableValues(sapFunction, "GR_SERIAL");
 						getTableValues(sapFunction, "ERROR_MSG_TABLE");
