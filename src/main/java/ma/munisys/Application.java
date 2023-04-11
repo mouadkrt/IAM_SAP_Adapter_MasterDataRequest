@@ -275,17 +275,16 @@ public class Application /*extends RouteBuilder*/ {
 		
 		if( sapTbl.getNumRows() > 0 ) {
 			System.out.println("MUIS : Table " + tblName + ", num rows = " + sapTbl.getNumRows());
+			System.out.println("\n- MUIS : Displaying content of table " + tblName + " :");
 			sapTbl.firstRow();
 			do {
-				System.out.println(sapTbl.getString());
+				//System.out.println(sapTbl.getString());
+				JCoFieldIterator it = sapTbl.getFieldIterator();
+				while(it.hasNextField()) {
+					JCoField field = it.nextField();
+					System.out.println(field.getName() + " = " + field.getString() + ", ");
+				}
 			} while (sapTbl.nextRow());
-
-			/*JCoFieldIterator it = sapTbl.getFieldIterator();
-			System.out.println("\n- MUIS : Displaying Table " + tblName + " :");
-			while(it.hasNextField()) {
-				JCoField field = it.nextField();
-				System.out.println(field.getName() + " = " + field.getString() + ", ");
-			}*/
 		}
 		else {
 			System.out.println("\n- MUIS : Table "+tblName+" has no rows");
