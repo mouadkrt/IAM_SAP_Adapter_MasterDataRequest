@@ -1,10 +1,10 @@
 package ma.munisys;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;								
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.impl.DefaultCamelContext;
 
 import com.sap.conn.jco.AbapException;
 import com.sap.conn.jco.JCoDestination;
@@ -14,6 +14,10 @@ import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoTable;
 import com.sap.conn.jco.JCoFieldIterator;
 import com.sap.conn.jco.JCoField;
+import com.sap.conn.jco.ext.DataProviderException;
+import com.sap.conn.jco.ext.DestinationDataEventListener;
+import com.sap.conn.jco.ext.DestinationDataProvider;
+import com.sap.conn.jco.ext.Environment;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -23,28 +27,13 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Properties;
 
-import com.sap.conn.jco.ext.DataProviderException;
-import com.sap.conn.jco.ext.DestinationDataEventListener;
-import com.sap.conn.jco.ext.DestinationDataProvider;
-import com.sap.conn.jco.ext.Environment;
-
-import org.apache.camel.impl.DefaultCamelContext;
-
 import com.github.underscore.U;
 import com.fasterxml.jackson.databind.ObjectMapper;
-/*import org.apache.camel.builder.xml.Namespaces;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.boot.SpringApplication;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectWriter;*/
-//@SpringBootApplication
 
-public class Application /*extends RouteBuilder*/ {
+public class Application  {
   	
-	public static InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
-	public static JCoDestination dest;
- 
+	private static InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
+	private static JCoDestination dest;
  	public static void main(String[] args) {
 		//SpringApplication.run(Application.class, args);
 		//String httpBody = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ns1:Z_ARIBA_GR_TRANSFER xmlns:ns1=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER\"><ns1:Z_ARIBA_GR_TRANSFER><ns1:PARTITION>par1iam</ns1:PARTITION><ns1:VARIANT>var1iam</ns1:VARIANT><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM></ns1:Z_ARIBA_GR_TRANSFER></ns1:Z_ARIBA_GR_TRANSFER></soapenv:Body></soapenv:Envelope>";
@@ -67,14 +56,14 @@ public class Application /*extends RouteBuilder*/ {
 		catch(Exception e) { System.out.println(e.getMessage()); }
     }
 	
-	public static void registerDestinationDataProvider() {
+	private static void registerDestinationDataProvider() {
 
-		System.out.println("Inside registerDestinationDataProvider()");
+		System.out.println("- Muis : Registering SAP Destination Data Provider ...");
 
 	 	try { Environment.registerDestinationDataProvider(memoryProvider); }
 		 catch (IllegalStateException providerAlreadyRegisteredException) { throw new Error(providerAlreadyRegisteredException); }
 
-        memoryProvider.changeProperties(DestinationConcept.SAPqualif.ABAP_AS1,  getDestinationPropertiesFromUI());
+        memoryProvider.changeProperties(DestinationConcept.SAPqualif.ABAP_AS1,  getDestinationProperties());
 		
 		try {
 			dest = JCoDestinationManager.getDestination(DestinationConcept.SAPqualif.ABAP_AS1);
@@ -88,17 +77,6 @@ public class Application /*extends RouteBuilder*/ {
         }
 	}
 						  
-	/*@Override
-	public void configure() {
-		//Namespaces ns = new Namespaces("ns1", "urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER");
-		 from("netty4-http:http://0.0.0.0:8088/")
-			.convertBodyTo(String.class)
-			//.setHeader("partition", ns.xpath("//ns1:Z_ARIBA_GR_TRANSFER/ns1:Z_ARIBA_GR_TRANSFER/ns1:PARTITION/text()", String.class))
-			//.setHeader("variant", ns.xpath("//ns1:Z_ARIBA_GR_TRANSFER/ns1:Z_ARIBA_GR_TRANSFER/ns1:VARIANT/text()", String.class))
-			.process(Application::sapRFC)
-        .end();
-	}*/
-	
 	// The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object as defined in the Z_ARIBA_GR_TRANSFER public class (Designed to mimic the http soap xml received)
 	// The resulting instance of the Z_ARIBA_GR_TRANSFER will be then handed over to the SAP function for processing
 	private static Z_ARIBA_GR_TRANSFER create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(String httpBody) { 
@@ -140,19 +118,15 @@ public class Application /*extends RouteBuilder*/ {
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
-		System.out.println("MUIS : Received HTTP body : " + body);
+		System.out.println("- MUIS : Received HTTP body : " + body);
 
 		Z_ARIBA_GR_TRANSFER  z_ariba_gr_transfer = create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(body);
-
-		//String partition = message.getHeader("partition", String.class);
-		//String variant = message.getHeader("variant", String.class);
 		
 		System.out.println("MUIS : Parsing HTTP XML Body : Extracted vars are : ");
 		System.out.println("MUIS : z_ariba_gr_transfer = \n" + z_ariba_gr_transfer);
 
         execute_SapFunc_Z_ARIBA_GR_TRANSFER(z_ariba_gr_transfer);
     }
-
 	private static class InMemoryDestinationDataProvider implements DestinationDataProvider
     {
         private DestinationDataEventListener eL;
@@ -213,10 +187,8 @@ public class Application /*extends RouteBuilder*/ {
         }
     }
 
-    private static Properties getDestinationPropertiesFromUI()
+    private static Properties getDestinationProperties()
     {
-        // adapt parameters in order to configure a valid destination
-		
 		// Get required value from OS environment :
 			String JCO_ASHOST	=	System.getenv("JCO_ASHOST");
 			String JCO_SYSNR	=	System.getenv("JCO_SYSNR");
@@ -246,14 +218,14 @@ public class Application /*extends RouteBuilder*/ {
 	private static void describeFunction(JCoFunction sapFunction)
 	{
 		String sapFunctionStr = sapFunction.getName();
-		System.out.println("\n\n********************************* "+sapFunctionStr+"  *************************************************");
+		System.out.println("\n\n********************************* " + sapFunctionStr + "  *************************************************");
 		System.out.println("SAP Function name = " + sapFunctionStr );
 		System.out.println(sapFunctionStr + " as XML : " + sapFunction.toXML() );
-		System.out.println("\n\n- MUIS : " + sapFunctionStr+ ".getChangingParameterList() = \n" + sapFunction.getChangingParameterList());
-		System.out.println("\n\n- MUIS : " + sapFunctionStr+ ".getExportParameterList() = \n" + sapFunction.getExportParameterList());
-		System.out.println("\n\n- MUIS : " + sapFunctionStr+ ".getTableParameterList() = \n" + sapFunction.getTableParameterList());
-		System.out.println("\n\n- MUIS : " + sapFunctionStr+ ".getFunctionTemplate() = \n" + sapFunction.getFunctionTemplate());
-		System.out.println("***********************************************************************************");
+		System.out.println("\n\n- MUIS : " + sapFunctionStr + ".getChangingParameterList() = \n" + sapFunction.getChangingParameterList());
+		System.out.println("\n\n- MUIS : " + sapFunctionStr + ".getExportParameterList() = \n" + sapFunction.getExportParameterList());
+		System.out.println("\n\n- MUIS : " + sapFunctionStr + ".getTableParameterList() = \n" + sapFunction.getTableParameterList());
+		System.out.println("\n\n- MUIS : " + sapFunctionStr + ".getFunctionTemplate() = \n" + sapFunction.getFunctionTemplate());
+		System.out.println("*********************************************************************************************************");
 	}
 	
 	private static void describeAllAribaFunctions() {
@@ -307,8 +279,9 @@ public class Application /*extends RouteBuilder*/ {
 				
 				describeFunction(sapFunction);
 				
-				//sapFunction.getImportParameterList().setValue("ENCODING", "UTF-8");
-				//sapFunction.getImportParameterList().setValue("FILE_NAME", "/exportQ11/DATAARIBA/Asset.csv");
+				// The following will be used sftp adapter side :
+					//sapFunction.getImportParameterList().setValue("ENCODING", "UTF-8");
+					//sapFunction.getImportParameterList().setValue("FILE_NAME", "/exportQ11/DATAARIBA/Asset.csv");
 
 				sapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_transfer.PARTITION);
 				sapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_transfer.VARIANT);
