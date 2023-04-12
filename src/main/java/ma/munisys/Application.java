@@ -47,7 +47,11 @@ public class Application  {
 			context.addRoutes(new RouteBuilder() {
 				public void configure() {
 					from("netty4-http:http://0.0.0.0:8088/")
-					.process(Application::sapRFC)
+						.choice()
+							.when(simple("${header.MasterDataImport_Request} == '1'"))
+								.process(Application::execute_SapFunc_MasterDataImport)
+							.otherwise()
+								.process(Application::execute_SapFunc_Z_ARIBA_GR_TRANSFER)
 					.end();
 				}
 			});
@@ -113,20 +117,6 @@ public class Application  {
 
 		return z_ariba_gr_transfer;
 	}
-
-	private static void sapRFC(final Exchange exchange)
-    {
-		final Message message = exchange.getIn();
-		String body = message.getBody(String.class);
-		System.out.println("- MUIS : Received HTTP body : " + body);
-
-		Z_ARIBA_GR_TRANSFER  z_ariba_gr_transfer = create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(body);
-		
-		System.out.println("MUIS : Parsing HTTP XML Body : Extracted vars are : ");
-		System.out.println("MUIS : z_ariba_gr_transfer = \n" + z_ariba_gr_transfer);
-
-        execute_SapFunc_Z_ARIBA_GR_TRANSFER(z_ariba_gr_transfer);
-    }
 	private static class InMemoryDestinationDataProvider implements DestinationDataProvider
     {
         private DestinationDataEventListener eL;
@@ -234,7 +224,7 @@ public class Application  {
 		String[] sapFunctionsStr_Trans		=	{"Z_ARIBA_GR_PUSH", "Z_ARIBA_BAPI_PO_CHANGE","Z_ARIBA_BAPI_PO_CANCEL","Z_ARIBA_PO_HEADER_STATUS","Z_ARIBA_GR_TRANSFER","Z_ARIBA_GR_QUALITY","ZARIBA_INVOICED_PO_ITEMS_SOAP", "Z_ARIBA_BAPI_PO_CREATE"};
 				
 		try {
-			for(String sapFunctionStr: sapFunctionsStr_Trans) {
+			for(String sapFunctionStr: sapFunctionsStr_Master) {
 				JCoFunction sapFunction=dest.getRepository().getFunction(sapFunctionStr);
 				if (sapFunction != null)
 					describeFunction(sapFunction);
@@ -266,8 +256,17 @@ public class Application  {
 		}
 	}
 	
-    private static void execute_SapFunc_Z_ARIBA_GR_TRANSFER(Z_ARIBA_GR_TRANSFER z_ariba_gr_transfer)
+    private static void execute_SapFunc_Z_ARIBA_GR_TRANSFER(final Exchange exchange)
     {
+		final Message message = exchange.getIn();
+		String body = message.getBody(String.class);
+		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_Z_ARIBA_GR_TRANSFER() : " + body);
+
+		Z_ARIBA_GR_TRANSFER  z_ariba_gr_transfer = create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(body);
+		
+		System.out.println("MUIS : Parsing HTTP XML Body : Extracted vars are : ");
+		System.out.println("MUIS : z_ariba_gr_transfer = \n" + z_ariba_gr_transfer);
+
         try
         {
 				String repoName  = dest.getRepository().getName();
@@ -359,4 +358,43 @@ public class Application  {
         }
     }
 
+	private static void execute_SapFunc_MasterDataImport(final Exchange exchange)
+    {
+		final Message message = exchange.getIn();
+		String body = message.getBody(String.class);
+		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_MasterDataImport() : " + body);
+
+        try
+        {
+				String repoName  = dest.getRepository().getName();
+				System.out.println("MUIS : Reposiroty name dest.getRepository().getName() =  " + repoName);
+					
+				//JCoFunction sapFunction = dest.getRepository().getFunction(sapFunctionStr);
+				//if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
+				
+				//describeFunction(sapFunction);
+				
+				// The following will be used sftp adapter side :
+					//sapFunction.getImportParameterList().setValue("ENCODING", "UTF-8");
+					//sapFunction.getImportParameterList().setValue("FILE_NAME", "/exportQ11/DATAARIBA/Asset.csv");
+
+				//sapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_transfer.PARTITION);
+				//sapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_transfer.VARIANT);
+				
+				/*try {
+					sapFunction.execute(dest);
+					System.out.println("\nMUIS : STATUS = " + sapFunction.getExportParameterList().getString("STATUS"));
+				}
+				catch (AbapException e)
+				{
+					System.out.println(e);
+					return;
+				}*/
+        }
+        catch (JCoException e)
+        {
+            e.printStackTrace();
+            System.out.println("Execution on destination  failed");
+        }
+    }
 }
