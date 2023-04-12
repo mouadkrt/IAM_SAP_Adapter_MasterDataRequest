@@ -380,8 +380,15 @@ public class Application  {
 		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
 		System.out.println("soap_body" + soap_body);
 		Map<String, Object> method2 = (Map<String, Object>) soap_body.get(method);
-		System.out.println("method2" + method2);
+		System.out.println("method2 " + method2);
 		String sapFunctionStr = (String) method2.keySet().toArray()[0];
+		System.out.println("sapFunction extracted from XML payload : " + sapFunctionStr);
+
+		Map<String, Object> sapFunctionInputs = (Map<String, Object>) method2.get(sapFunctionStr);
+		String encoding = (String) sapFunctionInputs.get("ENCODING");
+		String fileName = (String) sapFunctionInputs.get("FILE_NAME");
+		String partition = (String) sapFunctionInputs.get("PARTITION");
+		String variant = (String) sapFunctionInputs.get("VARIANT");
 
 
         try
@@ -393,23 +400,25 @@ public class Application  {
 				if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
 				
 				describeFunction(sapFunction);
-				
-				// The following will be used sftp adapter side :
-					sapFunction.getImportParameterList().setValue("ENCODING", "UTF-8");
-					sapFunction.getImportParameterList().setValue("FILE_NAME", "/exportQ11/DATAARIBA/Asset.csv");
+			
+				try {
+					
+					System.out.println("\nMUIS : Execution SAP funciton " + sapFunctionStr + " with params :");
+					System.out.println("ENCODING="+ encoding + ", FILE_NAME=" + fileName + ", PARTITION=" + partition + ", VARIANT=" + variant);
+					sapFunction.getImportParameterList().setValue("ENCODING", encoding);
+					sapFunction.getImportParameterList().setValue("FILE_NAME", fileName);
+					sapFunction.getImportParameterList().setValue("PARTITION", partition);
+					sapFunction.getImportParameterList().setValue("VARIANT", variant);
 
-					sapFunction.getImportParameterList().setValue("PARTITION", "par1iam");
-					sapFunction.getImportParameterList().setValue("VARIANT", "var1iam");
-				
-				/*try {
 					sapFunction.execute(dest);
+
 					System.out.println("\nMUIS : STATUS = " + sapFunction.getExportParameterList().getString("STATUS"));
 				}
 				catch (AbapException e)
 				{
 					System.out.println(e);
 					return;
-				}*/
+				}
         }
         catch (JCoException e)
         {
