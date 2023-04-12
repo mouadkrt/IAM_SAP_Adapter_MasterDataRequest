@@ -34,11 +34,14 @@ public class Application  {
   	
 	private static InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
 	private static JCoDestination dest;
+
+
  	public static void main(String[] args) {
 		//SpringApplication.run(Application.class, args);
 		//String httpBody = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ns1:Z_ARIBA_GR_TRANSFER xmlns:ns1=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER\"><ns1:Z_ARIBA_GR_TRANSFER><ns1:PARTITION>par1iam</ns1:PARTITION><ns1:VARIANT>var1iam</ns1:VARIANT><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM></ns1:Z_ARIBA_GR_TRANSFER></ns1:Z_ARIBA_GR_TRANSFER></soapenv:Body></soapenv:Envelope>";
 		// Z_ARIBA_GR_TRANSFER  z_ariba_gr_transfer = create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(httpBody);
 		// System.out.println(z_ariba_gr_transfer);
+		
 		
 		registerDestinationDataProvider();
 		describeAllAribaFunctions();
@@ -363,23 +366,40 @@ public class Application  {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
 		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_MasterDataImport() : " + body);
+		
+		Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(body);
+			
+		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
+		Map<String, Object> soap_header = (Map<String, Object>) soap_envelope.get("Header");
+		System.out.println("soap_header : " + soap_header);
+		Map<String, Object> ibsinfo = (Map<String, Object>) soap_header.get("ibsinfo");
+		System.out.println("ibsinfo : " + ibsinfo);
+		String method =  (String) ibsinfo.get("method");
+		System.out.println("method : " + method);
+
+		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
+		System.out.println("soap_body" + soap_body);
+		Map<String, Object> method2 = (Map<String, Object>) soap_body.get(method);
+		System.out.println("method2" + method2);
+		String sapFunctionStr = (String) method2.keySet().toArray()[0];
+
 
         try
         {
 				String repoName  = dest.getRepository().getName();
 				System.out.println("MUIS : Reposiroty name dest.getRepository().getName() =  " + repoName);
 					
-				//JCoFunction sapFunction = dest.getRepository().getFunction(sapFunctionStr);
-				//if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
+				JCoFunction sapFunction = dest.getRepository().getFunction(sapFunctionStr);
+				if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
 				
-				//describeFunction(sapFunction);
+				describeFunction(sapFunction);
 				
 				// The following will be used sftp adapter side :
-					//sapFunction.getImportParameterList().setValue("ENCODING", "UTF-8");
-					//sapFunction.getImportParameterList().setValue("FILE_NAME", "/exportQ11/DATAARIBA/Asset.csv");
+					sapFunction.getImportParameterList().setValue("ENCODING", "UTF-8");
+					sapFunction.getImportParameterList().setValue("FILE_NAME", "/exportQ11/DATAARIBA/Asset.csv");
 
-				//sapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_transfer.PARTITION);
-				//sapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_transfer.VARIANT);
+					sapFunction.getImportParameterList().setValue("PARTITION", "par1iam");
+					sapFunction.getImportParameterList().setValue("VARIANT", "var1iam");
 				
 				/*try {
 					sapFunction.execute(dest);
