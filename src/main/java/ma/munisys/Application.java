@@ -411,8 +411,6 @@ public class Application  {
 					sapFunction.getImportParameterList().setValue("VARIANT", variant);
 
 					sapFunction.execute(dest);
-
-					System.out.println("\nMUIS : STATUS = " + sapFunction.getExportParameterList().getString("STATUS"));
 				}
 				catch (AbapException e)
 				{
