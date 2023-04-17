@@ -29,3 +29,6 @@ cmd as admin :
 mvn clean install
 export JCO_ASHOST="sapqual6.iamdg.net.ma" JCO_SYSNR="00" JCO_CLIENT="200" JCO_USER="sapuser" JCO_PASSWD="sappwd" JCO_LANG="fr"
 mvn spring-boot:run
+
+
+# java -cp sap-libs/sapjco3.jar:target/Muis-Fuse-SAP-Adapter-1.0.0.jar org.springframework.boot.loader.JarLauncher

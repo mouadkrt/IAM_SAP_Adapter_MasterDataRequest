@@ -34,9 +34,10 @@ public class Application  {
   	
 	private static InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
 	private static JCoDestination dest;
-
-
- 	public static void main(String[] args) {
+	private static String MUIS_DEBUG = System.getenv().getOrDefault("MUIS_DEBUG", "0");
+	
+	
+	public static void main(String[] args) {
 		//SpringApplication.run(Application.class, args);
 		//String httpBody = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ns1:Z_ARIBA_GR_TRANSFER xmlns:ns1=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER\"><ns1:Z_ARIBA_GR_TRANSFER><ns1:PARTITION>par1iam</ns1:PARTITION><ns1:VARIANT>var1iam</ns1:VARIANT><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM></ns1:Z_ARIBA_GR_TRANSFER></ns1:Z_ARIBA_GR_TRANSFER></soapenv:Body></soapenv:Envelope>";
 		// Z_ARIBA_GR_TRANSFER  z_ariba_gr_transfer = create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(httpBody);
@@ -63,6 +64,10 @@ public class Application  {
 		catch(Exception e) { System.out.println(e.getMessage()); }
     }
 	
+	private static void muis_debug(String label, Object txt) {
+		if(!MUIS_DEBUG.equals("0")) System.out.println("\nMUIS_DEBUG : "+ label +" : " + txt);
+	}
+	
 	private static void registerDestinationDataProvider() {
 
 		System.out.println("- Muis : Registering SAP Destination Data Provider ...");
@@ -88,38 +93,61 @@ public class Application  {
 	// The resulting instance of the Z_ARIBA_GR_TRANSFER will be then handed over to the SAP function for processing
 	private static Z_ARIBA_GR_TRANSFER create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(String httpBody) { 
 		// https://javadev.github.io/underscore-java/
-			Map<String, Object> map = U.fromXmlWithoutNamespacesMap(httpBody);
+			Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(httpBody);
 			//System.out.println(map);
 		
 		Z_ARIBA_GR_TRANSFER	z_ariba_gr_transfer = new Z_ARIBA_GR_TRANSFER();
 		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
+		muis_debug("soap_envelope", soap_envelope);
+		
 		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
+		muis_debug("soap_body", soap_body);
+		
 		Map<String, Object> Z_ARIBA_GR_TRANSFER = (Map<String, Object>) soap_body.get("Z_ARIBA_GR_TRANSFER");
+		muis_debug("Z_ARIBA_GR_TRANSFER", Z_ARIBA_GR_TRANSFER);
+		
 		Map<String, Object> Z_ARIBA_GR_TRANSFER2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFER.get("Z_ARIBA_GR_TRANSFER");
-		ArrayList<String> GR_ITEMs = (ArrayList<String>) Z_ARIBA_GR_TRANSFER2.get("GR_ITEM");
+		muis_debug("Z_ARIBA_GR_TRANSFER2", Z_ARIBA_GR_TRANSFER2);
 		
 		z_ariba_gr_transfer.PARTITION = (String) Z_ARIBA_GR_TRANSFER2.get("PARTITION");
 		z_ariba_gr_transfer.VARIANT = (String) Z_ARIBA_GR_TRANSFER2.get("VARIANT");
-		z_ariba_gr_transfer.GR_ITEM = new GR_ITEM();
-		Iterator iter = GR_ITEMs.iterator();
 		
-		while (iter.hasNext()) {
-			Map<String, ArrayList> item = (Map<String, ArrayList>) iter.next();
-			LinkedHashMap itemm = (LinkedHashMap) item.get("item").get(0);
-			//System.out.print( itemm.get("BWTAR").getClass().getName());
-			//System.out.print( itemm.get("MBLNR").getClass().getName());
-			
+		Map<String, Object> GR_ITEMs2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFER2.get("GR_ITEM");
+		muis_debug("GR_ITEMs2", GR_ITEMs2);
+		
+		muis_debug("GR_ITEMs2.get('item')", GR_ITEMs2.get("item"));
+		muis_debug("... class : ", GR_ITEMs2.get("item").getClass().getName());
+		
+		z_ariba_gr_transfer.GR_ITEM = new GR_ITEM();
+		ObjectMapper mapper = new ObjectMapper();
+		
+		if(!GR_ITEMs2.get("item").getClass().getName().equals("java.util.ArrayList")) {
+			LinkedHashMap itemm = (LinkedHashMap) GR_ITEMs2.get("item");
 			//Set xml self-closed tags as empty strings  :
-				for (Object key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
-			
-			ObjectMapper mapper = new ObjectMapper();
-			//System.out.print(iter.next() + "\n");
-			GR_ITEM_item gr_item_item = mapper.convertValue(item.get("item").get(0),GR_ITEM_item.class);
+					for (Object key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
+			GR_ITEM_item gr_item_item = mapper.convertValue(itemm,GR_ITEM_item.class);
 			z_ariba_gr_transfer.GR_ITEM.items.add(gr_item_item);
-        }
+		}
+		else {
+			ArrayList<Map<String,String>> GR_ITEMs = (ArrayList<Map<String,String>>) GR_ITEMs2.get("item");
+			Iterator iter = GR_ITEMs.iterator();
+			while (iter.hasNext()) {
+				Map<String, String> itemm = (Map<String, String>) iter.next();
+				muis_debug("item", itemm);
+				//LinkedHashMap itemm = (LinkedHashMap) item.get("item").get(0);
+								
+				//Set xml self-closed tags as empty strings  :
+					for (String key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
+				
+				//System.out.print(iter.next() + "\n");
+				GR_ITEM_item gr_item_item = mapper.convertValue(itemm,GR_ITEM_item.class);
+				z_ariba_gr_transfer.GR_ITEM.items.add(gr_item_item);
+			}
+		}
 
 		return z_ariba_gr_transfer;
 	}
+	
 	private static class InMemoryDestinationDataProvider implements DestinationDataProvider
     {
         private DestinationDataEventListener eL;
@@ -225,9 +253,13 @@ public class Application  {
 		String[] sapFunctionsStr_Master 	= 	{"ZARIBA_PLANT", "ZARIBA_PURCHASE_ORG", "ZARIBA_PURCHASE_GROUP", "ZARIBA_PLANT_PORG", "ZARIBA_ASSET", "ZARIBA_GENERAL_LEDGER", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_ACCOUNT_CATEGORY", "ZARIBA_ACC_FIELD_STATUS", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_MATERIAL_GROUP", "ZARIBA_CURRENCY_CONVERSION", "ZARIBA_VENDOR", "ZARIBA_MINORITY_VENDOR", "ZARIBA_TAX_CODE", "ZARIBA_COMPANY", "ZARIBA_VENDOR", "ZARIBA_COST_CENTER", "ZARIBA_ACCOUNT_CAT_NAMES", "ZARIBA_MATERIAL_GROUP_NAMES", "ZARIBA_COST_CENTER_NAMES", "ZARIBA_GENERAL_LEDGER_NAMES", "ZARIBA_TAX_CODE_NAMES", "ZARIBA_VENDOR_INC", "ZARIBA_ASSET_INC", "ZARIBA_MATERIAL_ACC ", "ZARIBA_MATERIAL_ALT", "ZARIBA_MATERIAL_MRP", "ZARIBA_MATERIAL_CCR", "ZARIBA_MATERIAL_GEN", "ZARIBA_MATERIAL_STO", "ZARIBA_MATERIAL_PUR", "ZARIBA_MATERIAL_DSU", "ZARIBA_WAREHOUSE"};
 		
 		String[] sapFunctionsStr_Trans		=	{"Z_ARIBA_GR_PUSH", "Z_ARIBA_BAPI_PO_CHANGE","Z_ARIBA_BAPI_PO_CANCEL","Z_ARIBA_PO_HEADER_STATUS","Z_ARIBA_GR_TRANSFER","Z_ARIBA_GR_QUALITY","ZARIBA_INVOICED_PO_ITEMS_SOAP", "Z_ARIBA_BAPI_PO_CREATE"};
+
+		String[] sapFunctionsStr_All		=	new String[sapFunctionsStr_Master.length + sapFunctionsStr_Trans.length];
+		System.arraycopy(sapFunctionsStr_Master, 0, sapFunctionsStr_All, 0, sapFunctionsStr_Master.length);
+        System.arraycopy(sapFunctionsStr_Trans, 0, sapFunctionsStr_All, sapFunctionsStr_Master.length, sapFunctionsStr_Trans.length);
 				
 		try {
-			for(String sapFunctionStr: sapFunctionsStr_Master) {
+			for(String sapFunctionStr: sapFunctionsStr_All) {
 				JCoFunction sapFunction=dest.getRepository().getFunction(sapFunctionStr);
 				if (sapFunction != null)
 					describeFunction(sapFunction);
@@ -313,23 +345,6 @@ public class Application  {
 					}
 				}
 				
-				//GR_ITEM.setString(sapFunctionStr);
-				// Map<String, String> a_gr_item = new HashMap<String, String>();
-				// 	a_gr_item.put("MBLNR","5001744605");
-				// 	a_gr_item.put("MJAHR","2021");
-				// 	a_gr_item.put("ZEILE","0001");
-				// 	a_gr_item.put("ZQACCEPT","2.00000");
-				// 	a_gr_item.put("ZUACCEPT","ES");
-				// 	a_gr_item.put("ZQREFUS","0.00000");
-				// 	a_gr_item.put("ZUREFUS","ES");
-				// 	//a_gr_item.put("BWTAR","");
-				// 	//a_gr_item.put("GRUND","");
-				// 	a_gr_item.put("ARIBA_GRNO","TR-RC329434");
-				// 	a_gr_item.put("ARIBA_ITNO","1");
-				// 	a_gr_item.put("NO_MORE_GR","X");
-
-				
-				
 				try {
 						sapFunction.execute(dest);
 						
@@ -403,7 +418,7 @@ public class Application  {
 			
 				try {
 					
-					System.out.println("\nMUIS : Execution SAP funciton " + sapFunctionStr + " with params :");
+					System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params :");
 					System.out.println("ENCODING="+ encoding + ", FILE_NAME=" + fileName + ", PARTITION=" + partition + ", VARIANT=" + variant);
 					sapFunction.getImportParameterList().setValue("ENCODING", encoding);
 					sapFunction.getImportParameterList().setValue("FILE_NAME", fileName);

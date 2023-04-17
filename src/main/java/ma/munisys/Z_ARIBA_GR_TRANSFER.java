@@ -24,7 +24,7 @@ public class Z_ARIBA_GR_TRANSFER {
 	public ERROR_MSG_TABLE ERROR_MSG_TABLE;
 	public GR_ITEM GR_ITEM;
 	public GR_SERIAL GR_SERIAL;
-	public Z_ARIBA_GR_TRANSFER Z_ARIBA_GR_TRANSFER;
+	//public Z_ARIBA_GR_TRANSFER Z_ARIBA_GR_TRANSFER;
 
     public String toString() {
         // You may print the z_ariba_gr_transfer Java object back as a JSON format, to inspect it :
