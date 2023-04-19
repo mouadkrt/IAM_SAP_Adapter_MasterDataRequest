@@ -443,16 +443,16 @@ public class Application  {
 		String xmlErrorStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTGRERR", "ERROR_MSG_TABLE") : "<ERROR_MSG_TABLE/>";
 		
 		sapTbl = currentSapFunction.getTableParameterList().getTable("GR_ITEM");
-		String xmlGrItemStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTEMRANS", "GR_ITEM") : "<GR_ITEM/>";
+		String xmlGrItemStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTEMTRANS", "GR_ITEM") : "<GR_ITEM/>";
 
 		sapTbl = currentSapFunction.getTableParameterList().getTable("GR_SERIAL");
 		String xmlGrSerialStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTSERIAL", "GR_SERIAL") : "<GR_ITEM/>";
 
 		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";
-			newBody += "<Z_ARIBA_GR_TRANSFERResponse xmlns=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER:response\" cid=\"9F1065081E359024BE43F815323959D9\"><Z_ARIBA_GR_TRANSFER.Response>";
+			newBody += "<Z_ARIBA_GR_TRANSFERResponse xmlns=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER:response\"><Z_ARIBA_GR_TRANSFER.Response>";
 				newBody += xmlStatusStr + xmlErrorStr + xmlGrItemStr + xmlGrSerialStr;
 			newBody += "</Z_ARIBA_GR_TRANSFER.Response></Z_ARIBA_GR_TRANSFERResponse>";
-		newBody += "</SOAP-ENV:Body></SOAP-ENV:Envelope";
+		newBody += "</SOAP-ENV:Body></SOAP-ENV:Envelope>";
 		
 		final Message message = exchange.getIn();
 		message.setBody(newBody);
