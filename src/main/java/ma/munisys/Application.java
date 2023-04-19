@@ -32,18 +32,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Application  {
   	
+	private static JCoFunction currentSapFunction;
 	private static InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
 	private static JCoDestination dest;
 	private static String MUIS_DEBUG = System.getenv().getOrDefault("MUIS_DEBUG", "0");
-	
-	
 	public static void main(String[] args) {
 		//SpringApplication.run(Application.class, args);
 		//String httpBody = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ns1:Z_ARIBA_GR_TRANSFER xmlns:ns1=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER\"><ns1:Z_ARIBA_GR_TRANSFER><ns1:PARTITION>par1iam</ns1:PARTITION><ns1:VARIANT>var1iam</ns1:VARIANT><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM><ns1:GR_ITEM><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0001</ns1:ZEILE><ns1:ZQACCEPT>2.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>1</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item><ns1:item><ns1:MBLNR>5001744605</ns1:MBLNR><ns1:MJAHR>2021</ns1:MJAHR><ns1:ZEILE>0002</ns1:ZEILE><ns1:ZQACCEPT>24.00000</ns1:ZQACCEPT><ns1:ZUACCEPT>ES</ns1:ZUACCEPT><ns1:ZQREFUS>0.00000</ns1:ZQREFUS><ns1:ZUREFUS>ES</ns1:ZUREFUS><ns1:BWTAR/><ns1:GRUND/><ns1:ARIBA_GRNO>TR-RC329434</ns1:ARIBA_GRNO><ns1:ARIBA_ITNO>2</ns1:ARIBA_ITNO><ns1:NO_MORE_GR>X</ns1:NO_MORE_GR></ns1:item></ns1:GR_ITEM></ns1:Z_ARIBA_GR_TRANSFER></ns1:Z_ARIBA_GR_TRANSFER></soapenv:Body></soapenv:Envelope>";
 		// Z_ARIBA_GR_TRANSFER  z_ariba_gr_transfer = create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(httpBody);
 		// System.out.println(z_ariba_gr_transfer);
-		
-		
+				
 		registerDestinationDataProvider();
 		describeAllAribaFunctions();
 		CamelContext context = new DefaultCamelContext();
@@ -56,6 +54,7 @@ public class Application  {
 								.process(Application::execute_SapFunc_MasterDataImport)
 							.otherwise()
 								.process(Application::execute_SapFunc_Z_ARIBA_GR_TRANSFER)
+								.process(Application::Z_ARIBA_GR_TRANSFER_Response)
 					.end();
 				}
 			});
@@ -147,8 +146,7 @@ public class Application  {
 
 		return z_ariba_gr_transfer;
 	}
-	
-	private static class InMemoryDestinationDataProvider implements DestinationDataProvider
+		private static class InMemoryDestinationDataProvider implements DestinationDataProvider
     {
         private DestinationDataEventListener eL;
         private HashMap<String, Properties> secureDBStorage=new HashMap<String, Properties>();
@@ -308,7 +306,7 @@ public class Application  {
 				System.out.println("MUIS : Reposiroty name dest.getRepository().getName() =  " + repoName);
 					
 				String sapFunctionStr = "Z_ARIBA_GR_TRANSFER"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				JCoFunction sapFunction = dest.getRepository().getFunction(sapFunctionStr);
+				currentSapFunction = dest.getRepository().getFunction(sapFunctionStr);
 				if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
 				
 				describeFunction(sapFunction);
@@ -334,33 +332,25 @@ public class Application  {
 							field.setValue(f.get(grItem));
 						}
 						catch(NoSuchFieldException|IllegalAccessException e) { System.out.println(e.getMessage());}
-						//System.out.println("-MUIS gr_item field = " + field.getName());
-						// for(Map.Entry<String, String> me : a_gr_item.entrySet()) {
-						// 	//System.out.println("key : " + me.getKey());
-						// 	if( field.getName().equals((String)me.getKey()) ) {
-						// 		System.out.println("-MUIS setting " + field.getName() + " to " + me.getValue());
-						// 		field.setValue(me.getValue());
-						// 	}
-						// }
 					}
 				}
 				
 				try {
-						sapFunction.execute(dest);
+						currentSapFunction.execute(dest);
 						
-						//JCoStructure exportStructure = sapFunction.getTableParameterList().getStructure("GR_ITEM");
+						//JCoStructure exportStructure = currentSapFunction.getTableParameterList().getStructure("GR_ITEM");
 						//for (int i = 0; i < exportStructure.getMetaData().getFieldCount(); i++)
 						//	System.out.println( "\n- MUIS2 :" + exportStructure.getMetaData().getName(i) + ":\t" + exportStructure.getString(i));
 						
-						System.out.println("\nMUIS : STATUS = " + sapFunction.getExportParameterList().getString("STATUS"));
-						getTableValues(sapFunction, "GR_ITEM");
-						getTableValues(sapFunction, "GR_SERIAL");
-						getTableValues(sapFunction, "ERROR_MSG_TABLE");
-						//System.out.println("MUIS : ERROR_MSG_TABLE isTable = " + sapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE").isTable());
-						//System.out.println("MUIS : ERROR_MSG_TABLE isStructure = " + sapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE").isStructure());
+						System.out.println("\nMUIS : STATUS = " + currentSapFunction.getExportParameterList().getString("STATUS"));
+						getTableValues(currentSapFunction, "GR_ITEM");
+						getTableValues(currentSapFunction, "GR_SERIAL");
+						getTableValues(currentSapFunction, "ERROR_MSG_TABLE");
+						//System.out.println("MUIS : ERROR_MSG_TABLE isTable = " + currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE").isTable());
+						//System.out.println("MUIS : ERROR_MSG_TABLE isStructure = " + currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE").isStructure());
 						
 						//System.out.println("\n- MUIS : ECHOTEXT = " + sapFunction.getExportParameterList().getString("ECHOTEXT"));
-						//System.out.println("\n- MUIS : RESPTEXT = " + sapFunction.getExportParameterList().getString("RESPTEXT"));
+						//System.out.println("\n- MUIS : RESPTEXT = " + currentSapFunction.getExportParameterList().getString("RESPTEXT"));
 						
 					}
 					catch (AbapException e)
@@ -439,4 +429,33 @@ public class Application  {
             System.out.println("Execution on destination  failed");
         }
     }
+
+	private static void Z_ARIBA_GR_TRANSFER_Response(Exchange exchange) {
+
+		String sapFunctionStr = currentSapFunction.getName();
+		muis_debug("Z_ARIBA_GR_TRANSFER_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
+		
+		String xmlStatusStr = "<STATUS>"+ currentSapFunction.getExportParameterList().getString("STATUS") + "</STATUS>";
+
+		JCoTable sapTbl;
+
+		sapTbl = currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE");
+		String xmlErrorStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTGRERR", "ERROR_MSG_TABLE") : "<ERROR_MSG_TABLE/>";
+		
+		sapTbl = currentSapFunction.getTableParameterList().getTable("GR_ITEM");
+		String xmlGrItemStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTEMRANS", "GR_ITEM") : "<GR_ITEM/>";
+
+		sapTbl = currentSapFunction.getTableParameterList().getTable("GR_SERIAL");
+		String xmlGrSerialStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTSERIAL", "GR_SERIAL") : "<GR_ITEM/>";
+
+		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";
+			newBody += "<Z_ARIBA_GR_TRANSFERResponse xmlns=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER:response\" cid=\"9F1065081E359024BE43F815323959D9\"><Z_ARIBA_GR_TRANSFER.Response>";
+				newBody += xmlStatusStr + xmlErrorStr + xmlGrItemStr + xmlGrSerialStr;
+			newBody += "</Z_ARIBA_GR_TRANSFER.Response></Z_ARIBA_GR_TRANSFERResponse>";
+		newBody += "</SOAP-ENV:Body></SOAP-ENV:Envelope";
+		
+		final Message message = exchange.getIn();
+		message.setBody(newBody);
+		System.out.println("- MUIS : New soap body set in Z_ARIBA_GR_TRANSFER_Response() to : " + newBody);
+	}
 }
