@@ -307,18 +307,18 @@ public class Application  {
 					
 				String sapFunctionStr = "Z_ARIBA_GR_TRANSFER"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
 				currentSapFunction = dest.getRepository().getFunction(sapFunctionStr);
-				if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
+				if (currentSapFunction==null) throw new RuntimeException(currentSapFunction + " not found in SAP.");
 				
-				describeFunction(sapFunction);
+				describeFunction(currentSapFunction);
 				
 				// The following will be used sftp adapter side :
 					//sapFunction.getImportParameterList().setValue("ENCODING", "UTF-8");
 					//sapFunction.getImportParameterList().setValue("FILE_NAME", "/exportQ11/DATAARIBA/Asset.csv");
 
-				sapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_transfer.PARTITION);
-				sapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_transfer.VARIANT);
+					currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_transfer.PARTITION);
+					currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_transfer.VARIANT);
 				
-				JCoTable GR_ITEM = sapFunction.getTableParameterList().getTable("GR_ITEM");
+				JCoTable GR_ITEM = currentSapFunction.getTableParameterList().getTable("GR_ITEM");
 				
 				for (GR_ITEM_item grItem : z_ariba_gr_transfer.GR_ITEM.items) {
 					//for( Field f : grItem.getClass().getDeclaredFields() ) {}
