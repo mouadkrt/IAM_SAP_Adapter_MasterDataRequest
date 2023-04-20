@@ -53,8 +53,8 @@ public class Application  {
 							.when(simple("${header.MasterDataImport_Request} == '1'"))
 								.process(Application::execute_SapFunc_MasterDataImport)
 							.otherwise()
-								.process(ZARIBA_INVOICED_PO_ITEMS_SOAP::execute_SapFunc_Z_ARIBA_GR_TRANSFER)
-								.process(ZARIBA_INVOICED_PO_ITEMS_SOAP::read_SapFunc_Z_ARIBA_GR_TRANSFER_Response)
+								.process(Z_ARIBA_GR_TRANSFER::execute_SapFunc_Z_ARIBA_GR_TRANSFER)
+								.process(Z_ARIBA_GR_TRANSFER::read_SapFunc_Z_ARIBA_GR_TRANSFER_Response)
 					.end();
 				}
 			});
