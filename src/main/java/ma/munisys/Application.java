@@ -43,7 +43,7 @@ public class Application  {
 		// System.out.println(z_ariba_gr_transfer);
 				
 		registerDestinationDataProvider();
-		describeAllAribaFunctions();
+		if(!MUIS_DEBUG.equals("0")) describeAllAribaFunctions();
 		CamelContext context = new DefaultCamelContext();
 		try {
 			context.addRoutes(new RouteBuilder() {
@@ -93,9 +93,11 @@ public class Application  {
 	private static Z_ARIBA_GR_TRANSFER create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(String httpBody) { 
 		// https://javadev.github.io/underscore-java/
 			Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(httpBody);
-			//System.out.println(map);
+			System.out.println("\n U.fromXmlWithoutNamespacesAndAttributes(httpBody) : \n");
+			System.out.println(map);
 		
 		Z_ARIBA_GR_TRANSFER	z_ariba_gr_transfer = new Z_ARIBA_GR_TRANSFER();
+		
 		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
 		muis_debug("soap_envelope", soap_envelope);
 		
@@ -248,9 +250,14 @@ public class Application  {
 	}
 	
 	private static void describeAllAribaFunctions() {
+
+		System.out.println("####################### START describeAllAribaFunctions() ######################");
+
 		String[] sapFunctionsStr_Master 	= 	{"ZARIBA_PLANT", "ZARIBA_PURCHASE_ORG", "ZARIBA_PURCHASE_GROUP", "ZARIBA_PLANT_PORG", "ZARIBA_ASSET", "ZARIBA_GENERAL_LEDGER", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_ACCOUNT_CATEGORY", "ZARIBA_ACC_FIELD_STATUS", "ZARIBA_INTERNAL_ORDER", "ZARIBA_WBS", "ZARIBA_MATERIAL_GROUP", "ZARIBA_CURRENCY_CONVERSION", "ZARIBA_VENDOR", "ZARIBA_MINORITY_VENDOR", "ZARIBA_TAX_CODE", "ZARIBA_COMPANY", "ZARIBA_VENDOR", "ZARIBA_COST_CENTER", "ZARIBA_ACCOUNT_CAT_NAMES", "ZARIBA_MATERIAL_GROUP_NAMES", "ZARIBA_COST_CENTER_NAMES", "ZARIBA_GENERAL_LEDGER_NAMES", "ZARIBA_TAX_CODE_NAMES", "ZARIBA_VENDOR_INC", "ZARIBA_ASSET_INC", "ZARIBA_MATERIAL_ACC ", "ZARIBA_MATERIAL_ALT", "ZARIBA_MATERIAL_MRP", "ZARIBA_MATERIAL_CCR", "ZARIBA_MATERIAL_GEN", "ZARIBA_MATERIAL_STO", "ZARIBA_MATERIAL_PUR", "ZARIBA_MATERIAL_DSU", "ZARIBA_WAREHOUSE"};
 		
-		String[] sapFunctionsStr_Trans		=	{"Z_ARIBA_GR_PUSH", "Z_ARIBA_BAPI_PO_CHANGE","Z_ARIBA_BAPI_PO_CANCEL","Z_ARIBA_PO_HEADER_STATUS","Z_ARIBA_GR_TRANSFER","Z_ARIBA_GR_QUALITY","ZARIBA_INVOICED_PO_ITEMS_SOAP", "Z_ARIBA_BAPI_PO_CREATE"};
+		String[] sapFunctionsStr_Trans		=	{
+			
+		};
 
 		String[] sapFunctionsStr_All		=	new String[sapFunctionsStr_Master.length + sapFunctionsStr_Trans.length];
 		System.arraycopy(sapFunctionsStr_Master, 0, sapFunctionsStr_All, 0, sapFunctionsStr_Master.length);
@@ -264,6 +271,8 @@ public class Application  {
 			}
 		}
 		catch(Exception  e) { System.out.println(e.getMessage());}
+
+		System.out.println("####################### END describeAllAribaFunctions() ######################");
 	}
 	
 	private static void getTableValues(JCoFunction sapFunction, String tblName) {
@@ -446,7 +455,7 @@ public class Application  {
 		String xmlGrItemStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTEMTRANS", "GR_ITEM") : "<GR_ITEM/>";
 
 		sapTbl = currentSapFunction.getTableParameterList().getTable("GR_SERIAL");
-		String xmlGrSerialStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTSERIAL", "GR_SERIAL") : "<GR_ITEM/>";
+		String xmlGrSerialStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTSERIAL", "GR_SERIAL") : "<GR_SERIAL/>";
 
 		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";
 			newBody += "<Z_ARIBA_GR_TRANSFERResponse xmlns=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER:response\"><Z_ARIBA_GR_TRANSFER.Response>";
