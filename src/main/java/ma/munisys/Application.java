@@ -54,7 +54,7 @@ public class Application  {
 								.process(Application::execute_SapFunc_MasterDataImport)
 							.otherwise()
 								.process(Application::execute_SapFunc_Z_ARIBA_GR_TRANSFER)
-								.process(Application::Z_ARIBA_GR_TRANSFER_Response)
+								.process(Application::read_SapFunc_Z_ARIBA_GR_TRANSFER_Response)
 					.end();
 				}
 			});
@@ -87,68 +87,7 @@ public class Application  {
             e.printStackTrace();
         }
 	}
-						  
-	// The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object as defined in the Z_ARIBA_GR_TRANSFER public class (Designed to mimic the http soap xml received)
-	// The resulting instance of the Z_ARIBA_GR_TRANSFER will be then handed over to the SAP function for processing
-	private static Z_ARIBA_GR_TRANSFER create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(String httpBody) { 
-		// https://javadev.github.io/underscore-java/
-			Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(httpBody);
-			System.out.println("\n U.fromXmlWithoutNamespacesAndAttributes(httpBody) : \n");
-			System.out.println(map);
-		
-		Z_ARIBA_GR_TRANSFER	z_ariba_gr_transfer = new Z_ARIBA_GR_TRANSFER();
-		
-		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
-		muis_debug("soap_envelope", soap_envelope);
-		
-		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
-		muis_debug("soap_body", soap_body);
-		
-		Map<String, Object> Z_ARIBA_GR_TRANSFER = (Map<String, Object>) soap_body.get("Z_ARIBA_GR_TRANSFER");
-		muis_debug("Z_ARIBA_GR_TRANSFER", Z_ARIBA_GR_TRANSFER);
-		
-		Map<String, Object> Z_ARIBA_GR_TRANSFER2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFER.get("Z_ARIBA_GR_TRANSFER");
-		muis_debug("Z_ARIBA_GR_TRANSFER2", Z_ARIBA_GR_TRANSFER2);
-		
-		z_ariba_gr_transfer.PARTITION = (String) Z_ARIBA_GR_TRANSFER2.get("PARTITION");
-		z_ariba_gr_transfer.VARIANT = (String) Z_ARIBA_GR_TRANSFER2.get("VARIANT");
-		
-		Map<String, Object> GR_ITEMs2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFER2.get("GR_ITEM");
-		muis_debug("GR_ITEMs2", GR_ITEMs2);
-		
-		muis_debug("GR_ITEMs2.get('item')", GR_ITEMs2.get("item"));
-		muis_debug("... class : ", GR_ITEMs2.get("item").getClass().getName());
-		
-		z_ariba_gr_transfer.GR_ITEM = new GR_ITEM();
-		ObjectMapper mapper = new ObjectMapper();
-		
-		if(!GR_ITEMs2.get("item").getClass().getName().equals("java.util.ArrayList")) {
-			LinkedHashMap itemm = (LinkedHashMap) GR_ITEMs2.get("item");
-			//Set xml self-closed tags as empty strings  :
-					for (Object key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
-			GR_ITEM_item gr_item_item = mapper.convertValue(itemm,GR_ITEM_item.class);
-			z_ariba_gr_transfer.GR_ITEM.items.add(gr_item_item);
-		}
-		else {
-			ArrayList<Map<String,String>> GR_ITEMs = (ArrayList<Map<String,String>>) GR_ITEMs2.get("item");
-			Iterator iter = GR_ITEMs.iterator();
-			while (iter.hasNext()) {
-				Map<String, String> itemm = (Map<String, String>) iter.next();
-				muis_debug("item", itemm);
-				//LinkedHashMap itemm = (LinkedHashMap) item.get("item").get(0);
-								
-				//Set xml self-closed tags as empty strings  :
-					for (String key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
-				
-				//System.out.print(iter.next() + "\n");
-				GR_ITEM_item gr_item_item = mapper.convertValue(itemm,GR_ITEM_item.class);
-				z_ariba_gr_transfer.GR_ITEM.items.add(gr_item_item);
-			}
-		}
-
-		return z_ariba_gr_transfer;
-	}
-		private static class InMemoryDestinationDataProvider implements DestinationDataProvider
+	private static class InMemoryDestinationDataProvider implements DestinationDataProvider
     {
         private DestinationDataEventListener eL;
         private HashMap<String, Properties> secureDBStorage=new HashMap<String, Properties>();
@@ -298,6 +237,130 @@ public class Application  {
 		}
 	}
 	
+	private static void execute_SapFunc_MasterDataImport(final Exchange exchange)
+    {
+		final Message message = exchange.getIn();
+		String body = message.getBody(String.class);
+		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_MasterDataImport() : " + body);
+		
+		Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(body);
+			
+		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
+		Map<String, Object> soap_header = (Map<String, Object>) soap_envelope.get("Header");
+		System.out.println("soap_header : " + soap_header);
+		Map<String, Object> ibsinfo = (Map<String, Object>) soap_header.get("ibsinfo");
+		System.out.println("ibsinfo : " + ibsinfo);
+		String method =  (String) ibsinfo.get("method");
+		System.out.println("method : " + method);
+
+		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
+		System.out.println("soap_body" + soap_body);
+		Map<String, Object> method2 = (Map<String, Object>) soap_body.get(method);
+		System.out.println("method2 " + method2);
+		String sapFunctionStr = (String) method2.keySet().toArray()[0];
+		System.out.println("sapFunction extracted from XML payload : " + sapFunctionStr);
+
+		Map<String, Object> sapFunctionInputs = (Map<String, Object>) method2.get(sapFunctionStr);
+		String encoding = (String) sapFunctionInputs.get("ENCODING");
+		String fileName = (String) sapFunctionInputs.get("FILE_NAME");
+		String partition = (String) sapFunctionInputs.get("PARTITION");
+		String variant = (String) sapFunctionInputs.get("VARIANT");
+
+        try
+        {
+				String repoName  = dest.getRepository().getName();
+				System.out.println("MUIS : Reposiroty name dest.getRepository().getName() =  " + repoName);
+					
+				JCoFunction sapFunction = dest.getRepository().getFunction(sapFunctionStr);
+				if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
+				
+				describeFunction(sapFunction);
+			
+				try {
+					
+					System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params :");
+					System.out.println("ENCODING="+ encoding + ", FILE_NAME=" + fileName + ", PARTITION=" + partition + ", VARIANT=" + variant);
+					sapFunction.getImportParameterList().setValue("ENCODING", encoding);
+					sapFunction.getImportParameterList().setValue("FILE_NAME", fileName);
+					sapFunction.getImportParameterList().setValue("PARTITION", partition);
+					sapFunction.getImportParameterList().setValue("VARIANT", variant);
+
+					sapFunction.execute(dest);
+				}
+				catch (AbapException e)
+				{
+					System.out.println(e);
+					return;
+				}
+        }
+        catch (JCoException e)
+        {
+            e.printStackTrace();
+            System.out.println("Execution on destination  failed");
+        }
+    }
+
+	// The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object as defined in the Z_ARIBA_GR_TRANSFER public class (Designed to mimic the http soap xml received)
+	// The resulting instance of the Z_ARIBA_GR_TRANSFER will be then handed over to the SAP function for processing
+	private static Z_ARIBA_GR_TRANSFER create_Z_ARIBA_GR_TRANSFER_ObjectFromXML(String httpBody) {
+		// https://javadev.github.io/underscore-java/
+			Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(httpBody);
+			System.out.println("\n U.fromXmlWithoutNamespacesAndAttributes(httpBody) : \n");
+			System.out.println(map);
+		
+		Z_ARIBA_GR_TRANSFER	z_ariba_gr_transfer = new Z_ARIBA_GR_TRANSFER();
+		
+		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
+		muis_debug("soap_envelope", soap_envelope);
+		
+		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
+		muis_debug("soap_body", soap_body);
+		
+		Map<String, Object> Z_ARIBA_GR_TRANSFER = (Map<String, Object>) soap_body.get("Z_ARIBA_GR_TRANSFER");
+		muis_debug("Z_ARIBA_GR_TRANSFER", Z_ARIBA_GR_TRANSFER);
+		
+		Map<String, Object> Z_ARIBA_GR_TRANSFER2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFER.get("Z_ARIBA_GR_TRANSFER");
+		muis_debug("Z_ARIBA_GR_TRANSFER2", Z_ARIBA_GR_TRANSFER2);
+		
+		z_ariba_gr_transfer.PARTITION = (String) Z_ARIBA_GR_TRANSFER2.get("PARTITION");
+		z_ariba_gr_transfer.VARIANT = (String) Z_ARIBA_GR_TRANSFER2.get("VARIANT");
+		
+		Map<String, Object> GR_ITEMs2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFER2.get("GR_ITEM");
+		muis_debug("GR_ITEMs2", GR_ITEMs2);
+		
+		muis_debug("GR_ITEMs2.get('item')", GR_ITEMs2.get("item"));
+		muis_debug("... class : ", GR_ITEMs2.get("item").getClass().getName());
+		
+		z_ariba_gr_transfer.GR_ITEM = new GR_ITEM();
+		ObjectMapper mapper = new ObjectMapper();
+		
+		if(!GR_ITEMs2.get("item").getClass().getName().equals("java.util.ArrayList")) {
+			LinkedHashMap itemm = (LinkedHashMap) GR_ITEMs2.get("item");
+			//Set xml self-closed tags as empty strings  :
+					for (Object key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
+			GR_ITEM_item gr_item_item = mapper.convertValue(itemm,GR_ITEM_item.class);
+			z_ariba_gr_transfer.GR_ITEM.items.add(gr_item_item);
+		}
+		else {
+			ArrayList<Map<String,String>> GR_ITEMs = (ArrayList<Map<String,String>>) GR_ITEMs2.get("item");
+			Iterator iter = GR_ITEMs.iterator();
+			while (iter.hasNext()) {
+				Map<String, String> itemm = (Map<String, String>) iter.next();
+				muis_debug("item", itemm);
+				//LinkedHashMap itemm = (LinkedHashMap) item.get("item").get(0);
+								
+				//Set xml self-closed tags as empty strings  :
+					for (String key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
+				
+				//System.out.print(iter.next() + "\n");
+				GR_ITEM_item gr_item_item = mapper.convertValue(itemm,GR_ITEM_item.class);
+				z_ariba_gr_transfer.GR_ITEM.items.add(gr_item_item);
+			}
+		}
+
+		return z_ariba_gr_transfer;
+	}
+
     private static void execute_SapFunc_Z_ARIBA_GR_TRANSFER(final Exchange exchange)
     {
 		final Message message = exchange.getIn();
@@ -375,74 +438,10 @@ public class Application  {
         }
     }
 
-	private static void execute_SapFunc_MasterDataImport(final Exchange exchange)
-    {
-		final Message message = exchange.getIn();
-		String body = message.getBody(String.class);
-		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_MasterDataImport() : " + body);
-		
-		Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(body);
-			
-		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
-		Map<String, Object> soap_header = (Map<String, Object>) soap_envelope.get("Header");
-		System.out.println("soap_header : " + soap_header);
-		Map<String, Object> ibsinfo = (Map<String, Object>) soap_header.get("ibsinfo");
-		System.out.println("ibsinfo : " + ibsinfo);
-		String method =  (String) ibsinfo.get("method");
-		System.out.println("method : " + method);
-
-		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
-		System.out.println("soap_body" + soap_body);
-		Map<String, Object> method2 = (Map<String, Object>) soap_body.get(method);
-		System.out.println("method2 " + method2);
-		String sapFunctionStr = (String) method2.keySet().toArray()[0];
-		System.out.println("sapFunction extracted from XML payload : " + sapFunctionStr);
-
-		Map<String, Object> sapFunctionInputs = (Map<String, Object>) method2.get(sapFunctionStr);
-		String encoding = (String) sapFunctionInputs.get("ENCODING");
-		String fileName = (String) sapFunctionInputs.get("FILE_NAME");
-		String partition = (String) sapFunctionInputs.get("PARTITION");
-		String variant = (String) sapFunctionInputs.get("VARIANT");
-
-
-        try
-        {
-				String repoName  = dest.getRepository().getName();
-				System.out.println("MUIS : Reposiroty name dest.getRepository().getName() =  " + repoName);
-					
-				JCoFunction sapFunction = dest.getRepository().getFunction(sapFunctionStr);
-				if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
-				
-				describeFunction(sapFunction);
-			
-				try {
-					
-					System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params :");
-					System.out.println("ENCODING="+ encoding + ", FILE_NAME=" + fileName + ", PARTITION=" + partition + ", VARIANT=" + variant);
-					sapFunction.getImportParameterList().setValue("ENCODING", encoding);
-					sapFunction.getImportParameterList().setValue("FILE_NAME", fileName);
-					sapFunction.getImportParameterList().setValue("PARTITION", partition);
-					sapFunction.getImportParameterList().setValue("VARIANT", variant);
-
-					sapFunction.execute(dest);
-				}
-				catch (AbapException e)
-				{
-					System.out.println(e);
-					return;
-				}
-        }
-        catch (JCoException e)
-        {
-            e.printStackTrace();
-            System.out.println("Execution on destination  failed");
-        }
-    }
-
-	private static void Z_ARIBA_GR_TRANSFER_Response(Exchange exchange) {
+	private static void read_SapFunc_Z_ARIBA_GR_TRANSFER_Response(Exchange exchange) {
 
 		String sapFunctionStr = currentSapFunction.getName();
-		muis_debug("Z_ARIBA_GR_TRANSFER_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
+		muis_debug("read_SapFunc_Z_ARIBA_GR_TRANSFER_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
 		String xmlStatusStr = "<STATUS>"+ currentSapFunction.getExportParameterList().getString("STATUS") + "</STATUS>";
 
@@ -465,6 +464,7 @@ public class Application  {
 		
 		final Message message = exchange.getIn();
 		message.setBody(newBody);
-		System.out.println("- MUIS : New soap body set in Z_ARIBA_GR_TRANSFER_Response() to : " + newBody);
+		System.out.println("- MUIS : New soap body set in read_SapFunc_Z_ARIBA_GR_TRANSFER_Response() to : " + newBody);
 	}
+	
 }
