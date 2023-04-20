@@ -270,4 +270,5 @@ public class Z_ARIBA_GR_TRANSFER {
 		message.setBody(newBody);
 		System.out.println("- MUIS : New soap body set in read_SapFunc_Z_ARIBA_GR_TRANSFER_Response() to : " + newBody);
 	}
+
 }
