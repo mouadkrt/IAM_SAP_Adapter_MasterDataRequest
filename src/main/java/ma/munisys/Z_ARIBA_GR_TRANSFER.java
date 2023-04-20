@@ -65,7 +65,7 @@ public class Z_ARIBA_GR_TRANSFER {
     class Header { 
         public ibsinfo ibsinfo;
     }
-    class GR_ITEM_item { 
+    static class GR_ITEM_item { 
         public String MBLNR;
         public String MJAHR;
         public String ZEILE;

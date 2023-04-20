@@ -22,11 +22,11 @@ ENTRYPOINT ["java","-cp", "sap-libs/sapjco3.jar:app.jar", "org.springframework.b
 
 # Start Docker deamon
 # docker login registry.redhat.io 
-# docker build -t muis-fuse-sap-adapter:iam_0.0.7 .
+# docker build -t muis-fuse-sap-adapter:iam_0.0.8 .
 # Tag it and push to quay
-# docker tag muis-fuse-sap-adapter:iam_0.0.7 quay.io/msentissi/muis-fuse-sap-adapter:iam_0.0.7
-# docker push quay.io/msentissi/muis-fuse-sap-adapter:iam_0.0.7
+# docker tag muis-fuse-sap-adapter:iam_0.0.8 quay.io/msentissi/muis-fuse-sap-adapter:iam_0.0.8
+# docker push quay.io/msentissi/muis-fuse-sap-adapter:iam_0.0.8
 # OR tag it and push to dockerhub
-# docker push msentissi/muis-fuse-sap-adapter:iam_0.0.7
+# docker push msentissi/muis-fuse-sap-adapter:iam_0.0.8
 
-# docker run --rm -ti muis-fuse-sap-adapter:iam_0.0.7 bash
+# docker run --rm -ti muis-fuse-sap-adapter:iam_0.0.8 bash
