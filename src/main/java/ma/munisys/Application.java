@@ -52,7 +52,7 @@ public class Application  {
 
 					from("direct:storeSapMethodInHeader")
 						.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()"))
-						.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG : ${in.headers.MUIS_SOAP_ROOT_TAG}")
+						.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 					.end();
 
 					from("direct:execSapMethod")

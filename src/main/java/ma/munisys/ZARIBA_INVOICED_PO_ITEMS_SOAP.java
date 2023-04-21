@@ -10,7 +10,7 @@ import org.apache.camel.Message;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.underscore.U;
+import com.github.underscore.U; // https://javadev.github.io/underscore-java/
 import com.sap.conn.jco.AbapException;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoField;
@@ -93,10 +93,11 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 		Map<String, Object> ZARIBA_INVOICED_PO_ITEMS_SOAPP2 = (Map<String, Object>) ZARIBA_INVOICED_PO_ITEMS_SOAPP.get("ZARIBA_INVOICED_PO_ITEMS_SOAP");
 		Application.muis_debug("Z_ARIBA_GR_TRANSFERR2", ZARIBA_INVOICED_PO_ITEMS_SOAPP2);
 		
-		z_ariba_invoiced_po_items_soap.PARTITION = (String) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("PARTITION");
-		z_ariba_invoiced_po_items_soap.VARIANT = (String) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("VARIANT");
-		z_ariba_invoiced_po_items_soap.STARTDATE = (String) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("STARTDATE");
-		z_ariba_invoiced_po_items_soap.ENDDATE = (String) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("ENDDATE");
+
+		z_ariba_invoiced_po_items_soap.PARTITION =  !(ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("PARTITION") instanceof String) ? "" : (String) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("PARTITION");
+		z_ariba_invoiced_po_items_soap.VARIANT = !(ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("VARIANT") instanceof String) ? "" : (String) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("VARIANT");
+		z_ariba_invoiced_po_items_soap.STARTDATE = !(ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("STARTDATE") instanceof String) ? "" : (String) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("STARTDATE");
+		z_ariba_invoiced_po_items_soap.ENDDATE = !(ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("ENDDATE") instanceof String) ? "" : (String) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("ENDDATE");
 		
 		Map<String, Object> ZINVPOITEMS2 = (Map<String, Object>) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("ZINVPOITEMS");
 		Application.muis_debug("ZINVPOITEMS2", ZINVPOITEMS2);
