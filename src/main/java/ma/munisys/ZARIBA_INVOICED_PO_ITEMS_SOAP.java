@@ -101,37 +101,37 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 		
 		Map<String, Object> ZINVPOITEMS2 = (Map<String, Object>) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("ZINVPOITEMS");
 		Application.muis_debug("ZINVPOITEMS2", ZINVPOITEMS2);
-		
-		Application.muis_debug("ZINVPOITEMS2.get('item')", ZINVPOITEMS2.get("item"));
-		Application.muis_debug("... class : ", ZINVPOITEMS2.get("item").getClass().getName());
-		
-		z_ariba_invoiced_po_items_soap.ZINVPOITEMS = z_ariba_invoiced_po_items_soap.new ZINVPOITEMS();
-		ObjectMapper mapper = new ObjectMapper();
-		
-		if(!ZINVPOITEMS2.get("item").getClass().getName().equals("java.util.ArrayList")) {
-			LinkedHashMap itemm = (LinkedHashMap) ZINVPOITEMS2.get("item");
-			//Set xml self-closed tags as empty strings  :
-					for (Object key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
-            ZINVPOITEMS_item gr_item_item = mapper.convertValue(itemm,ZINVPOITEMS_item.class);
-			z_ariba_invoiced_po_items_soap.ZINVPOITEMS.items.add(gr_item_item);
-		}
-		else {
-			ArrayList<Map<String,String>> GR_ITEMs = (ArrayList<Map<String,String>>) ZINVPOITEMS2.get("item");
-			Iterator iter = GR_ITEMs.iterator();
-			while (iter.hasNext()) {
-				Map<String, String> itemm = (Map<String, String>) iter.next();
-				Application.muis_debug("item", itemm);
-				//LinkedHashMap itemm = (LinkedHashMap) item.get("item").get(0);
-								
+		if(!(ZINVPOITEMS2 == null)) {
+			Application.muis_debug("ZINVPOITEMS2.get('item')", ZINVPOITEMS2.get("item"));
+			Application.muis_debug("... class : ", ZINVPOITEMS2.get("item").getClass().getName());
+			
+			z_ariba_invoiced_po_items_soap.ZINVPOITEMS = z_ariba_invoiced_po_items_soap.new ZINVPOITEMS();
+			ObjectMapper mapper = new ObjectMapper();
+			
+			if(!ZINVPOITEMS2.get("item").getClass().getName().equals("java.util.ArrayList")) {
+				LinkedHashMap itemm = (LinkedHashMap) ZINVPOITEMS2.get("item");
 				//Set xml self-closed tags as empty strings  :
-					for (String key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
-				
-				//System.out.print(iter.next() + "\n");
+						for (Object key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
 				ZINVPOITEMS_item gr_item_item = mapper.convertValue(itemm,ZINVPOITEMS_item.class);
 				z_ariba_invoiced_po_items_soap.ZINVPOITEMS.items.add(gr_item_item);
 			}
+			else {
+				ArrayList<Map<String,String>> GR_ITEMs = (ArrayList<Map<String,String>>) ZINVPOITEMS2.get("item");
+				Iterator iter = GR_ITEMs.iterator();
+				while (iter.hasNext()) {
+					Map<String, String> itemm = (Map<String, String>) iter.next();
+					Application.muis_debug("item", itemm);
+					//LinkedHashMap itemm = (LinkedHashMap) item.get("item").get(0);
+									
+					//Set xml self-closed tags as empty strings  :
+						for (String key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
+					
+					//System.out.print(iter.next() + "\n");
+					ZINVPOITEMS_item gr_item_item = mapper.convertValue(itemm,ZINVPOITEMS_item.class);
+					z_ariba_invoiced_po_items_soap.ZINVPOITEMS.items.add(gr_item_item);
+				}
+			}
 		}
-
 		return z_ariba_invoiced_po_items_soap;
 	}
 
