@@ -126,9 +126,9 @@ public class Z_ARIBA_GR_TRANSFER {
 		Map<String, Object> Z_ARIBA_GR_TRANSFERR2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFERR.get("Z_ARIBA_GR_TRANSFER");
 		Application.muis_debug("Z_ARIBA_GR_TRANSFERR2", Z_ARIBA_GR_TRANSFERR2);
 		
-		z_ariba_gr_transfer.PARTITION = (String) Z_ARIBA_GR_TRANSFERR2.get("PARTITION");
-		z_ariba_gr_transfer.VARIANT = (String) Z_ARIBA_GR_TRANSFERR2.get("VARIANT");
-		
+		z_ariba_gr_transfer.PARTITION =  !(Z_ARIBA_GR_TRANSFERR2.get("PARTITION") instanceof String) ? "" : (String) Z_ARIBA_GR_TRANSFERR2.get("PARTITION");
+		z_ariba_gr_transfer.VARIANT =  !(Z_ARIBA_GR_TRANSFERR2.get("VARIANT") instanceof String) ? "" : (String) Z_ARIBA_GR_TRANSFERR2.get("VARIANT");
+				
 		Map<String, Object> GR_ITEMs2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFERR2.get("GR_ITEM");
 		Application.muis_debug("GR_ITEMs2", GR_ITEMs2);
 		
