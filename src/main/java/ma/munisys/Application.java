@@ -47,26 +47,29 @@ public class Application  {
 				public void configure() {
 					Namespaces ns = new Namespaces("ns0", "urn:Ariba:Buyer:vsap");
 					from("netty4-http:http://0.0.0.0:8088/")
-						.to("direct:getSapMethod", "direct:exeSapMethod")
+						.to("direct:storeSapMethodInHeader", "direct:execSapMethod")
 					.end();
 
-					from("direct:getSapMethod")
-						.filter().xpath("/Envelope")
-						.log(LoggingLevel.INFO, "Message headers : ${in.headers")
-						.log(LoggingLevel.INFO, "Message body : ${body}")
-					.end();
-
-					from("direct:exeSapMethod")
-						.setHeader("MUIS_SOAP_ROOT_TAG", ns.xpath("/*/*[contains(name(),'Header')]/*/*[contains(name(),'method')]/text()",String.class)) // @todo make it case insensitive
+					from("direct:storeSapMethodInHeader")
+						.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()"))
 						.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG : ${in.headers.MUIS_SOAP_ROOT_TAG}")
+					.end();
+
+					from("direct:execSapMethod")
 						.choice()
 							.when(simple("${header.MasterDataImport_Request} == '1'"))
+								.log(LoggingLevel.INFO, "MUIS - MasterDataImport_Request detected in header.")
 								.process(Application::execute_SapFunc_MasterDataImport)
 							.otherwise()
 								.choice()
 									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_GR_TRANSFER'"))
+										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_TRANSFER.")
 										.process(Z_ARIBA_GR_TRANSFER::execute_SapFunc_Z_ARIBA_GR_TRANSFER)
 										.process(Z_ARIBA_GR_TRANSFER::read_SapFunc_Z_ARIBA_GR_TRANSFER_Response)
+									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'ZARIBA_INVOICED_PO_ITEMS_SOAP'"))
+										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : ZARIBA_INVOICED_PO_ITEMS_SOAP.")
+										.process(ZARIBA_INVOICED_PO_ITEMS_SOAP::execute_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP)
+										.process(ZARIBA_INVOICED_PO_ITEMS_SOAP::read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response)
 					.end();
 				}
 			});
