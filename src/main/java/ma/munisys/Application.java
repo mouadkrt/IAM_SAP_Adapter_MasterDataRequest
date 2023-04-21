@@ -47,6 +47,16 @@ public class Application  {
 				public void configure() {
 					Namespaces ns = new Namespaces("ns0", "urn:Ariba:Buyer:vsap");
 					from("netty4-http:http://0.0.0.0:8088/")
+						.to("direct:getSapMethod", "direct:exeSapMethod")
+					.end();
+
+					from("direct:getSapMethod")
+						.filter().xpath("/Envelope")
+						.log(LoggingLevel.INFO, "Message headers : ${in.headers")
+						.log(LoggingLevel.INFO, "Message body : ${body}")
+					.end();
+
+					from("direct:exeSapMethod")
 						.setHeader("MUIS_SOAP_ROOT_TAG", ns.xpath("/*/*[contains(name(),'Header')]/*/*[contains(name(),'method')]/text()",String.class)) // @todo make it case insensitive
 						.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG : ${in.headers.MUIS_SOAP_ROOT_TAG}")
 						.choice()
