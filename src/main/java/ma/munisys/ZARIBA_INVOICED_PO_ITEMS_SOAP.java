@@ -99,13 +99,14 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 		z_ariba_invoiced_po_items_soap.STARTDATE = !(ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("STARTDATE") instanceof String) ? "" : (String) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("STARTDATE");
 		z_ariba_invoiced_po_items_soap.ENDDATE = !(ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("ENDDATE") instanceof String) ? "" : (String) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("ENDDATE");
 		
+		z_ariba_invoiced_po_items_soap.ZINVPOITEMS = z_ariba_invoiced_po_items_soap.new ZINVPOITEMS();
+
 		Map<String, Object> ZINVPOITEMS2 = (Map<String, Object>) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("ZINVPOITEMS");
 		Application.muis_debug("ZINVPOITEMS2", ZINVPOITEMS2);
 		if(!(ZINVPOITEMS2 == null)) {
 			Application.muis_debug("ZINVPOITEMS2.get('item')", ZINVPOITEMS2.get("item"));
 			Application.muis_debug("... class : ", ZINVPOITEMS2.get("item").getClass().getName());
 			
-			z_ariba_invoiced_po_items_soap.ZINVPOITEMS = z_ariba_invoiced_po_items_soap.new ZINVPOITEMS();
 			ObjectMapper mapper = new ObjectMapper();
 			
 			if(!ZINVPOITEMS2.get("item").getClass().getName().equals("java.util.ArrayList")) {
@@ -131,6 +132,9 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 					z_ariba_invoiced_po_items_soap.ZINVPOITEMS.items.add(gr_item_item);
 				}
 			}
+		}
+		else {
+
 		}
 		return z_ariba_invoiced_po_items_soap;
 	}
