@@ -89,7 +89,7 @@ public class Z_ARIBA_GR_TRANSFER {
         public String ZEILE;
         public String SERNR;
     }
-    class ERROR_MSG_TABLE_item { 
+    class ERROR_MSG_TABLE_item {
         public String MBLNR;
         public String NUMINSET;
         public String TYPE;

@@ -45,7 +45,7 @@ public class Application  {
 		try {
 			context.addRoutes(new RouteBuilder() {
 				public void configure() {
-					Namespaces ns = new Namespaces("ns0", "urn:Ariba:Buyer:vsap");
+					//Namespaces ns = new Namespaces("ns0", "urn:Ariba:Buyer:vsap");
 					from("netty4-http:http://0.0.0.0:8088/")
 						.to("direct:storeSapMethodInHeader", "direct:execSapMethod")
 					.end();
@@ -70,6 +70,10 @@ public class Application  {
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : ZARIBA_INVOICED_PO_ITEMS_SOAP.")
 										.process(ZARIBA_INVOICED_PO_ITEMS_SOAP::execute_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP)
 										.process(ZARIBA_INVOICED_PO_ITEMS_SOAP::read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response)
+									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_BAPI_PO_CANCEL'"))
+										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CANCEL.")
+										.process(ZARIBA_INVOICED_PO_ITEMS_SOAP::execute_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP)
+										.process(ZARIBA_INVOICED_PO_ITEMS_SOAP::read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response)
 					.end();
 				}
 			});
@@ -82,6 +86,9 @@ public class Application  {
 		if(!MUIS_DEBUG.equals("0")) System.out.println("\nMUIS_DEBUG : "+ label +" : " + txt);
 	}
 	
+	public static String forceString(Map<String, Object> o, String key) {
+		return !(o.get(key) instanceof String) ? "" : (String) o.get(key);
+	}
 	private static void registerDestinationDataProvider() {
 
 		System.out.println("- Muis : Registering SAP Destination Data Provider ...");

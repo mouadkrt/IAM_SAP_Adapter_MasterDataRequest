@@ -133,9 +133,7 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 				}
 			}
 		}
-		else {
-
-		}
+		
 		return z_ariba_invoiced_po_items_soap;
 	}
 
