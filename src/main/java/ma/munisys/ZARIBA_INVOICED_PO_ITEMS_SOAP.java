@@ -1,6 +1,9 @@
 package ma.munisys;
 
+// Service InvoiceImport_V1
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -110,9 +113,8 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 			ObjectMapper mapper = new ObjectMapper();
 			
 			if(!ZINVPOITEMS2.get("item").getClass().getName().equals("java.util.ArrayList")) {
-				LinkedHashMap itemm = (LinkedHashMap) ZINVPOITEMS2.get("item");
-				//Set xml self-closed tags as empty strings  :
-						for (Object key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
+				HashMap<String, String> itemm = (HashMap<String, String>) ZINVPOITEMS2.get("item");
+				itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
 				ZINVPOITEMS_item gr_item_item = mapper.convertValue(itemm,ZINVPOITEMS_item.class);
 				z_ariba_invoiced_po_items_soap.ZINVPOITEMS.items.add(gr_item_item);
 			}
@@ -120,13 +122,10 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 				ArrayList<Map<String,String>> GR_ITEMs = (ArrayList<Map<String,String>>) ZINVPOITEMS2.get("item");
 				Iterator iter = GR_ITEMs.iterator();
 				while (iter.hasNext()) {
-					Map<String, String> itemm = (Map<String, String>) iter.next();
+					HashMap<String, String> itemm = (HashMap<String, String>) iter.next();
 					Application.muis_debug("item", itemm);
-					//LinkedHashMap itemm = (LinkedHashMap) item.get("item").get(0);
-									
-					//Set xml self-closed tags as empty strings  :
-						for (String key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
-					
+					itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
+
 					//System.out.print(iter.next() + "\n");
 					ZINVPOITEMS_item gr_item_item = mapper.convertValue(itemm,ZINVPOITEMS_item.class);
 					z_ariba_invoiced_po_items_soap.ZINVPOITEMS.items.add(gr_item_item);
@@ -136,6 +135,8 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 		
 		return z_ariba_invoiced_po_items_soap;
 	}
+
+	
 
     public static void execute_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP(final Exchange exchange)
     {

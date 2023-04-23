@@ -89,6 +89,39 @@ public class Application  {
 	public static String forceString(Map<String, Object> o, String key) {
 		return !(o.get(key) instanceof String) ? "" : (String) o.get(key);
 	}
+
+	public static HashMap<String, String> forceSelfClosedXmlToEmptyString(HashMap<String, String> itemm) {
+		//Set xml self-closed tags as empty strings  :
+		for (String key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
+		return itemm;
+	}
+	
+	public static <itemType> ArrayList<itemType> getItemsAsArraylist(Map<String, Object> rootItems, Class<?> itemType) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayList<itemType> returnn = new ArrayList<itemType>();
+
+		if(!rootItems.get("item").getClass().getName().equals("java.util.ArrayList")) {
+			HashMap<String, String> itemm = (HashMap<String, String>) rootItems.get("item");
+			itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
+			itemType itemm2 = (itemType) mapper.convertValue(itemm,itemType);
+			returnn.add(itemm2);
+		}
+		else {
+			ArrayList<Map<String,String>> itemms = (ArrayList<Map<String,String>>) rootItems.get("item");
+			Iterator iter = itemms.iterator();
+			while (iter.hasNext()) {
+				HashMap<String, String> itemm = (HashMap<String, String>) iter.next();
+				Application.muis_debug("item", itemm);
+				itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
+				itemType itemm2 = (itemType) mapper.convertValue(itemm,itemType);
+				returnn.add(itemm2);
+			}
+		}
+
+		return returnn;
+	}
+
 	private static void registerDestinationDataProvider() {
 
 		System.out.println("- Muis : Registering SAP Destination Data Provider ...");

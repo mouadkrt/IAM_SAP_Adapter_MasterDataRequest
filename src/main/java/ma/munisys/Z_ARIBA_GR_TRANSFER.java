@@ -1,7 +1,10 @@
 package ma.munisys;
 
+// Service IAMSAPReceiptTransferExport_V1
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -136,31 +139,7 @@ public class Z_ARIBA_GR_TRANSFER {
 		Application.muis_debug("... class : ", GR_ITEMs2.get("item").getClass().getName());
 		
 		z_ariba_gr_transfer.GR_ITEM = z_ariba_gr_transfer.new GR_ITEM();
-		ObjectMapper mapper = new ObjectMapper();
-		
-		if(!GR_ITEMs2.get("item").getClass().getName().equals("java.util.ArrayList")) {
-			LinkedHashMap itemm = (LinkedHashMap) GR_ITEMs2.get("item");
-			//Set xml self-closed tags as empty strings  :
-					for (Object key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
-			GR_ITEM_item gr_item_item = mapper.convertValue(itemm,GR_ITEM_item.class);
-			z_ariba_gr_transfer.GR_ITEM.items.add(gr_item_item);
-		}
-		else {
-			ArrayList<Map<String,String>> GR_ITEMs = (ArrayList<Map<String,String>>) GR_ITEMs2.get("item");
-			Iterator iter = GR_ITEMs.iterator();
-			while (iter.hasNext()) {
-				Map<String, String> itemm = (Map<String, String>) iter.next();
-				Application.muis_debug("item", itemm);
-				//LinkedHashMap itemm = (LinkedHashMap) item.get("item").get(0);
-								
-				//Set xml self-closed tags as empty strings  :
-					for (String key : itemm.keySet()) if(  !(itemm.get(key) instanceof java.lang.String) ) itemm.put(key, "");
-				
-				//System.out.print(iter.next() + "\n");
-				GR_ITEM_item gr_item_item = mapper.convertValue(itemm,GR_ITEM_item.class);
-				z_ariba_gr_transfer.GR_ITEM.items.add(gr_item_item);
-			}
-		}
+		z_ariba_gr_transfer.GR_ITEM.items = Application.getItemsAsArraylist((Map<String, Object>) GR_ITEMs2.get("item"), GR_ITEM_item.class);
 
 		return z_ariba_gr_transfer;
 	}
