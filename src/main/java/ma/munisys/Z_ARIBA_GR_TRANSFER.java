@@ -139,7 +139,7 @@ public class Z_ARIBA_GR_TRANSFER {
 		Application.muis_debug("... class : ", GR_ITEMs2.get("item").getClass().getName());
 		
 		z_ariba_gr_transfer.GR_ITEM = z_ariba_gr_transfer.new GR_ITEM();
-		z_ariba_gr_transfer.GR_ITEM.items = Application.getItemsAsArraylist((Map<String, Object>) GR_ITEMs2.get("item"), GR_ITEM_item.class);
+		z_ariba_gr_transfer.GR_ITEM.items = Application.getItemsAsArraylist((LinkedHashMap<String, Object>) GR_ITEMs2.get("item"), GR_ITEM_item.class);
 
 		return z_ariba_gr_transfer;
 	}

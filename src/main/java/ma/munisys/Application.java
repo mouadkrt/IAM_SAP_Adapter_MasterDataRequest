@@ -96,7 +96,7 @@ public class Application  {
 		return itemm;
 	}
 	
-	public static <itemType> ArrayList<itemType> getItemsAsArraylist(Map<String, Object> rootItems, Class<?> itemType) {
+	public static <itemType> ArrayList<itemType> getItemsAsArraylist(LinkedHashMap<String, Object> rootItems, Class<?> itemType) {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayList<itemType> returnn = new ArrayList<itemType>();
