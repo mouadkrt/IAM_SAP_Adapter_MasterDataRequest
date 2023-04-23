@@ -100,7 +100,8 @@ public class Application  {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayList<itemType> returnn = new ArrayList<itemType>();
-
+		Application.muis_debug("rootItems", rootItems);
+		Application.muis_debug("itemType", itemType);
 		if(!rootItems.get("item").getClass().getName().equals("java.util.ArrayList")) {
 			HashMap<String, String> itemm = (HashMap<String, String>) rootItems.get("item");
 			itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
