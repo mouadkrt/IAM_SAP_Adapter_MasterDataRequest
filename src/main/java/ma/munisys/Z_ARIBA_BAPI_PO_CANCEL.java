@@ -148,9 +148,8 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
 
         try
         {
-				String repoName  = Application.dest.getRepository().getName();
-				System.out.println("MUIS : Reposiroty name dest.getRepository().getName() =  " + repoName);
-					
+				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
+
 				String sapFunctionStr = "Z_ARIBA_BAPI_PO_CANCEL"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
 				Application.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
 				if (Application.currentSapFunction==null) throw new RuntimeException(Application.currentSapFunction + " not found in SAP.");

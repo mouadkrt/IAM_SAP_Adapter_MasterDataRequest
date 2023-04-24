@@ -551,34 +551,68 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 			z_ariba_bapi_po_create.HEADER_ADD_DATA_RELEVANT = !(Z_ARIBA_BAPI_PO_CREATEE2.get("HEADER_ADD_DATA_RELEVANT") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CREATEE2.get("HEADER_ADD_DATA_RELEVANT");
 			z_ariba_bapi_po_create.ITEM_ADD_DATA_RELEVANT = !(Z_ARIBA_BAPI_PO_CREATEE2.get("ITEM_ADD_DATA_RELEVANT") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CREATEE2.get("ITEM_ADD_DATA_RELEVANT");
 		
+		ObjectMapper mapper = new ObjectMapper();
+
 		Map<String, Object> poaddress = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_ADDRESS");
 			Application.muis_debug("poaddress", poaddress);
-			z_ariba_bapi_po_create.PO_ADDRESS = z_ariba_bapi_po_create.new PO_ADDRESS();
-			
-			// Dynamiclly bind all the fields in the PO_ADDRESS Object from the poaddress Map :
-			for( Field field : z_ariba_bapi_po_create.PO_ADDRESS.getClass().getDeclaredFields() ) 
-				z_ariba_bapi_po_create.PO_ADDRESS.getClass().getDeclaredField(field.getName())
-					.set( z_ariba_bapi_po_create.PO_ADDRESS,  Application.forceString(poaddress, field.getName()) );
+			z_ariba_bapi_po_create.PO_ADDRESS = (PO_ADDRESS) mapper.convertValue(poaddress,PO_ADDRESS.class);
 
 		Map<String, Object> poheader = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_HEADER");
 			Application.muis_debug("poheader", poheader);
-			z_ariba_bapi_po_create.PO_HEADER = z_ariba_bapi_po_create.new PO_HEADER();
-			
-			// Dynamiclly bind all the fields in the PO_HEADER Object from the poheader Map :
-			for( Field field : z_ariba_bapi_po_create.PO_HEADER.getClass().getDeclaredFields() ) 
-				z_ariba_bapi_po_create.PO_HEADER.getClass().getDeclaredField(field.getName())
-					.set( z_ariba_bapi_po_create.PO_HEADER,  Application.forceString(poheader, field.getName()) );
+			z_ariba_bapi_po_create.PO_HEADER = (PO_HEADER) mapper.convertValue(poheader,PO_HEADER.class);
 
 		Map<String, Object> poheaderadddata = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_HEADER_ADD_DATA");
 			Application.muis_debug("poheaderadddata", poheaderadddata);
-			z_ariba_bapi_po_create.PO_HEADER_ADD_DATA = z_ariba_bapi_po_create.new PO_HEADER_ADD_DATA();
-			
-			// Dynamiclly bind all the fields in the PO_HEADER_ADD_DATA Object from the poheaderadddata Map :
-			for( Field field : z_ariba_bapi_po_create.PO_HEADER_ADD_DATA.getClass().getDeclaredFields() ) 
-				z_ariba_bapi_po_create.PO_HEADER_ADD_DATA.getClass().getDeclaredField(field.getName())
-					.set( z_ariba_bapi_po_create.PO_HEADER_ADD_DATA,  Application.forceString(poheaderadddata, field.getName()) );
+			z_ariba_bapi_po_create.PO_HEADER_ADD_DATA = (PO_HEADER_ADD_DATA) mapper.convertValue(poheaderadddata,PO_HEADER_ADD_DATA.class);
 
+		Map<String, Object> ERROR_MSG_TABLE2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("ERROR_MSG_TABLE");
+			z_ariba_bapi_po_create.ERROR_MSG_TABLE.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) ERROR_MSG_TABLE2, ERROR_MSG_TABLE_Item.class);
 		
+		Map<String, Object> PO_COND2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_COND");
+			z_ariba_bapi_po_create.PO_COND.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_COND2, PO_COND_Item.class);
+		
+		Map<String, Object> PO_CONTRACT_LIMITS2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_CONTRACT_LIMITS");
+			z_ariba_bapi_po_create.PO_CONTRACT_LIMITS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_CONTRACT_LIMITS2, PO_CONTRACT_LIMITS_Item.class);
+		
+		Map<String, Object> PO_ITEMS2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_ITEMS");
+			z_ariba_bapi_po_create.PO_ITEMS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_ITEMS2, PO_ITEMS_Item.class);
+		
+		Map<String, Object> PO_ITEM_ACCOUNT_ASSIGNMENT2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_ITEM_ACCOUNT_ASSIGNMENT");
+			z_ariba_bapi_po_create.PO_ITEM_ACCOUNT_ASSIGNMENT.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_ITEM_ACCOUNT_ASSIGNMENT2, PO_ITEM_ACCOUNT_ASSIGNMENT_Item.class);
+		
+		Map<String, Object> PO_ITEM_ADD_DATA2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_ITEM_ADD_DATA");
+			z_ariba_bapi_po_create.PO_ITEM_ADD_DATA.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_ITEM_ADD_DATA2, PO_ITEM_ADD_DATA_Item.class);
+		
+		Map<String, Object> PO_ITEM_SCHEDULES2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_ITEM_SCHEDULES");
+			z_ariba_bapi_po_create.PO_ITEM_SCHEDULES.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_ITEM_SCHEDULES2, PO_ITEM_SCHEDULES_Item.class);
+		
+		Map<String, Object> PO_ITEM_TEXT2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_ITEM_TEXT");
+			z_ariba_bapi_po_create.PO_ITEM_TEXT.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_ITEM_TEXT2, PO_ITEM_TEXT_Item.class);
+		
+		Map<String, Object> PO_LIMITS2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_LIMITS");
+			z_ariba_bapi_po_create.PO_LIMITS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_LIMITS2, PO_LIMITS_Item.class);
+		
+		Map<String, Object> PO_SERVICES2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_SERVICES");
+			z_ariba_bapi_po_create.PO_SERVICES.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_SERVICES2, PO_SERVICES_Item.class);
+		
+		Map<String, Object> PO_SERVICES_TEXT2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_SERVICES_TEXT");
+			z_ariba_bapi_po_create.PO_SERVICES_TEXT.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_SERVICES_TEXT2, PO_SERVICES_TEXT_Item.class);
+		
+		Map<String, Object> PO_SRV_ACCASS_VALUES2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_SRV_ACCASS_VALUES");
+			z_ariba_bapi_po_create.PO_SRV_ACCASS_VALUES.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_SRV_ACCASS_VALUES2, PO_SRV_ACCASS_VALUES_Item.class);
+
+		Map<String, Object> PO_ZZIMMOS2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_ZZIMMOS");
+			z_ariba_bapi_po_create.PO_ZZIMMOS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_ZZIMMOS2, PO_ZZIMMOS_Item.class);
+
+		Map<String, Object> PUR_ORDER_DELIVERY2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PUR_ORDER_DELIVERY");
+			z_ariba_bapi_po_create.PUR_ORDER_DELIVERY.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PUR_ORDER_DELIVERY2, PUR_ORDER_DELIVERY_Item.class);
+
+		Map<String, Object> PUR_ORDER_DETAILS2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PUR_ORDER_DETAILS");
+			z_ariba_bapi_po_create.PUR_ORDER_DETAILS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PUR_ORDER_DETAILS2, PUR_ORDER_DETAILS_Item.class);
+
+		Map<String, Object> RETURN2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("RETURN");
+			z_ariba_bapi_po_create.RETURN.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) RETURN2, RETURN_Item.class);
+
 		return z_ariba_bapi_po_create;
 	}
 
@@ -595,8 +629,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 
         try
         {
-				String repoName  = Application.dest.getRepository().getName();
-				System.out.println("MUIS : Reposiroty name dest.getRepository().getName() =  " + repoName);
+				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
 					
 				String sapFunctionStr = "Z_ARIBA_BAPI_PO_CREATE"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
 				Application.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
@@ -608,7 +641,6 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_create.VARIANT);
 								
 				JCoTable t_ZXTPOERR = Application.currentSapFunction.getTableParameterList().getTable("ZXTPOERR");
-				
 				for (ERROR_MSG_TABLE_item zItem : z_ariba_bapi_po_create.ERROR_MSG_TABLE.items) {
 					t_ZXTPOERR.appendRow();
 					JCoFieldIterator it = t_ZXTPOERR.getFieldIterator();

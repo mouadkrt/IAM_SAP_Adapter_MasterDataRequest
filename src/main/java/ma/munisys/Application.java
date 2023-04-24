@@ -233,6 +233,7 @@ public class Application  {
 
 	public static void describeFunction(JCoFunction sapFunction)
 	{
+		if(MUIS_DEBUG.equals("0")) return;
 		String sapFunctionStr = sapFunction.getName();
 		System.out.println("\n\n********************************* " + sapFunctionStr + "  *************************************************");
 		System.out.println("SAP Function name = " + sapFunctionStr );
@@ -322,8 +323,7 @@ public class Application  {
 
         try
         {
-				String repoName  = dest.getRepository().getName();
-				System.out.println("MUIS : Reposiroty name dest.getRepository().getName() =  " + repoName);
+				muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", dest.getRepository().getName());
 					
 				JCoFunction sapFunction = dest.getRepository().getFunction(sapFunctionStr);
 				if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
