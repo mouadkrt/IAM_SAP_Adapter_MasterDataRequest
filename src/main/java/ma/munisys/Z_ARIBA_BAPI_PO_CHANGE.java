@@ -3,6 +3,7 @@ package ma.munisys;
 // PurchaseOrderChangeExport_V1
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -309,22 +310,17 @@ public class Z_ARIBA_BAPI_PO_CHANGE {
 				
 				Application.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_change.PARTITION);
 				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_change.VARIANT);
+				Application.currentSapFunction.getImportParameterList().setValue("PO_HEADER", z_ariba_bapi_po_change.PO_HEADER);
 								
-				JCoTable t_ZXTPOERR = Application.currentSapFunction.getTableParameterList().getTable("ZXTPOERR");
-				
-				for (ERROR_MSG_TABLE_item zItem : z_ariba_bapi_po_change.ERROR_MSG_TABLE.items) {
-					t_ZXTPOERR.appendRow();
-					JCoFieldIterator it = t_ZXTPOERR.getFieldIterator();
-					while(it.hasNextField()) {
-						JCoField field = it.nextField();
-						try {
-							Field f = zItem.getClass().getDeclaredField(field.getName());
-							f.setAccessible(true);
-							field.setValue(f.get(zItem));
-						}
-						catch(NoSuchFieldException|IllegalAccessException e) { System.out.println(e.getMessage());}
-					}
-				}
+				Application.feed_SAP_Table("ZXTCPODELACCNT", z_ariba_bapi_po_change.DELPO_ACCNTS.items, ZXTCPODELACCNT.class);
+				Application.feed_SAP_Table("ZXTCPODELITEMS", z_ariba_bapi_po_change.DELPO_ITEMS.items, ZXTCPODELITEMS.class);
+				Application.feed_SAP_Table("ZXTPOERR", z_ariba_bapi_po_change.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_item.class);
+				Application.feed_SAP_Table("ZXTCPOACCNT", z_ariba_bapi_po_change.PO_ACCOUNTS.items, ZXTCPOACCNT.class);
+				Application.feed_SAP_Table("ZXTPOCOND", z_ariba_bapi_po_change.PO_COND.items, ZXTPOCOND.class);
+				Application.feed_SAP_Table("ZXTCPOITEMS", z_ariba_bapi_po_change.PO_ITEMS.items, ZXTCPOITEMS.class);
+				Application.feed_SAP_Table("ZARSTRING", z_ariba_bapi_po_change.PO_TEXT.items, ZARSTRING.class);
+				Application.feed_SAP_Table("ZXTPODELIV", z_ariba_bapi_po_change.PUR_ORDER_DELIVERY.items, ZXTPODELIV.class);
+				Application.feed_SAP_Table("ZXTPODET", z_ariba_bapi_po_change.PUR_ORDER_DETAILS.items, ZXTPODET.class);
 				
 				try {
                     Application.currentSapFunction.execute(Application.dest);
@@ -342,27 +338,39 @@ public class Z_ARIBA_BAPI_PO_CHANGE {
         }
     }
 
-	public static void read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response(Exchange exchange) {
+	public static void read_SapFunc_Z_ARIBA_BAPI_PO_CHANGE_Response(Exchange exchange) {
 
 		String sapFunctionStr = Application.currentSapFunction.getName();
-		Application.muis_debug("read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
+		Application.muis_debug("read_SapFunc_Z_ARIBA_BAPI_PO_CHANGE_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
-		String xmlSendDateStr = "<SENDDATE>"+ Application.currentSapFunction.getExportParameterList().getString("SENDDATE") + "</SENDDATE>";
+		// Let's build our soap response step by step -Each time seeking some values from the SAP response values/tables/..etc :
+		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";
+		newBody += "<Z_ARIBA_BAPI_PO_CHANGEResponse xmlns=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_BAPI_PO_CHANGE:response\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Z_ARIBA_BAPI_PO_CHANGE.Response>";
+		
+		String xml_ERPORDERID = "<ERPORDERID>"+ Application.currentSapFunction.getExportParameterList().getString("ERPORDERID") + "</ERPORDERID>";
+		String xml_E_PARTITION = "<E_PARTITION>"+ Application.currentSapFunction.getExportParameterList().getString("E_PARTITION") + "</E_PARTITION>";
+		String xml_E_VARIANT = "<E_VARIANT>"+ Application.currentSapFunction.getExportParameterList().getString("E_VARIANT") + "</E_VARIANT>";
+		String xml_RETURNMSG = "<RETURNMSG>"+ Application.currentSapFunction.getExportParameterList().getString("RETURNMSG") + "</RETURNMSG>";
+		newBody +=  xml_ERPORDERID + xml_E_PARTITION + xml_E_VARIANT + xml_RETURNMSG; // Scalar values
 
 		JCoTable sapTbl;
-
-		sapTbl = Application.currentSapFunction.getTableParameterList().getTable("ZINVPOITEMS");
-		String xml_ZINVPOITEMS_Str = sapTbl.getNumRows() > 0 ? sapTbl.toXML() : "<ZINVPOITEMS/>";
+		Map<String, String> sapTables = Map.of("ZXTCPODELACCNT","DELPO_ACCNTS", "ZXTCPODELITEMS", "DELPO_ITEMS", "ZXTPOERR", "ERROR_MSG_TABLE", "ZXTCPOACCNT", "PO_ACCOUNTS", "ZXTPOCOND", "PO_COND", "ZXTCPOITEMS", "PO_ITEMS", "ZARSTRING", "PO_TEXT", "ZXTPODELIV", "PUR_ORDER_DELIVERY", "ZXTPODET", "PUR_ORDER_DETAILS");
+		for (Map.Entry<String, String> entry : sapTables.entrySet()) {
+			String tblCode = entry.getKey();
+			String tblName = entry.getValue();
+			sapTbl = Application.currentSapFunction.getTableParameterList().getTable(tblCode);
+			String xml_TblOut_Str = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll(tblCode, tblName) : "<"+tblName+"/>";
+			newBody +=  xml_TblOut_Str; // Tables
+		}
 		
-			String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";
-			newBody += "<ZARIBA_INVOICED_PO_ITEMS_SOAPResponse xmlns=\"urn:iwaysoftware:ibse:jul2003:ZARIBA_INVOICED_PO_ITEMS_SOAP:response\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ZARIBA_INVOICED_PO_ITEMS_SOAP.Response>";
-				newBody +=  xmlSendDateStr + xml_ZINVPOITEMS_Str;
-			newBody += "</ZARIBA_INVOICED_PO_ITEMS_SOAP.Response></ZARIBA_INVOICED_PO_ITEMS_SOAPResponse>";
+		newBody += "</Z_ARIBA_BAPI_PO_CHANGE.Response></Z_ARIBA_BAPI_PO_CHANGEResponse>";
 		newBody += "</SOAP-ENV:Body></SOAP-ENV:Envelope>";
+				
+		
 		
 		final Message message = exchange.getIn();
 		message.setBody(newBody);
-		System.out.println("- MUIS : New soap body set in read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response() to : " + newBody);
+		System.out.println("- MUIS : New soap body set in read_SapFunc_Z_ARIBA_BAPI_PO_CHANGE_Response() to : " + newBody);
 	}
 
 }

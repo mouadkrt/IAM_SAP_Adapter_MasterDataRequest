@@ -123,6 +123,22 @@ public class Application  {
 		return returnn;
 	}
 
+	public static <itemType> void feed_SAP_Table(String sapTableName, ArrayList<itemType> items, Class<?> itemType) {
+		JCoTable sapTable = Application.currentSapFunction.getTableParameterList().getTable(sapTableName);
+		for (itemType zItem : items) {
+			sapTable.appendRow();
+			JCoFieldIterator it = sapTable.getFieldIterator();
+			while(it.hasNextField()) {
+				JCoField field = it.nextField();
+				try {
+					Field f = zItem.getClass().getDeclaredField(field.getName());
+					f.setAccessible(true);
+					field.setValue(f.get(zItem));
+				}
+				catch(NoSuchFieldException|IllegalAccessException e) { System.out.println(e.getMessage());}
+			}
+		}
+	}
 	private static void registerDestinationDataProvider() {
 
 		System.out.println("- Muis : Registering SAP Destination Data Provider ...");

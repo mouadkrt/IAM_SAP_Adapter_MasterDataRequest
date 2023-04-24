@@ -527,7 +527,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 
     // The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object (Designed to mimic the http soap xml received)
 	// The resulting instance will be then handed over to the SAP function for processing
-	public static Z_ARIBA_BAPI_PO_CREATE create_Z_ARIBA_BAPI_PO_CREATE_ObjectFromXML(String httpBody) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+	public static Z_ARIBA_BAPI_PO_CREATE create_Z_ARIBA_BAPI_PO_CREATE_ObjectFromXML(String httpBody)  {
 		// https://javadev.github.io/underscore-java/
 			Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(httpBody);
 			System.out.println("\n U.fromXmlWithoutNamespacesAndAttributes(httpBody) : \n");
@@ -550,6 +550,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 			z_ariba_bapi_po_create.VARIANT = !(Z_ARIBA_BAPI_PO_CREATEE2.get("VARIANT") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CREATEE2.get("VARIANT");
 			z_ariba_bapi_po_create.HEADER_ADD_DATA_RELEVANT = !(Z_ARIBA_BAPI_PO_CREATEE2.get("HEADER_ADD_DATA_RELEVANT") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CREATEE2.get("HEADER_ADD_DATA_RELEVANT");
 			z_ariba_bapi_po_create.ITEM_ADD_DATA_RELEVANT = !(Z_ARIBA_BAPI_PO_CREATEE2.get("ITEM_ADD_DATA_RELEVANT") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CREATEE2.get("ITEM_ADD_DATA_RELEVANT");
+			z_ariba_bapi_po_create.SKIP_ITEMS_WITH_ERROR = !(Z_ARIBA_BAPI_PO_CREATEE2.get("SKIP_ITEMS_WITH_ERROR") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CREATEE2.get("SKIP_ITEMS_WITH_ERROR");
 		
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -639,21 +640,11 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 				
 				Application.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_create.PARTITION);
 				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_create.VARIANT);
+				Application.currentSapFunction.getImportParameterList().setValue("HEADER_ADD_DATA_RELEVANT", z_ariba_bapi_po_create.HEADER_ADD_DATA_RELEVANT);
+				Application.currentSapFunction.getImportParameterList().setValue("ITEM_ADD_DATA_RELEVANT", z_ariba_bapi_po_create.ITEM_ADD_DATA_RELEVANT);
+				Application.currentSapFunction.getImportParameterList().setValue("SKIP_ITEMS_WITH_ERROR", z_ariba_bapi_po_create.SKIP_ITEMS_WITH_ERROR);
 								
-				JCoTable t_ZXTPOERR = Application.currentSapFunction.getTableParameterList().getTable("ZXTPOERR");
-				for (ERROR_MSG_TABLE_item zItem : z_ariba_bapi_po_create.ERROR_MSG_TABLE.items) {
-					t_ZXTPOERR.appendRow();
-					JCoFieldIterator it = t_ZXTPOERR.getFieldIterator();
-					while(it.hasNextField()) {
-						JCoField field = it.nextField();
-						try {
-							Field f = zItem.getClass().getDeclaredField(field.getName());
-							f.setAccessible(true);
-							field.setValue(f.get(zItem));
-						}
-						catch(NoSuchFieldException|IllegalAccessException e) { System.out.println(e.getMessage());}
-					}
-				}
+				
 				
 				try {
                     Application.currentSapFunction.execute(Application.dest);
