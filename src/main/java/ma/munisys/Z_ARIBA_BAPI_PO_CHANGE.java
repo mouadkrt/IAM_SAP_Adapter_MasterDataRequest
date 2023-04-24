@@ -194,8 +194,8 @@ public class Z_ARIBA_BAPI_PO_CHANGE {
 		String ITEMONREQ;
 	}
     
-    // The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object as defined in the Z_ARIBA_GR_TRANSFER public class (Designed to mimic the http soap xml received)
-	// The resulting instance of the Z_ARIBA_BAPI_PO_CHANGE will be then handed over to the SAP function for processing
+    // The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object (Designed to mimic the http soap xml received)
+	// The resulting instance will be then handed over to the SAP function for processing
 	public static Z_ARIBA_BAPI_PO_CHANGE create_Z_ARIBA_BAPI_PO_CHANGE_ObjectFromXML(String httpBody) {
 		// https://javadev.github.io/underscore-java/
 			Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(httpBody);
@@ -214,7 +214,7 @@ public class Z_ARIBA_BAPI_PO_CHANGE {
 		Application.muis_debug("Z_ARIBA_BAPI_PO_CHANGE", Z_ARIBA_BAPI_PO_CHANGEE);
 		
 		Map<String, Object> Z_ARIBA_BAPI_PO_CHANGEE2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE.get("Z_ARIBA_BAPI_PO_CHANGE");
-			Application.muis_debug("Z_ARIBA_BAPI_PO_CHANGEL2", Z_ARIBA_BAPI_PO_CHANGEE2);
+			Application.muis_debug("Z_ARIBA_BAPI_PO_CHANGEE2", Z_ARIBA_BAPI_PO_CHANGEE2);
 			z_ariba_bapi_po_change.PARTITION =  !(Z_ARIBA_BAPI_PO_CHANGEE2.get("PARTITION") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CHANGEE2.get("PARTITION");
 			z_ariba_bapi_po_change.VARIANT = !(Z_ARIBA_BAPI_PO_CHANGEE2.get("VARIANT") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CHANGEE2.get("VARIANT");
 		
@@ -234,54 +234,54 @@ public class Z_ARIBA_BAPI_PO_CHANGE {
 			z_ariba_bapi_po_change.PO_HEADER.VERSION 	= Application.forceString(poheader, "VERSION");
 			z_ariba_bapi_po_change.PO_HEADER.WAERS 		= Application.forceString(poheader, "WAERS");
 
-			Map<String, Object> delpo_accnts = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("DELPO_ACCNTS");
-				Application.muis_debug("delpo_accnts", delpo_accnts);
-				z_ariba_bapi_po_change.DELPO_ACCNTS.items = new ArrayList<ZXTCPODELACCNT>();
-				z_ariba_bapi_po_change.DELPO_ACCNTS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) delpo_accnts, ZXTCPODELACCNT.class);
-			
-			Map<String, Object> delpo_items = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("DELPO_ITEMS");
-				Application.muis_debug("delpo_items", delpo_items);
-				z_ariba_bapi_po_change.DELPO_ITEMS.items = new ArrayList<ZXTCPODELITEMS>();
-				z_ariba_bapi_po_change.DELPO_ITEMS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) delpo_items, ZXTCPODELITEMS.class);
-			
-			Map<String, Object> po_accounts = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_ACCOUNTS");
-				Application.muis_debug("po_accounts", po_accounts);
-				z_ariba_bapi_po_change.PO_ACCOUNTS.items = new ArrayList<ZXTCPOACCNT>();
-				z_ariba_bapi_po_change.PO_ACCOUNTS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_accounts, ZXTCPOACCNT.class);
-			
-			Map<String, Object> po_cond = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_COND");
-				Application.muis_debug("po_cond", po_cond);
-				z_ariba_bapi_po_change.PO_COND.items = new ArrayList<ZXTPOCOND>();
-				z_ariba_bapi_po_change.PO_COND.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_cond, ZXTPOCOND.class);
-			
-			Map<String, Object> po_items = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_ITEMS");
-				Application.muis_debug("po_items", po_items);
-				z_ariba_bapi_po_change.PO_ITEMS.items = new ArrayList<ZXTCPOITEMS>();
-				z_ariba_bapi_po_change.PO_ITEMS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_items, ZXTCPOITEMS.class);
-			
-			Map<String, Object> po_text = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_TEXT");
-				Application.muis_debug("po_text", po_text);
-				z_ariba_bapi_po_change.PO_TEXT.items = new ArrayList<ZARSTRING>();
-				z_ariba_bapi_po_change.PO_TEXT.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_text, ZARSTRING.class);
-			
-			Map<String, Object> pur_order_delivery = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PUR_ORDER_DELIVERY");
-				Application.muis_debug("pur_order_delivery", pur_order_delivery);
-				z_ariba_bapi_po_change.PUR_ORDER_DELIVERY.items = new ArrayList<ZXTPODELIV>();
-				z_ariba_bapi_po_change.PUR_ORDER_DELIVERY.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) pur_order_delivery, ZXTPODELIV.class);
-			
-			Map<String, Object> pur_order_details = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PUR_ORDER_DETAILS");
-				Application.muis_debug("pur_order_details", pur_order_details);
-				z_ariba_bapi_po_change.PUR_ORDER_DETAILS.items = new ArrayList<ZXTPODET>();
-				z_ariba_bapi_po_change.PUR_ORDER_DETAILS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) pur_order_details, ZXTPODET.class);
-			
-			Map<String, Object> error_msg_table = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("ERROR_MSG_TABLE");
-				Application.muis_debug("error_msg_table", error_msg_table);
-				z_ariba_bapi_po_change.ERROR_MSG_TABLE.items = new ArrayList<ERROR_MSG_TABLE_item>();
-				z_ariba_bapi_po_change.ERROR_MSG_TABLE.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) error_msg_table, ERROR_MSG_TABLE_item.class);
-			
+		Map<String, Object> delpo_accnts = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("DELPO_ACCNTS");
+			Application.muis_debug("delpo_accnts", delpo_accnts);
+			z_ariba_bapi_po_change.DELPO_ACCNTS.items = new ArrayList<ZXTCPODELACCNT>();
+			z_ariba_bapi_po_change.DELPO_ACCNTS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) delpo_accnts, ZXTCPODELACCNT.class);
+		
+		Map<String, Object> delpo_items = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("DELPO_ITEMS");
+			Application.muis_debug("delpo_items", delpo_items);
+			z_ariba_bapi_po_change.DELPO_ITEMS.items = new ArrayList<ZXTCPODELITEMS>();
+			z_ariba_bapi_po_change.DELPO_ITEMS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) delpo_items, ZXTCPODELITEMS.class);
+		
+		Map<String, Object> po_accounts = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_ACCOUNTS");
+			Application.muis_debug("po_accounts", po_accounts);
+			z_ariba_bapi_po_change.PO_ACCOUNTS.items = new ArrayList<ZXTCPOACCNT>();
+			z_ariba_bapi_po_change.PO_ACCOUNTS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_accounts, ZXTCPOACCNT.class);
+		
+		Map<String, Object> po_cond = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_COND");
+			Application.muis_debug("po_cond", po_cond);
+			z_ariba_bapi_po_change.PO_COND.items = new ArrayList<ZXTPOCOND>();
+			z_ariba_bapi_po_change.PO_COND.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_cond, ZXTPOCOND.class);
+		
+		Map<String, Object> po_items = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_ITEMS");
+			Application.muis_debug("po_items", po_items);
+			z_ariba_bapi_po_change.PO_ITEMS.items = new ArrayList<ZXTCPOITEMS>();
+			z_ariba_bapi_po_change.PO_ITEMS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_items, ZXTCPOITEMS.class);
+		
+		Map<String, Object> po_text = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_TEXT");
+			Application.muis_debug("po_text", po_text);
+			z_ariba_bapi_po_change.PO_TEXT.items = new ArrayList<ZARSTRING>();
+			z_ariba_bapi_po_change.PO_TEXT.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_text, ZARSTRING.class);
+		
+		Map<String, Object> pur_order_delivery = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PUR_ORDER_DELIVERY");
+			Application.muis_debug("pur_order_delivery", pur_order_delivery);
+			z_ariba_bapi_po_change.PUR_ORDER_DELIVERY.items = new ArrayList<ZXTPODELIV>();
+			z_ariba_bapi_po_change.PUR_ORDER_DELIVERY.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) pur_order_delivery, ZXTPODELIV.class);
+		
+		Map<String, Object> pur_order_details = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PUR_ORDER_DETAILS");
+			Application.muis_debug("pur_order_details", pur_order_details);
+			z_ariba_bapi_po_change.PUR_ORDER_DETAILS.items = new ArrayList<ZXTPODET>();
+			z_ariba_bapi_po_change.PUR_ORDER_DETAILS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) pur_order_details, ZXTPODET.class);
+		
+		Map<String, Object> error_msg_table = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("ERROR_MSG_TABLE");
+			Application.muis_debug("error_msg_table", error_msg_table);
+			z_ariba_bapi_po_change.ERROR_MSG_TABLE.items = new ArrayList<ERROR_MSG_TABLE_item>();
+			z_ariba_bapi_po_change.ERROR_MSG_TABLE.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) error_msg_table, ERROR_MSG_TABLE_item.class);
+		
 
-			ERROR_MSG_TABLE err = (ERROR_MSG_TABLE) Z_ARIBA_BAPI_PO_CHANGEE2.get("ERROR_MSG_TABLE");
-			Application.muis_debug("ERROR_MSG_TABLE", err);
+		ERROR_MSG_TABLE err = (ERROR_MSG_TABLE) Z_ARIBA_BAPI_PO_CHANGEE2.get("ERROR_MSG_TABLE");
+		Application.muis_debug("ERROR_MSG_TABLE", err);
 
 		return z_ariba_bapi_po_change;
 	}

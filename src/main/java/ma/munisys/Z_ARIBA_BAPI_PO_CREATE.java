@@ -45,7 +45,6 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	public PUR_ORDER_DELIVERY PUR_ORDER_DELIVERY;
 	public PUR_ORDER_DETAILS PUR_ORDER_DETAILS;
 	public RETURN RETURN;
-
 	class PO_ADDRESS {
 		public String ADDRNUMBER;
 		public String ADDRHANDLE;
@@ -494,9 +493,9 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 
     public String toString() {
-        // You may print the Z_ARIBA_BAPI_PO_CHANGE Java object back as a JSON format, to inspect it :
+        // You may print the Z_ARIBA_BAPI_PO_CREATE Java object back as a JSON format, to inspect it :
 		try { return new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(this); }
-		catch (JsonProcessingException  e) { e.printStackTrace(); return "ERROR casting Z_ARIBA_BAPI_PO_CHANGE object to String"; }
+		catch (JsonProcessingException  e) { e.printStackTrace(); return "ERROR casting Z_ARIBA_BAPI_PO_CREATE object to String"; }
     }
 
     class Envelope { 
@@ -509,7 +508,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
     }
 
     class Body { 
-        public Z_ARIBA_BAPI_PO_CHANGE Z_ARIBA_BAPI_PO_CHANGE;
+        public Z_ARIBA_BAPI_PO_CREATE Z_ARIBA_BAPI_PO_CREATE;
     }
 	
     class Header { 
@@ -526,16 +525,15 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String language;
     }
 
-	
-    // The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object as defined in the Z_ARIBA_GR_TRANSFER public class (Designed to mimic the http soap xml received)
-	// The resulting instance of the Z_ARIBA_BAPI_PO_CHANGE will be then handed over to the SAP function for processing
-	public static Z_ARIBA_BAPI_PO_CHANGE create_Z_ARIBA_BAPI_PO_CHANGE_ObjectFromXML(String httpBody) {
+    // The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object (Designed to mimic the http soap xml received)
+	// The resulting instance will be then handed over to the SAP function for processing
+	public static Z_ARIBA_BAPI_PO_CREATE create_Z_ARIBA_BAPI_PO_CREATE_ObjectFromXML(String httpBody) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		// https://javadev.github.io/underscore-java/
 			Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(httpBody);
 			System.out.println("\n U.fromXmlWithoutNamespacesAndAttributes(httpBody) : \n");
 			System.out.println(map);
 		
-            Z_ARIBA_BAPI_PO_CHANGE	z_ariba_bapi_po_change = new Z_ARIBA_BAPI_PO_CHANGE();
+            Z_ARIBA_BAPI_PO_CREATE	z_ariba_bapi_po_create = new Z_ARIBA_BAPI_PO_CREATE();
 		
 		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
 		Application.muis_debug("soap_envelope", soap_envelope);
@@ -543,110 +541,75 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
 		Application.muis_debug("soap_body", soap_body);
 		
-		Map<String, Object> Z_ARIBA_BAPI_PO_CHANGEE = (Map<String, Object>) soap_body.get("Z_ARIBA_BAPI_PO_CHANGE");
-		Application.muis_debug("Z_ARIBA_BAPI_PO_CHANGE", Z_ARIBA_BAPI_PO_CHANGEE);
+		Map<String, Object> Z_ARIBA_BAPI_PO_CREATEE = (Map<String, Object>) soap_body.get("Z_ARIBA_BAPI_PO_CREATE");
+		Application.muis_debug("Z_ARIBA_BAPI_PO_CREATE", Z_ARIBA_BAPI_PO_CREATEE);
 		
-		Map<String, Object> Z_ARIBA_BAPI_PO_CHANGEE2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE.get("Z_ARIBA_BAPI_PO_CHANGE");
-			Application.muis_debug("Z_ARIBA_BAPI_PO_CHANGEL2", Z_ARIBA_BAPI_PO_CHANGEE2);
-			z_ariba_bapi_po_change.PARTITION =  !(Z_ARIBA_BAPI_PO_CHANGEE2.get("PARTITION") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CHANGEE2.get("PARTITION");
-			z_ariba_bapi_po_change.VARIANT = !(Z_ARIBA_BAPI_PO_CHANGEE2.get("VARIANT") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CHANGEE2.get("VARIANT");
+		Map<String, Object> Z_ARIBA_BAPI_PO_CREATEE2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE.get("Z_ARIBA_BAPI_PO_CREATE");
+			Application.muis_debug("Z_ARIBA_BAPI_PO_CREATEE2", Z_ARIBA_BAPI_PO_CREATEE2);
+			z_ariba_bapi_po_create.PARTITION =  !(Z_ARIBA_BAPI_PO_CREATEE2.get("PARTITION") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CREATEE2.get("PARTITION");
+			z_ariba_bapi_po_create.VARIANT = !(Z_ARIBA_BAPI_PO_CREATEE2.get("VARIANT") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CREATEE2.get("VARIANT");
+			z_ariba_bapi_po_create.HEADER_ADD_DATA_RELEVANT = !(Z_ARIBA_BAPI_PO_CREATEE2.get("HEADER_ADD_DATA_RELEVANT") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CREATEE2.get("HEADER_ADD_DATA_RELEVANT");
+			z_ariba_bapi_po_create.ITEM_ADD_DATA_RELEVANT = !(Z_ARIBA_BAPI_PO_CREATEE2.get("ITEM_ADD_DATA_RELEVANT") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CREATEE2.get("ITEM_ADD_DATA_RELEVANT");
 		
-		Map<String, Object> poheader = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_HEADER");
+		Map<String, Object> poaddress = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_ADDRESS");
+			Application.muis_debug("poaddress", poaddress);
+			z_ariba_bapi_po_create.PO_ADDRESS = z_ariba_bapi_po_create.new PO_ADDRESS();
+			
+			// Dynamiclly bind all the fields in the PO_ADDRESS Object from the poaddress Map :
+			for( Field field : z_ariba_bapi_po_create.PO_ADDRESS.getClass().getDeclaredFields() ) 
+				z_ariba_bapi_po_create.PO_ADDRESS.getClass().getDeclaredField(field.getName())
+					.set( z_ariba_bapi_po_create.PO_ADDRESS,  Application.forceString(poaddress, field.getName()) );
+
+		Map<String, Object> poheader = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_HEADER");
 			Application.muis_debug("poheader", poheader);
-			z_ariba_bapi_po_change.PO_HEADER = z_ariba_bapi_po_change.new PO_HEADER();
-			z_ariba_bapi_po_change.PO_HEADER.AEDAT 		= Application.forceString(poheader, "AEDAT");
-			z_ariba_bapi_po_change.PO_HEADER.PMNTTRMS 	= Application.forceString(poheader, "PMNTTRMS");
-			z_ariba_bapi_po_change.PO_HEADER.CHGSTATE 	= Application.forceString(poheader, "CHGSTATE");
-			z_ariba_bapi_po_change.PO_HEADER.EBELN 		= Application.forceString(poheader, "EBELN");
-			z_ariba_bapi_po_change.PO_HEADER.EKGRP 		= Application.forceString(poheader, "EKGRP");
-			z_ariba_bapi_po_change.PO_HEADER.EKORG 		= Application.forceString(poheader, "EKORG");
-			z_ariba_bapi_po_change.PO_HEADER.ERPORDERID = Application.forceString(poheader, "ERPORDERID");
-			z_ariba_bapi_po_change.PO_HEADER.LIFNR 		= Application.forceString(poheader, "LIFNR");
-			z_ariba_bapi_po_change.PO_HEADER.ORDERTYPE	= Application.forceString(poheader, "ORDERTYPE");
-			z_ariba_bapi_po_change.PO_HEADER.UNSEZ 		= Application.forceString(poheader, "UNSEZ");
-			z_ariba_bapi_po_change.PO_HEADER.VERSION 	= Application.forceString(poheader, "VERSION");
-			z_ariba_bapi_po_change.PO_HEADER.WAERS 		= Application.forceString(poheader, "WAERS");
+			z_ariba_bapi_po_create.PO_HEADER = z_ariba_bapi_po_create.new PO_HEADER();
+			
+			// Dynamiclly bind all the fields in the PO_HEADER Object from the poheader Map :
+			for( Field field : z_ariba_bapi_po_create.PO_HEADER.getClass().getDeclaredFields() ) 
+				z_ariba_bapi_po_create.PO_HEADER.getClass().getDeclaredField(field.getName())
+					.set( z_ariba_bapi_po_create.PO_HEADER,  Application.forceString(poheader, field.getName()) );
 
-			Map<String, Object> delpo_accnts = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("DELPO_ACCNTS");
-				Application.muis_debug("delpo_accnts", delpo_accnts);
-				z_ariba_bapi_po_change.DELPO_ACCNTS.items = new ArrayList<ZXTCPODELACCNT>();
-				z_ariba_bapi_po_change.DELPO_ACCNTS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) delpo_accnts, ZXTCPODELACCNT.class);
+		Map<String, Object> poheaderadddata = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_HEADER_ADD_DATA");
+			Application.muis_debug("poheaderadddata", poheaderadddata);
+			z_ariba_bapi_po_create.PO_HEADER_ADD_DATA = z_ariba_bapi_po_create.new PO_HEADER_ADD_DATA();
 			
-			Map<String, Object> delpo_items = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("DELPO_ITEMS");
-				Application.muis_debug("delpo_items", delpo_items);
-				z_ariba_bapi_po_change.DELPO_ITEMS.items = new ArrayList<ZXTCPODELITEMS>();
-				z_ariba_bapi_po_change.DELPO_ITEMS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) delpo_items, ZXTCPODELITEMS.class);
-			
-			Map<String, Object> po_accounts = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_ACCOUNTS");
-				Application.muis_debug("po_accounts", po_accounts);
-				z_ariba_bapi_po_change.PO_ACCOUNTS.items = new ArrayList<ZXTCPOACCNT>();
-				z_ariba_bapi_po_change.PO_ACCOUNTS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_accounts, ZXTCPOACCNT.class);
-			
-			Map<String, Object> po_cond = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_COND");
-				Application.muis_debug("po_cond", po_cond);
-				z_ariba_bapi_po_change.PO_COND.items = new ArrayList<ZXTPOCOND>();
-				z_ariba_bapi_po_change.PO_COND.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_cond, ZXTPOCOND.class);
-			
-			Map<String, Object> po_items = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_ITEMS");
-				Application.muis_debug("po_items", po_items);
-				z_ariba_bapi_po_change.PO_ITEMS.items = new ArrayList<ZXTCPOITEMS>();
-				z_ariba_bapi_po_change.PO_ITEMS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_items, ZXTCPOITEMS.class);
-			
-			Map<String, Object> po_text = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_TEXT");
-				Application.muis_debug("po_text", po_text);
-				z_ariba_bapi_po_change.PO_TEXT.items = new ArrayList<ZARSTRING>();
-				z_ariba_bapi_po_change.PO_TEXT.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_text, ZARSTRING.class);
-			
-			Map<String, Object> pur_order_delivery = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PUR_ORDER_DELIVERY");
-				Application.muis_debug("pur_order_delivery", pur_order_delivery);
-				z_ariba_bapi_po_change.PUR_ORDER_DELIVERY.items = new ArrayList<ZXTPODELIV>();
-				z_ariba_bapi_po_change.PUR_ORDER_DELIVERY.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) pur_order_delivery, ZXTPODELIV.class);
-			
-			Map<String, Object> pur_order_details = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PUR_ORDER_DETAILS");
-				Application.muis_debug("pur_order_details", pur_order_details);
-				z_ariba_bapi_po_change.PUR_ORDER_DETAILS.items = new ArrayList<ZXTPODET>();
-				z_ariba_bapi_po_change.PUR_ORDER_DETAILS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) pur_order_details, ZXTPODET.class);
-			
-			Map<String, Object> error_msg_table = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("ERROR_MSG_TABLE");
-				Application.muis_debug("error_msg_table", error_msg_table);
-				z_ariba_bapi_po_change.ERROR_MSG_TABLE.items = new ArrayList<ERROR_MSG_TABLE_item>();
-				z_ariba_bapi_po_change.ERROR_MSG_TABLE.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) error_msg_table, ERROR_MSG_TABLE_item.class);
-			
+			// Dynamiclly bind all the fields in the PO_HEADER_ADD_DATA Object from the poheaderadddata Map :
+			for( Field field : z_ariba_bapi_po_create.PO_HEADER_ADD_DATA.getClass().getDeclaredFields() ) 
+				z_ariba_bapi_po_create.PO_HEADER_ADD_DATA.getClass().getDeclaredField(field.getName())
+					.set( z_ariba_bapi_po_create.PO_HEADER_ADD_DATA,  Application.forceString(poheaderadddata, field.getName()) );
 
-			ERROR_MSG_TABLE err = (ERROR_MSG_TABLE) Z_ARIBA_BAPI_PO_CHANGEE2.get("ERROR_MSG_TABLE");
-			Application.muis_debug("ERROR_MSG_TABLE", err);
-
-		return z_ariba_bapi_po_change;
+		
+		return z_ariba_bapi_po_create;
 	}
 
-    public static void execute_SapFunc_Z_ARIBA_BAPI_PO_CHANGE(final Exchange exchange)
+    public static void execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE(final Exchange exchange)
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
-		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_Z_ARIBA_BAPI_PO_CHANGE() : " + body);
+		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE() : " + body);
 
-		Z_ARIBA_BAPI_PO_CHANGE z_ariba_bapi_po_change = create_Z_ARIBA_BAPI_PO_CHANGE_ObjectFromXML(body);
+		Z_ARIBA_BAPI_PO_CREATE z_ariba_bapi_po_create = create_Z_ARIBA_BAPI_PO_CREATE_ObjectFromXML(body);
 		
 		System.out.println("MUIS : Parsing HTTP XML Body : Extracted vars are : ");
-		System.out.println("MUIS : z_ariba_bapi_po_change = \n" + z_ariba_bapi_po_change);
+		System.out.println("MUIS : z_ariba_bapi_po_create = \n" + z_ariba_bapi_po_create);
 
         try
         {
 				String repoName  = Application.dest.getRepository().getName();
 				System.out.println("MUIS : Reposiroty name dest.getRepository().getName() =  " + repoName);
 					
-				String sapFunctionStr = "Z_ARIBA_BAPI_PO_CHANGE"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
+				String sapFunctionStr = "Z_ARIBA_BAPI_PO_CREATE"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
 				Application.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
 				if (Application.currentSapFunction==null) throw new RuntimeException(Application.currentSapFunction + " not found in SAP.");
 				
 				Application.describeFunction(Application.currentSapFunction);
 				
-				Application.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_change.PARTITION);
-				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_change.VARIANT);
+				Application.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_create.PARTITION);
+				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_create.VARIANT);
 								
 				JCoTable t_ZXTPOERR = Application.currentSapFunction.getTableParameterList().getTable("ZXTPOERR");
 				
-				for (ERROR_MSG_TABLE_item zItem : z_ariba_bapi_po_change.ERROR_MSG_TABLE.items) {
+				for (ERROR_MSG_TABLE_item zItem : z_ariba_bapi_po_create.ERROR_MSG_TABLE.items) {
 					t_ZXTPOERR.appendRow();
 					JCoFieldIterator it = t_ZXTPOERR.getFieldIterator();
 					while(it.hasNextField()) {

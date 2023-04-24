@@ -90,8 +90,8 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
 		public String MANDT;
     }
     
-    // The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object as defined in the Z_ARIBA_GR_TRANSFER public class (Designed to mimic the http soap xml received)
-	// The resulting instance of the Z_ARIBA_BAPI_PO_CANCEL will be then handed over to the SAP function for processing
+    // The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object (Designed to mimic the http soap xml received)
+	// The resulting instance will be then handed over to the SAP function for processing
 	public static Z_ARIBA_BAPI_PO_CANCEL create_Z_ARIBA_BAPI_PO_CANCEL_ObjectFromXML(String httpBody) {
 		// https://javadev.github.io/underscore-java/
 			Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(httpBody);
