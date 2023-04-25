@@ -1,6 +1,6 @@
 package ma.munisys;
 
-// PurchaseOrderChangeExport_V1
+// PurchaseOrderExport_V1
 
 import java.util.ArrayList;
 import java.util.Date;
