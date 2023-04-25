@@ -121,17 +121,11 @@ public class Application  {
 			muis_debug("", "rootItems.get('item') class not an ArrayList");
 			HashMap<String, String> itemm = (HashMap<String, String>) rootItems.get("item");
 			itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
+			try {dumpObject(itemm);} catch (IllegalArgumentException|IllegalAccessException e) {e.printStackTrace();} 
 			itemType itemm2 = (itemType) mapper.convertValue(itemm, itemType);
 			muis_debug("Adding itemm2 to final result for getItemsAsArrayList", itemm2);
-			try {
-				dumpObject(itemm2);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
+
 			returnn.add(itemm2);
 		}
 
