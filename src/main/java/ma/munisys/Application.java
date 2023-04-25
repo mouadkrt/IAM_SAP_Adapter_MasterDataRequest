@@ -161,7 +161,7 @@ public class Application  {
 					Field f = zItem.getClass().getDeclaredField(field.getName());
 					f.setAccessible(true);
 					field.setValue(f.get(zItem));
-					muis_debug("feed_SAP_Table : field.getClass().getName() : " + field.getName(), field.getClass().getName());
+					//muis_debug("feed_SAP_Table : field.getClass().getName() : " + field.getName(), field.getClass().getName());
 					//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 					//-ZonedDateTime zonedDateTime = ZonedDateTime.parse("2015-05-05 10:15:30 Europe/Paris", formatter);
 				}
