@@ -3,6 +3,7 @@ package ma.munisys;
 // PurchaseOrderChangeExport_V1
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -116,11 +117,11 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String ADDRHANDLE;
 		public String NATION;
 		@JsonFormat(pattern="yyyy/MM/dd")
-		public String DATE;
+		public Date DATE;
 		@JsonFormat(pattern="yyyy/MM/dd")
-		public String DATE_FROM;
+		public Date DATE_FROM;
 		@JsonFormat(pattern="yyyy/MM/dd")
-		public String DATE_TO;
+		public Date DATE_TO;
 		public String TITLE;
 		public String NAME1;
 		public String NAME2;
@@ -178,9 +179,9 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	static  class PO_HEADER {
+	static class PO_HEADER {
 		@JsonFormat(pattern="yyyy/MM/dd")
-		public String DOC_DATE;
+		public Date DOC_DATE;
 		public String DOC_TYPE;
 		public String DOC_CAT;
 		public String CO_CODE;
@@ -238,7 +239,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String FLDNAME;
 		public String MESSAGE;
 		@JsonFormat(pattern="yyyy/MM/dd")
-		public String DATETIME2;
+		public Date DATETIME2;
 		public String SYSID;
 		public String MANDT;
 	}
@@ -359,7 +360,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String FUND;
 		public String FUNC_AREA;
 		@JsonFormat(pattern="yyyy/MM/dd")
-		public String REF_DATE;
+		public Date REF_DATE;
 		public String ACTIVITY;
 		public String GRANT_NBR;
 		public String CMMT_ITEM_LONG;
@@ -396,7 +397,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String SERIAL_NO;
 		public String DEL_DATCAT;
 		@JsonFormat(pattern="yyyy/MM/dd")
-		public String DELIV_DATE;
+		public Date DELIV_DATE;
 		public String DELIV_TIME;
 		public String QUANTITY;
 		public String PREQ_NO;
@@ -500,7 +501,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String PRICE_CHG;
 		public String MATL_GROUP;
 		@JsonFormat(pattern="yyyy/MM/dd")
-		public String DATE;
+		public Date DATE;
 		public String BEGINTIME;
 		public String ENDTIME;
 		public String EXTPERS_NO;
