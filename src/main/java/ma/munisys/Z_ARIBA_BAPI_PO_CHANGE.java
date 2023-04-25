@@ -350,7 +350,7 @@ public String PARTITION;
 		return z_ariba_bapi_po_change;
 	}
 
-    public static void execute_SapFunc_Z_ARIBA_BAPI_PO_CHANGE(final Exchange exchange)
+    public static void execute_SapFunc_Z_ARIBA_BAPI_PO_CHANGE(final Exchange exchange) throws IllegalArgumentException, IllegalAccessException
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
