@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -186,7 +187,10 @@ public String PARTITION;
         public String PEINH = "";
         public String MENGE = "";
         public String MEINS = "";
+
+		@JsonFormat(pattern="yyyy/MM/dd")
         public Date EEIND;
+
         public String EMATN = "";
         public String SAKTO = "";
         public String KOSTL = "";
