@@ -170,12 +170,9 @@ public class Application  {
 	}
 
 	public static <itemType> void feed_SAP_Structure(String sapStructName, itemType obj, Class<?> itemType) {
-		try {
-			dumpObject(obj);
-		} catch (IllegalAccessException|IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+		
+		if(obj==null) return;
+		
 		JCoStructure sapStruct = Application.currentSapFunction.getImportParameterList().getStructure(sapStructName);
 		
 		JCoFieldIterator it = sapStruct.getFieldIterator();
