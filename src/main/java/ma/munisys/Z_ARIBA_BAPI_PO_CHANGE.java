@@ -304,7 +304,7 @@ public String PARTITION;
 				Application.muis_debug("Feeding z_ariba_bapi_po_change.PO_ACCOUNTS.items from getItemsAsArrayList()", po_accounts);
 				z_ariba_bapi_po_change.PO_ACCOUNTS.items = new ArrayList<ZXTCPOACCNT>();
 				z_ariba_bapi_po_change.PO_ACCOUNTS.items.addAll(Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_accounts, ZXTCPOACCNT.class));
-				Application.muis_debug("z_ariba_bapi_po_change.PO_ACCOUNTS.items.size() :", z_ariba_bapi_po_change.PO_ACCOUNTS.items.size());
+				Application.muis_debug("z_ariba_bapi_po_change.PO_ACCOUNTS.items.size()", z_ariba_bapi_po_change.PO_ACCOUNTS.items.size());
 			}
 		
 		Map<String, Object> po_cond = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_COND");
@@ -362,6 +362,7 @@ public String PARTITION;
 		
 		System.out.println("MUIS : Parsing HTTP XML Body : Extracted vars are : ");
 		System.out.println("MUIS : z_ariba_bapi_po_change = \n" + z_ariba_bapi_po_change);
+		System.out.println("EBELP mouad2 = "+ z_ariba_bapi_po_change.PO_ACCOUNTS.items.get(0).EBELP);
 
         try
         {
