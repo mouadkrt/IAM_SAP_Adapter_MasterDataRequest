@@ -384,14 +384,14 @@ public String PARTITION;
 				
 				// SAP Tables :
 				Application.feed_SAP_Table("DELPO_ACCNTS", z_ariba_bapi_po_change.DELPO_ACCNTS.items, ZXTCPODELACCNT.class);
-				Application.feed_SAP_Table("ZXTCPODELITEMS", z_ariba_bapi_po_change.DELPO_ITEMS.items, ZXTCPODELITEMS.class);
-				Application.feed_SAP_Table("ZXTPOERR", z_ariba_bapi_po_change.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_item.class);
-				Application.feed_SAP_Table("ZXTCPOACCNT", z_ariba_bapi_po_change.PO_ACCOUNTS.items, ZXTCPOACCNT.class);
-				Application.feed_SAP_Table("ZXTPOCOND", z_ariba_bapi_po_change.PO_COND.items, ZXTPOCOND.class);
-				Application.feed_SAP_Table("ZXTCPOITEMS", z_ariba_bapi_po_change.PO_ITEMS.items, ZXTCPOITEMS.class);
-				Application.feed_SAP_Table("ZARSTRING", z_ariba_bapi_po_change.PO_TEXT.items, ZARSTRING.class);
-				Application.feed_SAP_Table("ZXTPODELIV", z_ariba_bapi_po_change.PUR_ORDER_DELIVERY.items, ZXTPODELIV.class);
-				Application.feed_SAP_Table("ZXTPODET", z_ariba_bapi_po_change.PUR_ORDER_DETAILS.items, ZXTPODET.class);
+				Application.feed_SAP_Table("DELPO_ITEMS", z_ariba_bapi_po_change.DELPO_ITEMS.items, ZXTCPODELITEMS.class);
+				Application.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_bapi_po_change.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_item.class);
+				Application.feed_SAP_Table("PO_ACCOUNTS", z_ariba_bapi_po_change.PO_ACCOUNTS.items, ZXTCPOACCNT.class);
+				Application.feed_SAP_Table("PO_COND", z_ariba_bapi_po_change.PO_COND.items, ZXTPOCOND.class);
+				Application.feed_SAP_Table("PO_ITEMS", z_ariba_bapi_po_change.PO_ITEMS.items, ZXTCPOITEMS.class);
+				Application.feed_SAP_Table("PO_TEXT", z_ariba_bapi_po_change.PO_TEXT.items, ZARSTRING.class);
+				Application.feed_SAP_Table("PUR_ORDER_DELIVERY", z_ariba_bapi_po_change.PUR_ORDER_DELIVERY.items, ZXTPODELIV.class);
+				Application.feed_SAP_Table("PUR_ORDER_DETAILS", z_ariba_bapi_po_change.PUR_ORDER_DETAILS.items, ZXTPODET.class);
 				
 				try {
                     Application.currentSapFunction.execute(Application.dest);
