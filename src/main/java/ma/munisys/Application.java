@@ -105,7 +105,7 @@ public class Application  {
 		return itemm;
 	}
 	
-	public static <itemType> ArrayList<itemType> getItemsAsArrayList(LinkedHashMap<String, Object> rootItems, Class<?> itemType) throws IllegalArgumentException, IllegalAccessException {
+	public static <itemType> ArrayList<itemType> getItemsAsArrayList(LinkedHashMap<String, Object> rootItems, Class<?> itemType) {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
@@ -123,7 +123,15 @@ public class Application  {
 			itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
 			itemType itemm2 = (itemType) mapper.convertValue(itemm, itemType);
 			muis_debug("Adding itemm2 to final result for getItemsAsArrayList", itemm2);
-			dumpObject(itemm2);
+			try {
+				dumpObject(itemm2);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			returnn.add(itemm2);
 		}
 
