@@ -79,6 +79,10 @@ public class Application  {
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CHANGE.")
 										.process(Z_ARIBA_BAPI_PO_CHANGE::execute_SapFunc_Z_ARIBA_BAPI_PO_CHANGE)
 										.process(Z_ARIBA_BAPI_PO_CHANGE::read_SapFunc_Z_ARIBA_BAPI_PO_CHANGE_Response)
+									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_BAPI_PO_CREATE'"))
+										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CREATE.")
+										.process(Z_ARIBA_BAPI_PO_CREATE::execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE)
+										.process(Z_ARIBA_BAPI_PO_CREATE::read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response)
 					.end();
 				}
 			});

@@ -151,7 +151,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String OUR_REF;
 	}
 
-	class ERROR_MSG_TABLE {ArrayList<ERROR_MSG_TABLE_Item> items;}
+	class ERROR_MSG_TABLE {public ArrayList<ERROR_MSG_TABLE_Item> items;}
 	class ERROR_MSG_TABLE_Item {
 		public String EBELN;
 		public String ERPORDERID;
@@ -168,14 +168,14 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String MANDT;
 	}
 
-	class PO_COND { ArrayList<PO_COND_Item> items;}
+	class PO_COND { public ArrayList<PO_COND_Item> items;}
 	class PO_COND_Item{
 		public String KSCHL;
 		public String KBETR;
 		public String KONWA;
 	}
 
-	class PO_CONTRACT_LIMITS {ArrayList<PO_CONTRACT_LIMITS_Item> items;}
+	class PO_CONTRACT_LIMITS {public ArrayList<PO_CONTRACT_LIMITS_Item> items;}
 	class PO_CONTRACT_LIMITS_Item{
 		public String PCKG_NO;
 		public String LINE_NO;
@@ -188,7 +188,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String DELETE_IND;
 	}
 
-	class PO_ITEMS  {ArrayList<PO_ITEMS_Item> items;}
+	class PO_ITEMS  {public ArrayList<PO_ITEMS_Item> items;}
 	class PO_ITEMS_Item {
 		public String PO_NUMBER;
 		public String PO_ITEM;
@@ -243,7 +243,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String TAX_CODE;
 	}
 
-	class PO_ITEM_ACCOUNT_ASSIGNMENT  {ArrayList<PO_ITEM_ACCOUNT_ASSIGNMENT_Item> items;}
+	class PO_ITEM_ACCOUNT_ASSIGNMENT  {public ArrayList<PO_ITEM_ACCOUNT_ASSIGNMENT_Item> items;}
 	class PO_ITEM_ACCOUNT_ASSIGNMENT_Item {
 		public String PO_ITEM;
 		public String SERIAL_NO;
@@ -286,7 +286,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String FUNC_AREA_LONG;
 	}
 	
-	class PO_ITEM_ADD_DATA  { ArrayList<PO_ITEM_ADD_DATA_Item> items;}
+	class PO_ITEM_ADD_DATA  { public ArrayList<PO_ITEM_ADD_DATA_Item> items;}
 	class PO_ITEM_ADD_DATA_Item {
 		public String INFO_UPD;
 		public String REMINDER1;
@@ -308,7 +308,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String PO_ITEM;
 	}
 	
-	class PO_ITEM_SCHEDULES  {ArrayList<PO_ITEM_SCHEDULES_Item> items;}
+	class PO_ITEM_SCHEDULES  {public ArrayList<PO_ITEM_SCHEDULES_Item> items;}
 	class PO_ITEM_SCHEDULES_Item {
 		public String PO_ITEM;
 		public String SERIAL_NO;
@@ -329,7 +329,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String DEL_DATCAT_EXT;
 	}
 	
-	class PO_ITEM_TEXT  { ArrayList<PO_ITEM_TEXT_Item> items;}
+	class PO_ITEM_TEXT  { public ArrayList<PO_ITEM_TEXT_Item> items;}
 	class PO_ITEM_TEXT_Item {
 		public String PO_NUMBER;
 		public String PO_ITEM;
@@ -338,7 +338,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String TEXT_LINE;
 	}
 	
-	class PO_LIMITS  {ArrayList<PO_LIMITS_Item> items;}
+	class PO_LIMITS  {public ArrayList<PO_LIMITS_Item> items;}
 	class PO_LIMITS_Item {
 		public String PCKG_NO;
 		public String LIMIT;
@@ -364,7 +364,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String CONT_PERC;
 	}
 	
-	class PO_SERVICES  {ArrayList<PO_SERVICES_Item> items;}
+	class PO_SERVICES  {public ArrayList<PO_SERVICES_Item> items;}
 	class PO_SERVICES_Item {
 		public String PCKG_NO;
 		public String LINE_NO;
@@ -432,7 +432,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String DELETE_IND;
 	}
 	
-	class PO_SERVICES_TEXT  {ArrayList<PO_SERVICES_TEXT_Item> items;}
+	class PO_SERVICES_TEXT  {public ArrayList<PO_SERVICES_TEXT_Item> items;}
 	class PO_SERVICES_TEXT_Item {
 		public String PCKG_NO;
 		public String LINE_NO;
@@ -441,7 +441,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String TEXT_LINE;
 	}
 
-	class PO_SRV_ACCASS_VALUES  {ArrayList<PO_SRV_ACCASS_VALUES_Item> items;}
+	class PO_SRV_ACCASS_VALUES  {public ArrayList<PO_SRV_ACCASS_VALUES_Item> items;}
 	class PO_SRV_ACCASS_VALUES_Item {
 		public String PCKG_NO;
 		public String LINE_NO;
@@ -452,7 +452,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String NET_VALUE;
 	}
 	
-	class PO_ZZIMMOS  {ArrayList<PO_ZZIMMOS_Item> items;}
+	class PO_ZZIMMOS  {public ArrayList<PO_ZZIMMOS_Item> items;}
 	class PO_ZZIMMOS_Item {
 		public String EBELP;
 		public String UMSON;
@@ -461,14 +461,14 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String ZZIMMOS;
 	}
 	
-	class PUR_ORDER_DELIVERY  {ArrayList<PUR_ORDER_DELIVERY_Item> items;}
+	class PUR_ORDER_DELIVERY  {public ArrayList<PUR_ORDER_DELIVERY_Item> items;}
 	class PUR_ORDER_DELIVERY_Item {
 		public String EBELN;
 		public String EBELP;
 		public String EINDT;
 	}
 	
-	class PUR_ORDER_DETAILS  {ArrayList<PUR_ORDER_DETAILS_Item> items;}
+	class PUR_ORDER_DETAILS  {public ArrayList<PUR_ORDER_DETAILS_Item> items;}
 	class PUR_ORDER_DETAILS_Item {
 		public String EBELN;
 		public String EBELP;
@@ -480,7 +480,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String ITEMONREQ;
 	}
 	
-	class RETURN  {ArrayList<RETURN_Item> items;}
+	class RETURN  {public ArrayList<RETURN_Item> items;}
 	class RETURN_Item {
 		public String TYPE;
 		public String CODE;
