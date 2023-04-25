@@ -31,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.Properties;
 
 import com.github.underscore.U;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -108,7 +109,8 @@ public class Application  {
 	public static <itemType> ArrayList<itemType> getItemsAsArrayList(LinkedHashMap<String, Object> rootItems, Class<?> itemType) {
 		
 		ObjectMapper mapper = new ObjectMapper();
-		//mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+		mapper.setSerializationInclusion(Include.NON_NULL);
 		ArrayList<itemType> returnn = new ArrayList<itemType>();
 		muis_debug("rootItems", rootItems);
 		muis_debug("itemType", itemType);
@@ -119,14 +121,13 @@ public class Application  {
 
 		if(!rootItems.get("item").getClass().getName().equals("java.util.ArrayList")) {
 			muis_debug("", "rootItems.get('item') class not an ArrayList");
-			HashMap<String, String> itemm = (HashMap<String, String>) rootItems.get("item");
-			itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
-			itemType itemm2 = (itemType) mapper.convertValue(itemm, itemType);
-			try {dumpObject(itemm2);} catch (IllegalArgumentException|IllegalAccessException e) {e.printStackTrace();} 
-			muis_debug("Adding itemm2 to final result for getItemsAsArrayList", itemm2);
-
-
-			returnn.add(itemm2);
+			HashMap<String, String> xmlItemm = (HashMap<String, String>) rootItems.get("item");
+			xmlItemm = Application.forceSelfClosedXmlToEmptyString(xmlItemm);
+			itemType itemm = (itemType) mapper.convertValue(xmlItemm, itemType);
+			try {dumpObject(itemm);} catch (IllegalArgumentException|IllegalAccessException e) {e.printStackTrace();} 
+			muis_debug("Adding itemm2 to final result for getItemsAsArrayList", itemm);
+			
+			returnn.add(itemm);
 		}
 
 		else {
