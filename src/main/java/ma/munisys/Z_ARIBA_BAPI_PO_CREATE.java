@@ -802,9 +802,25 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		newBody +=  xml_E_PARTITION + xml_E_VARIANT + xml_PURCHASEORDER; // Scalar values
 
 		JCoTable sapTbl;
-		Map<String, String> sapTables = Map.of("ZARPOERR","ERROR_MSG_TABLE","ZXTPOCOND","PO_COND","BAPIESUCC","PO_CONTRACT_LIMITS","ZARIBABAPIEKPOC","PO_ITEMS","BAPIEKKN","PO_ITEM_ACCOUNT_ASSIGNMENT","BAPIEKPOA","PO_ITEM_ADD_DATA","BAPIEKET","PO_ITEM_SCHEDULES","BAPIEKPOTX","PO_ITEM_TEXT","BAPIESUHC","PO_LIMITS","BAPIESLLC","PO_SERVICES");
-		Map<String, String> sapTables2 = Map.of("BAPIESLLTX","PO_SERVICES_TEXT","BAPIESKLC","PO_SRV_ACCASS_VALUES","ZXTPOZZIMMOS","PO_ZZIMMOS","ZXTPODELIV","PUR_ORDER_DELIVERY","ZXTPODET","PUR_ORDER_DETAILS","BAPIRETURN","RETURN");
-		sapTables.putAll(sapTables2);
+		Map<String, String> sapTables = Map.ofEntries(
+			Map.entry("ZARPOERR","ERROR_MSG_TABLE"),
+			Map.entry("ZXTPOCOND","PO_COND"),
+			Map.entry("BAPIESUCC","PO_CONTRACT_LIMITS"),
+			Map.entry("ZARIBABAPIEKPOC","PO_ITEMS"),
+			Map.entry("BAPIEKKN","PO_ITEM_ACCOUNT_ASSIGNMENT"),
+			Map.entry("BAPIEKPOA","PO_ITEM_ADD_DATA"),
+			Map.entry("BAPIEKET","PO_ITEM_SCHEDULES"),
+			Map.entry("BAPIEKPOTX","PO_ITEM_TEXT"),
+			Map.entry("BAPIESUHC","PO_LIMITS"),
+			Map.entry("BAPIESLLC","PO_SERVICES"),
+			Map.entry("BAPIESLLTX","PO_SERVICES_TEXT"),
+			Map.entry("BAPIESKLC","PO_SRV_ACCASS_VALUES"),
+			Map.entry("ZXTPOZZIMMOS","PO_ZZIMMOS"),
+			Map.entry("ZXTPODELIV","PUR_ORDER_DELIVERY"),
+			Map.entry("ZXTPODET","PUR_ORDER_DETAILS"),
+			Map.entry("BAPIRETURN","RETURN")
+		);
+		
 			
 		for (Map.Entry<String, String> entry : sapTables.entrySet()) {
 			String tblCode = entry.getKey();
