@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -114,8 +115,11 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String ADDRNUMBER;
 		public String ADDRHANDLE;
 		public String NATION;
+		@JsonFormat(pattern="yyyy/MM/dd")
 		public String DATE;
+		@JsonFormat(pattern="yyyy/MM/dd")
 		public String DATE_FROM;
+		@JsonFormat(pattern="yyyy/MM/dd")
 		public String DATE_TO;
 		public String TITLE;
 		public String NAME1;
@@ -175,6 +179,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static  class PO_HEADER {
+		@JsonFormat(pattern="yyyy/MM/dd")
 		public String DOC_DATE;
 		public String DOC_TYPE;
 		public String DOC_CAT;
@@ -212,7 +217,9 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String TRNSP_MODE;
 		public String CUSTOMS;
 		public String EXCH_RATE_CM;
+		@JsonFormat(pattern="yyyy/MM/dd")
 		public String VPER_START;
+		@JsonFormat(pattern="yyyy/MM/dd")
 		public String VPER_END;
 		public String OUR_REF;
 	}
@@ -230,6 +237,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String DYNUMB;
 		public String FLDNAME;
 		public String MESSAGE;
+		@JsonFormat(pattern="yyyy/MM/dd")
 		public String DATETIME2;
 		public String SYSID;
 		public String MANDT;
@@ -350,6 +358,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String FUNDS_CTR;
 		public String FUND;
 		public String FUNC_AREA;
+		@JsonFormat(pattern="yyyy/MM/dd")
 		public String REF_DATE;
 		public String ACTIVITY;
 		public String GRANT_NBR;
@@ -386,6 +395,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String PO_ITEM;
 		public String SERIAL_NO;
 		public String DEL_DATCAT;
+		@JsonFormat(pattern="yyyy/MM/dd")
 		public String DELIV_DATE;
 		public String DELIV_TIME;
 		public String QUANTITY;
@@ -489,6 +499,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String TAXJURCODE;
 		public String PRICE_CHG;
 		public String MATL_GROUP;
+		@JsonFormat(pattern="yyyy/MM/dd")
 		public String DATE;
 		public String BEGINTIME;
 		public String ENDTIME;
