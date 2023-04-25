@@ -302,7 +302,7 @@ public String PARTITION;
 			Application.muis_debug("po_accounts", po_accounts);
 			if(!(po_accounts == null)) {
 				z_ariba_bapi_po_change.PO_ACCOUNTS.items = new ArrayList<ZXTCPOACCNT>();
-				z_ariba_bapi_po_change.PO_ACCOUNTS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_accounts, ZXTCPOACCNT.class);
+				z_ariba_bapi_po_change.PO_ACCOUNTS.items.addAll(Application.getItemsAsArrayList((LinkedHashMap<String, Object>) po_accounts, ZXTCPOACCNT.class));
 			}
 		
 		Map<String, Object> po_cond = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_COND");
