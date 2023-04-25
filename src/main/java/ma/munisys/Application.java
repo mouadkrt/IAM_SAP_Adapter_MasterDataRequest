@@ -88,6 +88,13 @@ public class Application  {
 		if(!MUIS_DEBUG.equals("0")) System.out.println("\nMUIS_DEBUG : "+ label +" : " + txt);
 	}
 	
+	public static void dumpObject(Object obj) throws IllegalArgumentException, IllegalAccessException {
+		muis_debug("Dumpping object ", obj);
+		Field[] fields = obj.getClass().getDeclaredFields();
+		for(Field f:fields) {
+			muis_debug(f.getName(), f.get(obj));
+		}
+	}
 	public static String forceString(Map<String, Object> o, String key) {
 		return !(o.get(key) instanceof String) ? "" : (String) o.get(key);
 	}
@@ -98,23 +105,28 @@ public class Application  {
 		return itemm;
 	}
 	
-	public static <itemType> ArrayList<itemType> getItemsAsArrayList(LinkedHashMap<String, Object> rootItems, Class<?> itemType) {
+	public static <itemType> ArrayList<itemType> getItemsAsArrayList(LinkedHashMap<String, Object> rootItems, Class<?> itemType) throws IllegalArgumentException, IllegalAccessException {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		ArrayList<itemType> returnn = new ArrayList<itemType>();
 		muis_debug("rootItems", rootItems);
 		muis_debug("itemType", itemType);
+
 		if(!rootItems.containsKey("item")) return returnn;
+
 		muis_debug("rootItems.get('item')", rootItems.get("item"));
+
 		if(!rootItems.get("item").getClass().getName().equals("java.util.ArrayList")) {
 			muis_debug("", "rootItems.get('item') class not an ArrayList");
 			HashMap<String, String> itemm = (HashMap<String, String>) rootItems.get("item");
 			itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
 			itemType itemm2 = (itemType) mapper.convertValue(itemm, itemType);
 			muis_debug("Adding itemm2 to final result for getItemsAsArrayList", itemm2);
+			dumpObject(itemm2);
 			returnn.add(itemm2);
 		}
+
 		else {
 			muis_debug("", "rootItems.get('item') class is an ArrayList");
 			ArrayList<Map<String,String>> itemms = (ArrayList<Map<String,String>>) rootItems.get("item");
@@ -127,6 +139,7 @@ public class Application  {
 				returnn.add(itemm2);
 			}
 		}
+		
 		muis_debug("returnn", returnn);
 		return returnn;
 	}
