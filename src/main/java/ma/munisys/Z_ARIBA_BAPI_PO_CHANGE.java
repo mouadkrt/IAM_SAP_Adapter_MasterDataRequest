@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 // PurchaseOrderChangeExport_V1
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -186,7 +185,7 @@ public String PARTITION;
         public String PEINH = "";
         public String MENGE = "";
         public String MEINS = "";
-        public Date EEIND;
+        public String EEIND = "";
         public String EMATN = "";
         public String SAKTO = "";
         public String KOSTL = "";
