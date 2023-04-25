@@ -13,6 +13,7 @@ import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoDestinationManager;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoFunction;
+import com.sap.conn.jco.JCoStructure;
 import com.sap.conn.jco.JCoTable;
 import com.sap.conn.jco.JCoFieldIterator;
 import com.sap.conn.jco.JCoField;
@@ -138,6 +139,22 @@ public class Application  {
 				}
 				catch(NoSuchFieldException|IllegalAccessException e) { System.out.println(e.getMessage());}
 			}
+		}
+	}
+
+	public static <itemType> void feed_SAP_Structure(String sapStructName, itemType obj, Class<?> itemType) {
+
+		JCoStructure sapStruct = Application.currentSapFunction.getImportParameterList().getStructure(sapStructName);
+		
+		JCoFieldIterator it = sapStruct.getFieldIterator();
+		while(it.hasNextField()) {
+			JCoField field = it.nextField();
+			try {
+				Field f = obj.getClass().getDeclaredField(field.getName());
+				f.setAccessible(true);
+				field.setValue(f.get(obj));
+			}
+			catch(NoSuchFieldException|IllegalAccessException e) { System.out.println(e.getMessage());}
 		}
 	}
 	
