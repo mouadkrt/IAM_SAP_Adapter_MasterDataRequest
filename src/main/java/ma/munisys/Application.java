@@ -103,8 +103,8 @@ public class Application  {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		ArrayList<itemType> returnn = new ArrayList<itemType>();
-		Application.muis_debug("rootItems", rootItems);
-		Application.muis_debug("itemType", itemType);
+		muis_debug("rootItems", rootItems);
+		muis_debug("itemType", itemType);
 		if(!rootItems.containsKey("item")) return returnn;
 		muis_debug("rootItems.get('item')", rootItems.get("item"));
 		if(!rootItems.get("item").getClass().getName().equals("java.util.ArrayList")) {
@@ -112,6 +112,7 @@ public class Application  {
 			HashMap<String, String> itemm = (HashMap<String, String>) rootItems.get("item");
 			itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
 			itemType itemm2 = (itemType) mapper.convertValue(itemm,itemType);
+			muis_debug("Adding itemm2 to final result for getItemsAsArrayList", itemm2);
 			returnn.add(itemm2);
 		}
 		else {
