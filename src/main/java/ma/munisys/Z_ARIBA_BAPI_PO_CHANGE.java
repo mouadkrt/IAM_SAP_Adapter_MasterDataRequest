@@ -139,19 +139,19 @@ public String PARTITION;
         public String PMNTTRMS = "";
 	}
 	
-	class DELPO_ACCNTS { ArrayList<ZXTCPODELACCNT> items;}
+	class DELPO_ACCNTS { public ArrayList<ZXTCPODELACCNT> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTCPODELACCNT {
 		public String EBELP = "";
 		public String SERIAL_NO = "";
 	}
 
-	class DELPO_ITEMS { ArrayList<ZXTCPODELITEMS> items; }
+	class DELPO_ITEMS { public ArrayList<ZXTCPODELITEMS> items; }
 	class ZXTCPODELITEMS {
 		public String EBELP = "";
 	}
 
-	class PO_ACCOUNTS { ArrayList<ZXTCPOACCNT> items;}
+	class PO_ACCOUNTS { public ArrayList<ZXTCPOACCNT> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTCPOACCNT {
 		public String EBELP;
@@ -167,7 +167,7 @@ public String PARTITION;
 		public String CHGSTATE = "";
 	}
 
-	class PO_COND { ArrayList<ZXTPOCOND> items; }
+	class PO_COND { public ArrayList<ZXTPOCOND> items; }
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTPOCOND {
 		public String KSCHL = "";
@@ -175,7 +175,7 @@ public String PARTITION;
         public String KONWA = "";
 	}
 
-	class PO_ITEMS { ArrayList<ZXTCPOITEMS> items;}
+	class PO_ITEMS { public ArrayList<ZXTCPOITEMS> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTCPOITEMS {
 		public String EBELP = "";
@@ -212,7 +212,7 @@ public String PARTITION;
         public String LGORT = "";
 	}
 
-	class PO_TEXT { ArrayList<ZARSTRING> items;}
+	class PO_TEXT { public ArrayList<ZARSTRING> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZARSTRING {
 		public String EBELP = "";
@@ -222,7 +222,7 @@ public String PARTITION;
         public String STRING = "";
 	}
 
-	class PUR_ORDER_DELIVERY { ArrayList<ZXTPODELIV> items;}
+	class PUR_ORDER_DELIVERY { public ArrayList<ZXTPODELIV> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTPODELIV {
 		public String EBELN = "";
@@ -230,7 +230,7 @@ public String PARTITION;
 		public String EINDT = "";
 	}
 
-	class PUR_ORDER_DETAILS { ArrayList<ZXTPODET> items;}
+	class PUR_ORDER_DETAILS { public ArrayList<ZXTPODET> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTPODET {
 		public String EBELN = "";
