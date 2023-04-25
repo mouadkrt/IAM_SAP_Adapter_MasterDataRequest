@@ -156,6 +156,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 
 	class ERROR_MSG_TABLE {public ArrayList<ERROR_MSG_TABLE_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ERROR_MSG_TABLE_Item {
 		public String EBELN;
 		public String ERPORDERID;
@@ -173,6 +174,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 
 	class PO_COND { public ArrayList<PO_COND_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_COND_Item{
 		public String KSCHL;
 		public String KBETR;
@@ -180,6 +182,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 
 	class PO_CONTRACT_LIMITS {public ArrayList<PO_CONTRACT_LIMITS_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_CONTRACT_LIMITS_Item{
 		public String PCKG_NO;
 		public String LINE_NO;
@@ -193,6 +196,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 
 	class PO_ITEMS  {public ArrayList<PO_ITEMS_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_ITEMS_Item {
 		public String PO_NUMBER;
 		public String PO_ITEM;
@@ -248,6 +252,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 
 	class PO_ITEM_ACCOUNT_ASSIGNMENT  {public ArrayList<PO_ITEM_ACCOUNT_ASSIGNMENT_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_ITEM_ACCOUNT_ASSIGNMENT_Item {
 		public String PO_ITEM;
 		public String SERIAL_NO;
@@ -291,6 +296,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 	
 	class PO_ITEM_ADD_DATA  { public ArrayList<PO_ITEM_ADD_DATA_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_ITEM_ADD_DATA_Item {
 		public String INFO_UPD;
 		public String REMINDER1;
@@ -313,6 +319,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 	
 	class PO_ITEM_SCHEDULES  {public ArrayList<PO_ITEM_SCHEDULES_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_ITEM_SCHEDULES_Item {
 		public String PO_ITEM;
 		public String SERIAL_NO;
@@ -334,6 +341,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 	
 	class PO_ITEM_TEXT  { public ArrayList<PO_ITEM_TEXT_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_ITEM_TEXT_Item {
 		public String PO_NUMBER;
 		public String PO_ITEM;
@@ -343,6 +351,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 	
 	class PO_LIMITS  {public ArrayList<PO_LIMITS_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_LIMITS_Item {
 		public String PCKG_NO;
 		public String LIMIT;
@@ -369,6 +378,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 	
 	class PO_SERVICES  {public ArrayList<PO_SERVICES_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_SERVICES_Item {
 		public String PCKG_NO;
 		public String LINE_NO;
@@ -437,6 +447,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 	
 	class PO_SERVICES_TEXT  {public ArrayList<PO_SERVICES_TEXT_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_SERVICES_TEXT_Item {
 		public String PCKG_NO;
 		public String LINE_NO;
@@ -446,6 +457,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 
 	class PO_SRV_ACCASS_VALUES  {public ArrayList<PO_SRV_ACCASS_VALUES_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_SRV_ACCASS_VALUES_Item {
 		public String PCKG_NO;
 		public String LINE_NO;
@@ -457,6 +469,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 	
 	class PO_ZZIMMOS  {public ArrayList<PO_ZZIMMOS_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_ZZIMMOS_Item {
 		public String EBELP;
 		public String UMSON;
@@ -466,6 +479,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 	
 	class PUR_ORDER_DELIVERY  {public ArrayList<PUR_ORDER_DELIVERY_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PUR_ORDER_DELIVERY_Item {
 		public String EBELN;
 		public String EBELP;
@@ -473,6 +487,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 	
 	class PUR_ORDER_DETAILS  {public ArrayList<PUR_ORDER_DETAILS_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PUR_ORDER_DETAILS_Item {
 		public String EBELN;
 		public String EBELP;
@@ -485,6 +500,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	}
 	
 	class RETURN  {public ArrayList<RETURN_Item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class RETURN_Item {
 		public String TYPE;
 		public String CODE;
