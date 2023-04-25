@@ -1,5 +1,7 @@
 package ma.munisys;
 
+import java.lang.reflect.Field;
+
 // PurchaseOrderChangeExport_V1
 
 import java.util.ArrayList;
@@ -238,7 +240,7 @@ public String PARTITION;
     
     // The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object (Designed to mimic the http soap xml received)
 	// The resulting instance will be then handed over to the SAP function for processing
-	public static Z_ARIBA_BAPI_PO_CHANGE create_Z_ARIBA_BAPI_PO_CHANGE_ObjectFromXML(String httpBody) {
+	public static Z_ARIBA_BAPI_PO_CHANGE create_Z_ARIBA_BAPI_PO_CHANGE_ObjectFromXML(String httpBody) throws IllegalArgumentException, IllegalAccessException {
 		// https://javadev.github.io/underscore-java/
 			Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(httpBody);
 			System.out.println("\n U.fromXmlWithoutNamespacesAndAttributes(httpBody) : \n");
@@ -263,8 +265,13 @@ public String PARTITION;
 		Map<String, Object> poheader = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_HEADER");
 			Application.muis_debug("poheader", poheader);
 			z_ariba_bapi_po_change.PO_HEADER = z_ariba_bapi_po_change.new PO_HEADER();
-			z_ariba_bapi_po_change.PO_HEADER.AEDAT 		= Application.forceString(poheader, "AEDAT");
-			z_ariba_bapi_po_change.PO_HEADER.PMNTTRMS 	= Application.forceString(poheader, "PMNTTRMS");
+			Field[] PO_HEADER_fields =  z_ariba_bapi_po_change.PO_HEADER.getClass().getDeclaredFields();
+			for(Field f : PO_HEADER_fields){
+				f.setAccessible(true);
+				f.set(z_ariba_bapi_po_change.PO_HEADER, Application.forceString(poheader, f.getName()));
+			}
+			/*z_ariba_bapi_po_change.PO_HEADER.AEDAT 		= Application.forceString(poheader, "AEDAT");
+			/*z_ariba_bapi_po_change.PO_HEADER.PMNTTRMS 	= Application.forceString(poheader, "PMNTTRMS");
 			z_ariba_bapi_po_change.PO_HEADER.CHGSTATE 	= Application.forceString(poheader, "CHGSTATE");
 			z_ariba_bapi_po_change.PO_HEADER.EBELN 		= Application.forceString(poheader, "EBELN");
 			z_ariba_bapi_po_change.PO_HEADER.EKGRP 		= Application.forceString(poheader, "EKGRP");
@@ -275,6 +282,7 @@ public String PARTITION;
 			z_ariba_bapi_po_change.PO_HEADER.UNSEZ 		= Application.forceString(poheader, "UNSEZ");
 			z_ariba_bapi_po_change.PO_HEADER.VERSION 	= Application.forceString(poheader, "VERSION");
 			z_ariba_bapi_po_change.PO_HEADER.WAERS 		= Application.forceString(poheader, "WAERS");
+			*/
 
 		Map<String, Object> delpo_accnts = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("DELPO_ACCNTS");
 			Application.muis_debug("delpo_accnts", delpo_accnts);
