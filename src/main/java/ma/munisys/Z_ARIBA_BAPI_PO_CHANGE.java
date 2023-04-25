@@ -434,7 +434,7 @@ public String PARTITION;
 		for (Map.Entry<String, String> entry : sapTables.entrySet()) {
 			String tblCode = entry.getKey();
 			String tblName = entry.getValue();
-			sapTbl = Application.currentSapFunction.getTableParameterList().getTable(tblCode);
+			sapTbl = Application.currentSapFunction.getTableParameterList().getTable(tblName);
 			String xml_TblOut_Str = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll(tblCode, tblName) : "<"+tblName+"/>";
 			newBody +=  xml_TblOut_Str; // Tables
 		}
