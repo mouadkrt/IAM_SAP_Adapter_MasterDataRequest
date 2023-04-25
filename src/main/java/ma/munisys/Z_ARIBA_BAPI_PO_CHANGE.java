@@ -150,7 +150,7 @@ public String PARTITION;
 	}
 
 	class PO_ACCOUNTS { ArrayList<ZXTCPOACCNT> items;}
-	//@JsonIgnoreProperties(ignoreUnknown = true)
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTCPOACCNT {
 		public String EBELP;
 		public String SERIAL_NO = "";
