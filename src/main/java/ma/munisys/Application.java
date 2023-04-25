@@ -109,8 +109,8 @@ public class Application  {
 	public static <itemType> ArrayList<itemType> getItemsAsArrayList(LinkedHashMap<String, Object> rootItems, Class<?> itemType) {
 		
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-		mapper.setSerializationInclusion(Include.NON_NULL);
+		//mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+		//mapper.setSerializationInclusion(Include.NON_NULL);
 		ArrayList<itemType> returnn = new ArrayList<itemType>();
 		muis_debug("rootItems", rootItems);
 		muis_debug("itemType", itemType);
