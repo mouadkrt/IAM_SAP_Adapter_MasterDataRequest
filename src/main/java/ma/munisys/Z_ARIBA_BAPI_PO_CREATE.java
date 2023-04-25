@@ -548,6 +548,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		Map<String, Object> Z_ARIBA_BAPI_PO_CREATEE = (Map<String, Object>) soap_body.get("Z_ARIBA_BAPI_PO_CREATE");
 		Application.muis_debug("Z_ARIBA_BAPI_PO_CREATE", Z_ARIBA_BAPI_PO_CREATEE);
 		
+		// SAP Scalars :
 		Map<String, Object> Z_ARIBA_BAPI_PO_CREATEE2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE.get("Z_ARIBA_BAPI_PO_CREATE");
 			Application.muis_debug("Z_ARIBA_BAPI_PO_CREATEE2", Z_ARIBA_BAPI_PO_CREATEE2);
 			z_ariba_bapi_po_create.PARTITION =  !(Z_ARIBA_BAPI_PO_CREATEE2.get("PARTITION") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CREATEE2.get("PARTITION");
@@ -558,6 +559,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		
 		ObjectMapper mapper = new ObjectMapper();
 
+		// SAP Structures :
 		Map<String, Object> poaddress = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_ADDRESS");
 			Application.muis_debug("poaddress", poaddress);
 			z_ariba_bapi_po_create.PO_ADDRESS = (PO_ADDRESS) mapper.convertValue(poaddress,PO_ADDRESS.class);
@@ -570,6 +572,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 			Application.muis_debug("poheaderadddata", poheaderadddata);
 			z_ariba_bapi_po_create.PO_HEADER_ADD_DATA = (PO_HEADER_ADD_DATA) mapper.convertValue(poheaderadddata,PO_HEADER_ADD_DATA.class);
 
+		// SAP Tables :
 		Map<String, Object> ERROR_MSG_TABLE2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("ERROR_MSG_TABLE");
 			z_ariba_bapi_po_create.ERROR_MSG_TABLE.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) ERROR_MSG_TABLE2, ERROR_MSG_TABLE_Item.class);
 		
