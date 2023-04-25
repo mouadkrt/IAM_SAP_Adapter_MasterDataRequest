@@ -383,7 +383,7 @@ public String PARTITION;
 				Application.feed_SAP_Structure("PO_HEADER", z_ariba_bapi_po_change.PO_HEADER, PO_HEADER.class);
 				
 				// SAP Tables :
-				Application.feed_SAP_Table("ZXTCPODELACCNT", z_ariba_bapi_po_change.DELPO_ACCNTS.items, ZXTCPODELACCNT.class);
+				Application.feed_SAP_Table("DELPO_ACCNTS", z_ariba_bapi_po_change.DELPO_ACCNTS.items, ZXTCPODELACCNT.class);
 				Application.feed_SAP_Table("ZXTCPODELITEMS", z_ariba_bapi_po_change.DELPO_ITEMS.items, ZXTCPODELITEMS.class);
 				Application.feed_SAP_Table("ZXTPOERR", z_ariba_bapi_po_change.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_item.class);
 				Application.feed_SAP_Table("ZXTCPOACCNT", z_ariba_bapi_po_change.PO_ACCOUNTS.items, ZXTCPOACCNT.class);
