@@ -131,7 +131,6 @@ public class Application  {
 			xmlItemm = Application.forceSelfClosedXmlToEmptyString(xmlItemm);
 			itemType itemm = (itemType) mapper.convertValue(xmlItemm, itemType);
 			try {dumpObject(itemm);} catch (IllegalArgumentException|IllegalAccessException e) {e.printStackTrace();} 
-			muis_debug("Adding itemm2 to final result for getItemsAsArrayList", itemm);
 			
 			returnn.add(itemm);
 		}
@@ -179,6 +178,7 @@ public class Application  {
 			JCoField field = it.nextField();
 			try {
 				Field f = obj.getClass().getDeclaredField(field.getName());
+				muis_debug("feed_SAP_Structure  :setting field " + field.getName() + " to " + f.get(obj), "");
 				f.setAccessible(true);
 				field.setValue(f.get(obj));
 			}
