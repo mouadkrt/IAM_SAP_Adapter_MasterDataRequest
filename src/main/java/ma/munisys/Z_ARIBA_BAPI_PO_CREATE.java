@@ -577,16 +577,10 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 			z_ariba_bapi_po_create.PO_HEADER_ADD_DATA = (PO_HEADER_ADD_DATA) mapper.convertValue(poheaderadddata,PO_HEADER_ADD_DATA.class);
 
 		// SAP Tables :
-		Map<String, Object> ERROR_MSG_TABLE2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("DELPO_ACCNTS");
+		Map<String, Object> ERROR_MSG_TABLE2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("ERROR_MSG_TABLE");
 			Application.muis_debug("ERROR_MSG_TABLE2", ERROR_MSG_TABLE2);
-			if(!(ERROR_MSG_TABLE2 == null)) {
-				z_ariba_bapi_po_create.ERROR_MSG_TABLE.items = new ArrayList<ERROR_MSG_TABLE_Item>();
-				z_ariba_bapi_po_create.ERROR_MSG_TABLE.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) ERROR_MSG_TABLE2, ERROR_MSG_TABLE_Item.class);
-			}
-
-		//Map<String, Object> ERROR_MSG_TABLE2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("ERROR_MSG_TABLE");
-		//	z_ariba_bapi_po_create.ERROR_MSG_TABLE.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) ERROR_MSG_TABLE2, ERROR_MSG_TABLE_Item.class);
-		
+			z_ariba_bapi_po_create.ERROR_MSG_TABLE.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) ERROR_MSG_TABLE2, ERROR_MSG_TABLE_Item.class);
+			
 		Map<String, Object> PO_COND2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CREATEE2.get("PO_COND");
 			z_ariba_bapi_po_create.PO_COND.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) PO_COND2, PO_COND_Item.class);
 		
