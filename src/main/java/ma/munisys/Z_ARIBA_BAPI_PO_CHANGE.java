@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.underscore.U; // https://javadev.github.io/underscore-java/
@@ -145,6 +146,7 @@ public String PARTITION;
 	}
 
 	class PO_ACCOUNTS { ArrayList<ZXTCPOACCNT> items;}
+	@JsonIgnoreProperties
 	static class ZXTCPOACCNT {
 		String EBELP;
 		String SERIAL_NO;
