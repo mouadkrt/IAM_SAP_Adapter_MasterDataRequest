@@ -152,17 +152,17 @@ public String PARTITION;
 	class PO_ACCOUNTS { ArrayList<ZXTCPOACCNT> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTCPOACCNT {
-		String EBELP;
-		String SERIAL_NO = "";
-		String MKNTM = "";
-		String SAKTO = "";
-		String KOSTL = "";
-		String AUFNR = "";
-		String ANLN1 = "";
-		String ANLN2 = "";
-		String PS_PSP_PNR = "";
-		String MKNTMLIMIT = "";
-		String CHGSTATE = "";
+		public String EBELP;
+		public String SERIAL_NO = "";
+		public String MKNTM = "";
+		public String SAKTO = "";
+		public String KOSTL = "";
+		public String AUFNR = "";
+		public String ANLN1 = "";
+		public String ANLN2 = "";
+		public String PS_PSP_PNR = "";
+		public String MKNTMLIMIT = "";
+		public String CHGSTATE = "";
 	}
 
 	class PO_COND { ArrayList<ZXTPOCOND> items; }
