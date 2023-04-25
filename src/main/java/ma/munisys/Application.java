@@ -106,13 +106,16 @@ public class Application  {
 		Application.muis_debug("rootItems", rootItems);
 		Application.muis_debug("itemType", itemType);
 		if(!rootItems.containsKey("item")) return returnn;
+		muis_debug("rootItems.get('item')", rootItems.get("item"));
 		if(!rootItems.get("item").getClass().getName().equals("java.util.ArrayList")) {
+			muis_debug("", "rootItems.get('item') class not an ArrayList");
 			HashMap<String, String> itemm = (HashMap<String, String>) rootItems.get("item");
 			itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
 			itemType itemm2 = (itemType) mapper.convertValue(itemm,itemType);
 			returnn.add(itemm2);
 		}
 		else {
+			muis_debug("", "rootItems.get('item') class is an ArrayList");
 			ArrayList<Map<String,String>> itemms = (ArrayList<Map<String,String>>) rootItems.get("item");
 			Iterator iter = itemms.iterator();
 			while (iter.hasNext()) {
