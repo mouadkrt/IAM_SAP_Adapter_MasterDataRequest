@@ -124,7 +124,8 @@ public String PARTITION;
 		public String MANDT;
     }
 
-	class PO_HEADER {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class PO_HEADER {
 		public String EBELN = "";
         public String ERPORDERID = "";
         public String VERSION = "";
@@ -269,7 +270,7 @@ public String PARTITION;
 		
 		Map<String, Object> poheader = (Map<String, Object>) Z_ARIBA_BAPI_PO_CHANGEE2.get("PO_HEADER");
 			Application.muis_debug("poheader", poheader);
-			z_ariba_bapi_po_change.PO_HEADER = z_ariba_bapi_po_change.new PO_HEADER();
+			//z_ariba_bapi_po_change.PO_HEADER = z_ariba_bapi_po_change.new PO_HEADER();
 			/*Field[] PO_HEADER_fields =  z_ariba_bapi_po_change.PO_HEADER.getClass().getDeclaredFields();
 			for(Field f : PO_HEADER_fields){
 				f.setAccessible(true);
