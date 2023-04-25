@@ -23,6 +23,7 @@ import com.sap.conn.jco.JCoTable;
 import java.lang.reflect.Field;
 
 public class Z_ARIBA_BAPI_PO_CREATE {
+
 	public String PARTITION;
 	public String VARIANT;
 	public String HEADER_ADD_DATA_RELEVANT;
@@ -47,6 +48,67 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	public PUR_ORDER_DELIVERY PUR_ORDER_DELIVERY;
 	public PUR_ORDER_DETAILS PUR_ORDER_DETAILS;
 	public RETURN RETURN;
+
+	public Z_ARIBA_BAPI_PO_CREATE() {
+		this.PARTITION = "";
+		this.VARIANT  ="";
+		this.HEADER_ADD_DATA_RELEVANT ="";
+		this.ITEM_ADD_DATA_RELEVANT = "";
+		this.SKIP_ITEMS_WITH_ERROR = "";
+
+		this.PO_ADDRESS = new PO_ADDRESS();
+		this.PO_HEADER  = new  PO_HEADER();
+		this.PO_HEADER_ADD_DATA  = new PO_HEADER_ADD_DATA();
+
+		this.ERROR_MSG_TABLE = new ERROR_MSG_TABLE();
+		this.ERROR_MSG_TABLE.items =  new ArrayList<>();
+
+		this.PO_COND = new PO_COND();
+		this.PO_COND.items =  new ArrayList<>();
+
+		this.PO_CONTRACT_LIMITS = new PO_CONTRACT_LIMITS();
+		this.PO_CONTRACT_LIMITS.items =  new ArrayList<>();
+
+		this.PO_ITEMS = new PO_ITEMS();
+		this.PO_ITEMS.items =  new ArrayList<>();
+
+		this.PO_ITEM_ACCOUNT_ASSIGNMENT = new PO_ITEM_ACCOUNT_ASSIGNMENT();
+		this.PO_ITEM_ACCOUNT_ASSIGNMENT.items =  new ArrayList<>();
+
+		this.PO_ITEM_ADD_DATA = new PO_ITEM_ADD_DATA();
+		this.PO_ITEM_ADD_DATA.items =  new ArrayList<>();
+
+		this.PO_ITEM_SCHEDULES = new PO_ITEM_SCHEDULES();
+		this.PO_ITEM_SCHEDULES.items =  new ArrayList<>();
+
+		this.PO_ITEM_TEXT = new PO_ITEM_TEXT();
+		this.PO_ITEM_TEXT.items =  new ArrayList<>();
+
+		this.PO_LIMITS = new PO_LIMITS();
+		this.PO_LIMITS.items =  new ArrayList<>();
+
+		this.PO_SERVICES = new PO_SERVICES();
+		this.PO_SERVICES.items =  new ArrayList<>();
+
+		this.PO_SERVICES_TEXT = new PO_SERVICES_TEXT();
+		this.PO_SERVICES_TEXT.items =  new ArrayList<>();
+
+		this.PO_SRV_ACCASS_VALUES = new PO_SRV_ACCASS_VALUES();
+		this.PO_SRV_ACCASS_VALUES.items =  new ArrayList<>();
+
+		this.PO_ZZIMMOS = new PO_ZZIMMOS();
+		this.PO_ZZIMMOS.items =  new ArrayList<>();
+
+		this.PUR_ORDER_DELIVERY = new PUR_ORDER_DELIVERY();
+		this.PUR_ORDER_DELIVERY.items =  new ArrayList<>();
+
+		this.PUR_ORDER_DETAILS = new PUR_ORDER_DETAILS();
+		this.PUR_ORDER_DETAILS.items =  new ArrayList<>();
+
+		this.RETURN = new RETURN();
+		this.RETURN.items =  new ArrayList<>();
+		
+	}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class PO_ADDRESS {
 		public String ADDRNUMBER;

@@ -45,7 +45,7 @@ public class Application  {
 	private static String MUIS_DEBUG = System.getenv().getOrDefault("MUIS_DEBUG", "0");
 	public static void main(String[] args) {
 		registerDestinationDataProvider();
-		if(!MUIS_DEBUG.equals("0")) describeAllAribaFunctions();
+		//if(!MUIS_DEBUG.equals("0")) describeAllAribaFunctions();
 		CamelContext context = new DefaultCamelContext();
 		try {
 			context.addRoutes(new RouteBuilder() {
