@@ -122,6 +122,7 @@ public class Application  {
 		muis_debug("rootItems", rootItems);
 		muis_debug("itemType", itemType);
 
+		if(rootItems == null) return returnn;
 		if(!rootItems.containsKey("item")) return returnn;
 
 		if(!rootItems.get("item").getClass().getName().equals("java.util.ArrayList")) {
