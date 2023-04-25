@@ -363,7 +363,7 @@ public String PARTITION;
 		
 		System.out.println("MUIS : Parsing HTTP XML Body : Extracted vars are : ");
 		System.out.println("MUIS : z_ariba_bapi_po_change = \n" + z_ariba_bapi_po_change);
-		System.out.println("EBELP mouad2 = "+ z_ariba_bapi_po_change.PO_ACCOUNTS.items.size());
+		Application.dumpObject(z_ariba_bapi_po_change.PO_ACCOUNTS.items.get(0));
 
         try
         {
