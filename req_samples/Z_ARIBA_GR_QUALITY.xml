@@ -1,0 +1,7 @@
+<urn:Z_ARIBA_GR_QUALITY xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:urn="urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_QUALITY">
+  <urn:Z_ARIBA_GR_QUALITY>
+    <urn:PARTITION>par1iam</urn:PARTITION>
+    <urn:STARTDATE/>
+    <urn:VARIANT>var1iam</urn:VARIANT>
+  </urn:Z_ARIBA_GR_QUALITY>
+</urn:Z_ARIBA_GR_QUALITY>

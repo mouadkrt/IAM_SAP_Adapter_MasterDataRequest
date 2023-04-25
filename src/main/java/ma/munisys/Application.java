@@ -87,6 +87,10 @@ public class Application  {
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_PO_HEADER_STATUS.")
 										.process(Z_ARIBA_PO_HEADER_STATUS::execute_SapFunc_Z_ARIBA_PO_HEADER_STATUS)
 										.process(Z_ARIBA_PO_HEADER_STATUS::read_SapFunc_Z_ARIBA_PO_HEADER_STATUS_Response)
+									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_GR_QUALITY'"))
+										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_QUALITY.")
+										.process(Z_ARIBA_GR_QUALITY::execute_SapFunc_Z_ARIBA_GR_QUALITY)
+										.process(Z_ARIBA_GR_QUALITY::read_SapFunc_Z_ARIBA_GR_QUALITY_Response)
 					.end();
 				}
 			});
