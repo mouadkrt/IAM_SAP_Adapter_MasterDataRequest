@@ -134,7 +134,7 @@ public String PARTITION;
 	}
 	
 	class DELPO_ACCNTS { ArrayList<ZXTCPODELACCNT> items;}
-	class ZXTCPODELACCNT {
+	static class ZXTCPODELACCNT {
 		String EBELP;
 		String SERIAL_NO;
 	}
