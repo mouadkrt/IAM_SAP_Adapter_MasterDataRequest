@@ -135,102 +135,102 @@ public String PARTITION;
 	class DELPO_ACCNTS { ArrayList<ZXTCPODELACCNT> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTCPODELACCNT {
-		String EBELP;
-		String SERIAL_NO;
+		String EBELP = "";
+		String SERIAL_NO = "";
 	}
 
 	class DELPO_ITEMS { ArrayList<ZXTCPODELITEMS> items; }
 	class ZXTCPODELITEMS {
-		String EBELP;
+		String EBELP = "";
 	}
 
 	class PO_ACCOUNTS { ArrayList<ZXTCPOACCNT> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTCPOACCNT {
-		String EBELP;
-		String SERIAL_NO;
-		String MKNTM;
-		String SAKTO;
-		String KOSTL;
-		String AUFNR;
-		String ANLN1;
-		String ANLN2;
-		String PS_PSP_PNR;
-		String MKNTMLIMIT;
-		String CHGSTATE;
+		String EBELP = "";
+		String SERIAL_NO = "";
+		String MKNTM = "";
+		String SAKTO = "";
+		String KOSTL = "";
+		String AUFNR = "";
+		String ANLN1 = "";
+		String ANLN2 = "";
+		String PS_PSP_PNR = "";
+		String MKNTMLIMIT = "";
+		String CHGSTATE = "";
 	}
 
 	class PO_COND { ArrayList<ZXTPOCOND> items; }
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTPOCOND {
-		String KSCHL;
-        String KBETR;
-        String KONWA;
+		String KSCHL = "";
+        String KBETR = "";
+        String KONWA = "";
 	}
 
 	class PO_ITEMS { ArrayList<ZXTCPOITEMS> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTCPOITEMS {
-		String EBELP;
-        String TXZ01;
-        String MATKL;
-        String KNTTP;
-        String WERKS;
-        String NETPR;
-        String PEINH;
-        String MENGE;
-        String MEINS;
-        String EEIND;
-        String EMATN;
-        String SAKTO;
-        String KOSTL;
-        String AUFNR;
-        String PS_PSP_PNR;
-        String ANLN1;
-        String ANLN2;
-        String MWSKZ;
-        String EPSTP;
-        String SUMLIMIT;
-        String COMMITMENT;
-        String REQ_ID;
-        String ITEMONREQ;
-        String VRTKZ;
-        String TWRKZ;
-        String UNTTO;
-        String UEBTO;
-        String CHGSTATE;
-        String LGORT;
+		String EBELP = "";
+        String TXZ01 = "";
+        String MATKL = "";
+        String KNTTP = "";
+        String WERKS = "";
+        String NETPR = "";
+        String PEINH = "";
+        String MENGE = "";
+        String MEINS = "";
+        String EEIND = "";
+        String EMATN = "";
+        String SAKTO = "";
+        String KOSTL = "";
+        String AUFNR = "";
+        String PS_PSP_PNR = "";
+        String ANLN1 = "";
+        String ANLN2 = "";
+        String MWSKZ = "";
+        String EPSTP = "";
+        String SUMLIMIT = "";
+        String COMMITMENT = "";
+        String REQ_ID = "";
+        String ITEMONREQ = "";
+        String VRTKZ = "";
+        String TWRKZ = "";
+        String UNTTO = "";
+        String UEBTO = "";
+        String CHGSTATE = "";
+        String LGORT = "";
 	}
 
 	class PO_TEXT { ArrayList<ZARSTRING> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZARSTRING {
-		String EBELP;
-        String TDOBJECT;
-        String TDID;
-        String STRINGNUM;
-        String STRING;
+		String EBELP = "";
+        String TDOBJECT = "";
+        String TDID = "";
+        String STRINGNUM = "";
+        String STRING = "";
 	}
 
 	class PUR_ORDER_DELIVERY { ArrayList<ZXTPODELIV> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTPODELIV {
-		String EBELN;
-		String EBELP;
-		String EINDT;
+		String EBELN = "";
+		String EBELPv = "";
+		String EINDT = "";
 	}
 
 	class PUR_ORDER_DETAILS { ArrayList<ZXTPODET> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTPODET {
-		String EBELN;
-		String EBELP;
-		String AEDAT;
-		String MENGE;
-		String MEINS;
-		String NETPR;
-		String REQ_ID;
-		String ITEMONREQ;
+		String EBELN = "";
+		String EBELP = "";
+		String AEDAT = "";
+		String MENGE = "";
+		String MEINS = "";
+		String NETPR = "";
+		String REQ_ID = "";
+		String ITEMONREQ = "";
 	}
     
     // The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object (Designed to mimic the http soap xml received)
