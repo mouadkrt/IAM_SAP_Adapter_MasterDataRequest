@@ -96,6 +96,7 @@ public class Application  {
 			muis_debug(f.getName(), f.get(obj));
 		}
 	}
+	
 	public static String forceString(Map<String, Object> o, String key) {
 		return !(o.get(key) instanceof String) ? "" : (String) o.get(key);
 	}

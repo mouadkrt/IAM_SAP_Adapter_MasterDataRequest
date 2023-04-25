@@ -140,13 +140,13 @@ public String PARTITION;
 	class DELPO_ACCNTS { ArrayList<ZXTCPODELACCNT> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTCPODELACCNT {
-		String EBELP = "";
-		String SERIAL_NO = "";
+		public String EBELP = "";
+		public String SERIAL_NO = "";
 	}
 
 	class DELPO_ITEMS { ArrayList<ZXTCPODELITEMS> items; }
 	class ZXTCPODELITEMS {
-		String EBELP = "";
+		public String EBELP = "";
 	}
 
 	class PO_ACCOUNTS { ArrayList<ZXTCPOACCNT> items;}
@@ -168,74 +168,74 @@ public String PARTITION;
 	class PO_COND { ArrayList<ZXTPOCOND> items; }
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTPOCOND {
-		String KSCHL = "";
-        String KBETR = "";
-        String KONWA = "";
+		public String KSCHL = "";
+        public String KBETR = "";
+        public String KONWA = "";
 	}
 
 	class PO_ITEMS { ArrayList<ZXTCPOITEMS> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTCPOITEMS {
-		String EBELP = "";
-        String TXZ01 = "";
-        String MATKL = "";
-        String KNTTP = "";
-        String WERKS = "";
-        String NETPR = "";
-        String PEINH = "";
-        String MENGE = "";
-        String MEINS = "";
-        String EEIND = "";
-        String EMATN = "";
-        String SAKTO = "";
-        String KOSTL = "";
-        String AUFNR = "";
-        String PS_PSP_PNR = "";
-        String ANLN1 = "";
-        String ANLN2 = "";
-        String MWSKZ = "";
-        String EPSTP = "";
-        String SUMLIMIT = "";
-        String COMMITMENT = "";
-        String REQ_ID = "";
-        String ITEMONREQ = "";
-        String VRTKZ = "";
-        String TWRKZ = "";
-        String UNTTO = "";
-        String UEBTO = "";
-        String CHGSTATE = "";
-        String LGORT = "";
+		public String EBELP = "";
+        public String TXZ01 = "";
+        public String MATKL = "";
+        public String KNTTP = "";
+        public String WERKS = "";
+        public String NETPR = "";
+        public String PEINH = "";
+        public String MENGE = "";
+        public String MEINS = "";
+        public String EEIND = "";
+        public String EMATN = "";
+        public String SAKTO = "";
+        public String KOSTL = "";
+        public String AUFNR = "";
+        public String PS_PSP_PNR = "";
+        public String ANLN1 = "";
+        public String ANLN2 = "";
+        public String MWSKZ = "";
+        public String EPSTP = "";
+        public String SUMLIMIT = "";
+        public String COMMITMENT = "";
+        public String REQ_ID = "";
+        public String ITEMONREQ = "";
+        public String VRTKZ = "";
+        public String TWRKZ = "";
+        public String UNTTO = "";
+        public String UEBTO = "";
+        public String CHGSTATE = "";
+        public String LGORT = "";
 	}
 
 	class PO_TEXT { ArrayList<ZARSTRING> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZARSTRING {
-		String EBELP = "";
-        String TDOBJECT = "";
-        String TDID = "";
-        String STRINGNUM = "";
-        String STRING = "";
+		public String EBELP = "";
+        public String TDOBJECT = "";
+        public String TDID = "";
+        public String STRINGNUM = "";
+        public String STRING = "";
 	}
 
 	class PUR_ORDER_DELIVERY { ArrayList<ZXTPODELIV> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTPODELIV {
-		String EBELN = "";
-		String EBELPv = "";
-		String EINDT = "";
+		public String EBELN = "";
+		public String EBELPv = "";
+		public String EINDT = "";
 	}
 
 	class PUR_ORDER_DETAILS { ArrayList<ZXTPODET> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTPODET {
-		String EBELN = "";
-		String EBELP = "";
-		String AEDAT = "";
-		String MENGE = "";
-		String MEINS = "";
-		String NETPR = "";
-		String REQ_ID = "";
-		String ITEMONREQ = "";
+		public String EBELN = "";
+		public String EBELP = "";
+		public String AEDAT = "";
+		public String MENGE = "";
+		public String MEINS = "";
+		public String NETPR = "";
+		public String REQ_ID = "";
+		public String ITEMONREQ = "";
 	}
     
     // The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object (Designed to mimic the http soap xml received)
