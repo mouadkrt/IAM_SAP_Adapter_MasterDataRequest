@@ -118,18 +118,18 @@ public String PARTITION;
     }
 
 	class PO_HEADER {
-		String EBELN;
-        String ERPORDERID;
-        String VERSION;
-        String LIFNR;
-        String ORDERTYPE;
-        String EKGRP;
-        String AEDAT;
-        String EKORG;
-        String UNSEZ;
-        String WAERS;
-        String CHGSTATE;
-        String PMNTTRMS;
+		public String EBELN;
+        public String ERPORDERID;
+        public String VERSION;
+        public String LIFNR;
+        public String ORDERTYPE;
+        public String EKGRP;
+        public String AEDAT;
+        public String EKORG;
+        public String UNSEZ;
+        public String WAERS;
+        public String CHGSTATE;
+        public String PMNTTRMS;
 	}
 	
 	class DELPO_ACCNTS { ArrayList<ZXTCPODELACCNT> items;}
