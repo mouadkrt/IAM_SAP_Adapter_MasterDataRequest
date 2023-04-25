@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -46,7 +47,8 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 	public PUR_ORDER_DELIVERY PUR_ORDER_DELIVERY;
 	public PUR_ORDER_DETAILS PUR_ORDER_DETAILS;
 	public RETURN RETURN;
-	class PO_ADDRESS {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class PO_ADDRESS {
 		public String ADDRNUMBER;
 		public String ADDRHANDLE;
 		public String NATION;
@@ -109,7 +111,8 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String BUILD_LONG;
 	}
 
-	class PO_HEADER {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static  class PO_HEADER {
 		public String DOC_DATE;
 		public String DOC_TYPE;
 		public String DOC_CAT;
@@ -127,7 +130,8 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		public String ERPORDERID;
 	}
 
-	class PO_HEADER_ADD_DATA {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static  class PO_HEADER_ADD_DATA {
 		public String PMNTTRMS;
 		public String DSCNT1_TO;
 		public String DSCNT2_TO;
