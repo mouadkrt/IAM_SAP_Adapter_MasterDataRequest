@@ -368,7 +368,6 @@ public String PARTITION;
 				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_change.VARIANT);
 
 				// SAP Structures :
-				//Application.currentSapFunction.getImportParameterList().setValue("PO_HEADER", z_ariba_bapi_po_change.PO_HEADER);
 				Application.feed_SAP_Structure("PO_HEADER", z_ariba_bapi_po_change.PO_HEADER, PO_HEADER.class);
 				
 				// SAP Tables :
