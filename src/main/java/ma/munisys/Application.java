@@ -32,6 +32,7 @@ import java.util.Properties;
 
 import com.github.underscore.U;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class Application  {
   	
@@ -100,6 +101,7 @@ public class Application  {
 	public static <itemType> ArrayList<itemType> getItemsAsArrayList(LinkedHashMap<String, Object> rootItems, Class<?> itemType) {
 		
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		ArrayList<itemType> returnn = new ArrayList<itemType>();
 		Application.muis_debug("rootItems", rootItems);
 		Application.muis_debug("itemType", itemType);
