@@ -111,7 +111,7 @@ public class Application  {
 			muis_debug("", "rootItems.get('item') class not an ArrayList");
 			HashMap<String, String> itemm = (HashMap<String, String>) rootItems.get("item");
 			itemm = Application.forceSelfClosedXmlToEmptyString(itemm);
-			itemType itemm2 = (itemType) mapper.convertValue(itemm,itemType);
+			itemType itemm2 = (itemType) mapper.convertValue(itemm, itemType);
 			muis_debug("Adding itemm2 to final result for getItemsAsArrayList", itemm2);
 			returnn.add(itemm2);
 		}
@@ -127,7 +127,7 @@ public class Application  {
 				returnn.add(itemm2);
 			}
 		}
-
+		muis_debug("returnn", returnn);
 		return returnn;
 	}
 
