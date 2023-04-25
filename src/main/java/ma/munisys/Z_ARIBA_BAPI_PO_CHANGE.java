@@ -99,11 +99,9 @@ public String PARTITION;
         public String Password;
     }
 
-	class ERROR_MSG_TABLE { 
-        public ArrayList<ERROR_MSG_TABLE_item> items;
-    }
-
-	class ERROR_MSG_TABLE_item {
+	class ERROR_MSG_TABLE { public ArrayList<ERROR_MSG_TABLE_item> items;}
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class ERROR_MSG_TABLE_item {
         public String EBELN;
         public String ERPORDERID;
 		public String NUMINSET;
@@ -135,7 +133,8 @@ public String PARTITION;
 	}
 	
 	class DELPO_ACCNTS { ArrayList<ZXTCPODELACCNT> items;}
-	class ZXTCPODELACCNT {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class ZXTCPODELACCNT {
 		String EBELP;
 		String SERIAL_NO;
 	}
@@ -146,7 +145,7 @@ public String PARTITION;
 	}
 
 	class PO_ACCOUNTS { ArrayList<ZXTCPOACCNT> items;}
-	@JsonIgnoreProperties
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class ZXTCPOACCNT {
 		String EBELP;
 		String SERIAL_NO;
@@ -162,14 +161,16 @@ public String PARTITION;
 	}
 
 	class PO_COND { ArrayList<ZXTPOCOND> items; }
-	class ZXTPOCOND {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class ZXTPOCOND {
 		String KSCHL;
         String KBETR;
         String KONWA;
 	}
 
 	class PO_ITEMS { ArrayList<ZXTCPOITEMS> items;}
-	class ZXTCPOITEMS {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class ZXTCPOITEMS {
 		String EBELP;
         String TXZ01;
         String MATKL;
@@ -202,7 +203,8 @@ public String PARTITION;
 	}
 
 	class PO_TEXT { ArrayList<ZARSTRING> items;}
-	class ZARSTRING {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class ZARSTRING {
 		String EBELP;
         String TDOBJECT;
         String TDID;
@@ -211,14 +213,16 @@ public String PARTITION;
 	}
 
 	class PUR_ORDER_DELIVERY { ArrayList<ZXTPODELIV> items;}
-	class ZXTPODELIV {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class ZXTPODELIV {
 		String EBELN;
 		String EBELP;
 		String EINDT;
 	}
 
 	class PUR_ORDER_DETAILS { ArrayList<ZXTPODET> items;}
-	class ZXTPODET {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class ZXTPODET {
 		String EBELN;
 		String EBELP;
 		String AEDAT;
