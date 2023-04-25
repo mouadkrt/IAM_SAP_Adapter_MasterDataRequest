@@ -17,7 +17,8 @@ import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoTable;
 
 public class Z_ARIBA_BAPI_PO_CHANGE {
-	public String PARTITION;
+
+public String PARTITION;
 	public String VARIANT;
 	public PO_HEADER PO_HEADER;
 	public ERROR_MSG_TABLE ERROR_MSG_TABLE;
@@ -29,6 +30,42 @@ public class Z_ARIBA_BAPI_PO_CHANGE {
 	public PO_TEXT PO_TEXT;
 	public PUR_ORDER_DELIVERY PUR_ORDER_DELIVERY;
 	public PUR_ORDER_DETAILS PUR_ORDER_DETAILS;
+
+	public Z_ARIBA_BAPI_PO_CHANGE() {
+
+		this.PARTITION = "";
+		this.VARIANT = "";
+
+		this.PO_HEADER = new PO_HEADER();
+
+		this.ERROR_MSG_TABLE = new ERROR_MSG_TABLE();
+		this.ERROR_MSG_TABLE.items = new ArrayList<>();
+
+		this.DELPO_ACCNTS = new DELPO_ACCNTS();
+		this.DELPO_ACCNTS.items = new ArrayList<>();
+
+		this.DELPO_ITEMS = new DELPO_ITEMS();
+		this.DELPO_ITEMS.items = new ArrayList<>();
+
+		this.PO_ACCOUNTS = new PO_ACCOUNTS();
+		this.PO_ACCOUNTS.items = new ArrayList<>();
+
+		this.PO_COND = new PO_COND();
+		this.PO_COND.items = new ArrayList<>();
+
+		this.PO_ITEMS = new PO_ITEMS();
+		this.PO_ITEMS.items = new ArrayList<>();
+
+		this.PO_TEXT = new PO_TEXT();
+		this.PO_TEXT.items = new ArrayList<>();
+
+		this.PUR_ORDER_DELIVERY = new PUR_ORDER_DELIVERY();
+		this.PUR_ORDER_DELIVERY.items = new ArrayList<>();
+
+		this.PUR_ORDER_DETAILS = new PUR_ORDER_DETAILS();
+		this.PUR_ORDER_DETAILS.items = new ArrayList<>();
+
+	}
 
     public String toString() {
         // You may print the Z_ARIBA_BAPI_PO_CHANGE Java object back as a JSON format, to inspect it :
