@@ -1,0 +1,36 @@
+<Z_ARIBA_GR_TRANSFERResponse cid="A506257369A8A6D26046F37C0A3C9D2B" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_TRANSFER:response">[[
+  <Z_ARIBA_GR_TRANSFER.Response>
+    <STATUS>0</STATUS>
+    <ERROR_MSG_TABLE/>
+    <GR_ITEM>
+      <item>
+        <MBLNR/>
+        <MJAHR>0000</MJAHR>
+        <ZEILE>0000</ZEILE>
+        <ZQACCEPT>1.000</ZQACCEPT>
+        <ZUACCEPT>PC</ZUACCEPT>
+        <ZQREFUS>0.000</ZQREFUS>
+        <ZUREFUS>PC</ZUREFUS>
+        <BWTAR/>
+        <GRUND>0000</GRUND>
+        <ARIBA_GRNO>ST-RC205425</ARIBA_GRNO>
+        <ARIBA_ITNO>1</ARIBA_ITNO>
+        <MBLNR_A/>
+        <MJAHR_A>0000</MJAHR_A>
+        <MBLNR_R/>
+        <MJAHR_R>0000</MJAHR_R>
+        <NO_MORE_GR>X</NO_MORE_GR>
+        <RDP_FLAG/>
+        <RDP_DATE/>
+      </item>
+    </GR_ITEM>
+    <GR_SERIAL>
+      <item>
+        <MBLNR>5000735437</MBLNR>
+        <MJAHR>2020</MJAHR>
+        <ZEILE>0001</ZEILE>
+        <SERNR/>
+      </item>
+    </GR_SERIAL>
+  </Z_ARIBA_GR_TRANSFER.Response>
+</Z_ARIBA_GR_TRANSFERResponse>

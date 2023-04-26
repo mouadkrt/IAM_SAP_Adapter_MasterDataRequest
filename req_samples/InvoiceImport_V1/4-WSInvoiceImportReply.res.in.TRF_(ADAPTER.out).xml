@@ -1,0 +1,28 @@
+<urn:WSInvoiceImportReply xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:urn="urn:Ariba:Buyer:vsap">
+  <urn:IAMSAPInvoice_WSInvoiceImportResponse_Item>
+    <urn:item>
+      <urn:InvoiceQuantity>1.000</urn:InvoiceQuantity>
+      <urn:InvoiceUnite>PC</urn:InvoiceUnite>
+      <urn:OrderLineNumber>00001</urn:OrderLineNumber>
+      <urn:InvoiceQuantityPre>0.000</urn:InvoiceQuantityPre>
+      <urn:InvoiceQuantityPreUl>0.000</urn:InvoiceQuantityPreUl>
+      <urn:OrderNumber>1003019908</urn:OrderNumber>
+      <urn:MaterialDocumentYear>20181023</urn:MaterialDocumentYear>
+      <urn:InvoiceQuantityUl>0.000</urn:InvoiceQuantityUl>
+      <urn:InvoiceQuantityPreCIA>0.000</urn:InvoiceQuantityPreCIA>
+      <urn:InvoiceQuantityCIA>0.000</urn:InvoiceQuantityCIA>
+    </urn:item>
+    <urn:item>
+      <urn:InvoiceQuantity>2.000</urn:InvoiceQuantity>
+      <urn:InvoiceUnite>PC</urn:InvoiceUnite>
+      <urn:OrderLineNumber>00001</urn:OrderLineNumber>
+      <urn:InvoiceQuantityPre>0.000</urn:InvoiceQuantityPre>
+      <urn:InvoiceQuantityPreUl>0.000</urn:InvoiceQuantityPreUl>
+      <urn:OrderNumber>1005034906</urn:OrderNumber>
+      <urn:MaterialDocumentYear>20181023</urn:MaterialDocumentYear>
+      <urn:InvoiceQuantityUl>0.000</urn:InvoiceQuantityUl>
+      <urn:InvoiceQuantityPreCIA>0.000</urn:InvoiceQuantityPreCIA>
+      <urn:InvoiceQuantityCIA>0.000</urn:InvoiceQuantityCIA>
+    </urn:item>
+  </urn:IAMSAPInvoice_WSInvoiceImportResponse_Item>
+</urn:WSInvoiceImportReply>

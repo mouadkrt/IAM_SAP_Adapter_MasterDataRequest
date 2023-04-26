@@ -1,0 +1,15 @@
+<ns0:WSReceiptTransferReply xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="urn:Ariba:Buyer:vsap">[[
+  <ns0:Receipt_ReceiptTransferResponse_Item>
+    <ns0:item>
+      <ns0:ReceiptItems>
+        <ns0:item>
+          <ns0:IAMSAPLiberateStockDocument>0000-</ns0:IAMSAPLiberateStockDocument>
+          <ns0:IAMSAPBlockedStockDocument>0000-</ns0:IAMSAPBlockedStockDocument>
+          <ns0:NumberInCollection>1</ns0:NumberInCollection>
+        </ns0:item>
+      </ns0:ReceiptItems>
+      <ns0:UniqueName>ST-RC205909</ns0:UniqueName>
+    </ns0:item>
+  </ns0:Receipt_ReceiptTransferResponse_Item>
+  <ns0:ReceiptError_ReceiptTransferErrorImport_Item/>
+</ns0:WSReceiptTransferReply>

@@ -1,0 +1,10 @@
+<WSInvoiceImportRequest variant="var1iam" partition="par1iam" xmlns="urn:Ariba:Buyer:vsap" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WSLoadSapInvoice_WSInvoiceImport_Item>
+    <item>
+      <IntegrationFromDate/>
+      <Password>ENCR(312531493234280318631613211321732473227321431973252)</Password>
+      <EndDate>21111111</EndDate>
+      <Login>ARIBA_CPIC</Login>
+    </item>
+  </WSLoadSapInvoice_WSInvoiceImport_Item>
+</WSInvoiceImportRequest>
