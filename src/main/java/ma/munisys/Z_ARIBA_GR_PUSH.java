@@ -42,8 +42,13 @@ public class Z_ARIBA_GR_PUSH {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	static class GR_HEADER {
 		public String MBLNR;
+
+		//@JsonFormat(pattern="yyyy/MM/dd")
 		public String BLDAT;
+
+		//@JsonFormat(pattern="yyyy/MM/dd")
 		public String BUDAT;
+		
 		public String FRBNR;
 		public String LFSNR;
 		public String BWARTWE;

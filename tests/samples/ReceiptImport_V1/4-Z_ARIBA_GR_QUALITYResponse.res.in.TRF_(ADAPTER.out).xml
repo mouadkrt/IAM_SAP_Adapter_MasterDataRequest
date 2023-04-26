@@ -1,0 +1,38 @@
+<Z_ARIBA_GR_QUALITYResponse cid="C06F7B0DE71C775CB3B2EC6BA306225D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_QUALITY:response">[[
+  <Z_ARIBA_GR_QUALITY.Response>
+    <GOOD_RECEIPT_PO>
+      <item>
+        <MBLNR>5105623676</MBLNR>
+        <MJAHR>2023</MJAHR>
+        <BLDAT>2023-04-14</BLDAT>
+        <BUDAT>2023-04-14</BUDAT>
+        <CPUDT>2023-04-14</CPUDT>
+        <CPUTM>12:02:16</CPUTM>
+        <AEDAT/>
+        <USNAM>HELBOUANANI</USNAM>
+        <XBLNR>BON LIVRAISON</XBLNR>
+        <BKTXT>1005035489</BKTXT>
+        <ZEILE>0001</ZEILE>
+        <BWART>101</BWART>
+        <MATNR>000000000000400104</MATNR>
+        <ERFMG>15.000</ERFMG>
+        <ERFME>PC</ERFME>
+        <LSMNG>15.000</LSMNG>
+        <LSMEH>PC</LSMEH>
+        <WERKS>Z000</WERKS>
+        <LGORT>5000</LGORT>
+        <BWTAR/>
+        <EBELN>1005035489</EBELN>
+        <EBELP>00001</EBELP>
+        <INSMK>X</INSMK>
+        <ELIKZ>X</ELIKZ>
+        <WEMPF/>
+        <ABLAD/>
+        <SGTXT/>
+        <SJAHR>0000</SJAHR>
+        <SMBLN/>
+        <SMBLP>0000</SMBLP>
+      </item>
+    </GOOD_RECEIPT_PO>
+  </Z_ARIBA_GR_QUALITY.Response>
+</Z_ARIBA_GR_QUALITYResponse>

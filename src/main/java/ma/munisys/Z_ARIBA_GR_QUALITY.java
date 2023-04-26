@@ -27,12 +27,12 @@ public class Z_ARIBA_GR_QUALITY {
 	
 	public Z_ARIBA_GR_QUALITY() {
 		this.PARTITION = "";
-		this.VARIANT  ="";
+		this.VARIANT  = "";
 		// @JsonFormat(pattern="yyyy/MM/dd")
 		this.STARTDATE = "";
 
-		this.GOOD_RECEIPT_PO = new GOOD_RECEIPT_PO();
-		this.GOOD_RECEIPT_PO.items =  new ArrayList<>();
+		this.GOOD_RECEIPT_PO 		= new GOOD_RECEIPT_PO();
+		this.GOOD_RECEIPT_PO.items 	=  new ArrayList<>();
 	}
 	
 	class GOOD_RECEIPT_PO {public ArrayList<GOOD_RECEIPT_PO_Items> items;}
@@ -135,7 +135,6 @@ public class Z_ARIBA_GR_QUALITY {
 			Application.muis_debug("GOOD_RECEIPT_PO2", GOOD_RECEIPT_PO2);
 			z_ariba_gr_quality.GOOD_RECEIPT_PO.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) GOOD_RECEIPT_PO2, GOOD_RECEIPT_PO_Items.class);
 			
-	
 		return z_ariba_gr_quality;
 	}
 
@@ -194,17 +193,11 @@ public class Z_ARIBA_GR_QUALITY {
 		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";
 		newBody += "<Z_ARIBA_GR_QUALITYResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_GR_QUALITY:response\"><Z_ARIBA_GR_QUALITY.Response>";
 		
-		String xml_E_PARTITION = "<E_PARTITION>"+ Application.currentSapFunction.getExportParameterList().getString("E_PARTITION") + "</E_PARTITION>";
-		String xml_E_VARIANT = "<E_VARIANT>"+ Application.currentSapFunction.getExportParameterList().getString("E_VARIANT") + "</E_VARIANT>";
-		String xml_STARTDATE = "<STARTDATE>"+ Application.currentSapFunction.getExportParameterList().getString("STARTDATE") + "</STARTDATE>";
-		newBody +=  xml_E_PARTITION + xml_E_VARIANT + xml_STARTDATE ; // Scalar values
-
 		JCoTable sapTbl;
 		Map<String, String> sapTables = Map.ofEntries(
 			Map.entry("ZXTEMMIGO","GOOD_RECEIPT_PO")
 		);
 		
-			
 		for (Map.Entry<String, String> entry : sapTables.entrySet()) {
 			String tblCode = entry.getKey();
 			String tblName = entry.getValue();
