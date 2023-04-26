@@ -31,19 +31,16 @@ public class Z_ARIBA_GR_PUSH {
 		this.VARIANT  ="";
 	
 		this.GR_HEADER = new GR_HEADER();
-		this.GR_HEADER.items =  new ArrayList<>();
 
 		this.ERROR_MSG_TABLE = new ERROR_MSG_TABLE();
 		this.ERROR_MSG_TABLE.items =  new ArrayList<>();
 
 		this.GR_ITEMS = new GR_ITEMS();
 		this.GR_ITEMS.items =  new ArrayList<>();
-		
 	}
 	
-	class GR_HEADER {public ArrayList<GR_HEADER_Item> items;}
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	static class GR_HEADER_Item {
+	static class GR_HEADER {
 		public String MBLNR;
 		public String BLDAT;
 		public String BUDAT;
