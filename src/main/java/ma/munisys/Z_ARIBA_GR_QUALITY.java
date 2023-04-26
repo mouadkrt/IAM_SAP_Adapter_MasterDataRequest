@@ -28,16 +28,11 @@ public class Z_ARIBA_GR_QUALITY {
 	public Z_ARIBA_GR_QUALITY() {
 		this.PARTITION = "";
 		this.VARIANT  ="";
-	
-		this.GR_HEADER = new GR_HEADER();
-		this.GR_HEADER.items =  new ArrayList<>();
+		// @JsonFormat(pattern="yyyy/MM/dd")
+		this.STARTDATE = "";
 
-		this.ERROR_MSG_TABLE = new ERROR_MSG_TABLE();
-		this.ERROR_MSG_TABLE.items =  new ArrayList<>();
-
-		this.GR_ITEMS = new GR_ITEMS();
-		this.GR_ITEMS.items =  new ArrayList<>();
-		
+		this.GOOD_RECEIPT_PO = new GOOD_RECEIPT_PO();
+		this.GOOD_RECEIPT_PO.items =  new ArrayList<>();
 	}
 	
 	class GOOD_RECEIPT_PO {public ArrayList<GOOD_RECEIPT_PO_Items> items;}
@@ -107,8 +102,6 @@ public class Z_ARIBA_GR_QUALITY {
         public String license;
         public String Username;
         public String Password;
-		public String disposition;
-		public String language;
     }
 
     // The following function will help store all Ariba data (Sent over the received http body/SoapBody), into a well formated Java object (Designed to mimic the http soap xml received)

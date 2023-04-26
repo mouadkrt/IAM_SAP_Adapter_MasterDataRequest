@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 	public String ENDDATE;
 	public String PARTITION;
+	// @JsonFormat(pattern="yyyy/MM/dd")
 	public String STARTDATE;
 	public String VARIANT;
 	public ZINVPOITEMS ZINVPOITEMS;
