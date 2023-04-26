@@ -91,6 +91,10 @@ public class Application  {
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_QUALITY.")
 										.process(Z_ARIBA_GR_QUALITY::execute_SapFunc_Z_ARIBA_GR_QUALITY)
 										.process(Z_ARIBA_GR_QUALITY::read_SapFunc_Z_ARIBA_GR_QUALITY_Response)
+									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_GR_PUSH'"))
+										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_PUSH.")
+										.process(Z_ARIBA_GR_PUSH::execute_SapFunc_Z_ARIBA_GR_PUSH)
+										.process(Z_ARIBA_GR_PUSH::read_SapFunc_Z_ARIBA_GR_PUSH_Response)
 					.end();
 				}
 			});
