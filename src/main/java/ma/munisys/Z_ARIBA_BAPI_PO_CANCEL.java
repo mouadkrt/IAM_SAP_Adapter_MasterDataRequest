@@ -3,8 +3,6 @@ package ma.munisys;
 // Service PurchaseOrderCancelExport_V1
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.camel.Exchange;
@@ -56,12 +54,11 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
         public String Username;
         public String Password;
     }
-
 	class ERROR_MSG_TABLE { 
-        public ERROR_MSG_TABLE_item[] items;
+		public ArrayList<ERROR_MSG_TABLE_item> items;
     }
 
-	class PO_HEADER {
+	static class PO_HEADER {
 		public String EBELN;
         public String ERPORDERID;
         public String VERSION;
@@ -74,7 +71,7 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
         public String WAERS;
         public String CHGSTATE;
 	}
-	class ERROR_MSG_TABLE_item {
+	static class ERROR_MSG_TABLE_item {
         public String EBELN;
         public String ERPORDERID;
 		public String NUMINSET;
@@ -85,6 +82,7 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
 		public String DYNUMB;
 		public String FLDNAME;
 		public String MESSAGE;
+		//@JsonFormat(pattern="yyyy/MM/dd")
 		public String DATETIME2;
 		public String SYSID;
 		public String MANDT;
@@ -116,7 +114,6 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
 		
 		Map<String, Object> poheader = (Map<String, Object>) Z_ARIBA_BAPI_PO_CANCELL2.get("PO_HEADER");
 			Application.muis_debug("poheader", poheader);
-			z_ariba_bapi_po_cancel.PO_HEADER = z_ariba_bapi_po_cancel.new PO_HEADER();
 			z_ariba_bapi_po_cancel.PO_HEADER.AEDAT 		= Application.forceString(poheader, "AEDAT");
 			z_ariba_bapi_po_cancel.PO_HEADER.CHGSTATE 	= Application.forceString(poheader, "CHGSTATE");
 			z_ariba_bapi_po_cancel.PO_HEADER.EBELN 		= Application.forceString(poheader, "EBELN");
@@ -156,24 +153,17 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
 				
 				Application.describeFunction(Application.currentSapFunction);
 				
+				// SAP Scalar fields
 				Application.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_cancel.PARTITION);
 				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_cancel.VARIANT);
-								
-				JCoTable t_ZXTPOERR = Application.currentSapFunction.getTableParameterList().getTable("ZXTPOERR");
+							
+				// SAP Structures :
+				Application.feed_SAP_Structure("PO_HEADER", z_ariba_bapi_po_cancel.PO_HEADER, PO_HEADER.class);
 				
-				for (ERROR_MSG_TABLE_item zItem : z_ariba_bapi_po_cancel.ERROR_MSG_TABLE.items) {
-					t_ZXTPOERR.appendRow();
-					JCoFieldIterator it = t_ZXTPOERR.getFieldIterator();
-					while(it.hasNextField()) {
-						JCoField field = it.nextField();
-						try {
-							Field f = zItem.getClass().getDeclaredField(field.getName());
-							f.setAccessible(true);
-							field.setValue(f.get(zItem));
-						}
-						catch(NoSuchFieldException|IllegalAccessException e) { System.out.println(e.getMessage());}
-					}
-				}
+				// SAP Tables :
+				Application.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_bapi_po_cancel.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_item.class);
+
+				
 				
 				try {
                     Application.currentSapFunction.execute(Application.dest);
@@ -191,27 +181,30 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
         }
     }
 
-	public static void read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response(Exchange exchange) {
+	public static void read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response(Exchange exchange) {
 
 		String sapFunctionStr = Application.currentSapFunction.getName();
-		Application.muis_debug("read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
+		Application.muis_debug("read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
-		String xmlSendDateStr = "<SENDDATE>"+ Application.currentSapFunction.getExportParameterList().getString("SENDDATE") + "</SENDDATE>";
+		String xml_ERPORDERID = "<ERPORDERID>"+ Application.currentSapFunction.getExportParameterList().getString("ERPORDERID") + "</ERPORDERID>";
+		String xml_E_PARTITION = "<E_PARTITION>"+ Application.currentSapFunction.getExportParameterList().getString("E_PARTITION") + "</E_PARTITION>";
+		String xml_E_VARIANT = "<E_VARIANT>"+ Application.currentSapFunction.getExportParameterList().getString("E_VARIANT") + "</E_VARIANT>";
+		String xml_RETURNMSG = "<RETURNMSG>"+ Application.currentSapFunction.getExportParameterList().getString("RETURNMSG") + "</RETURNMSG>";
 
 		JCoTable sapTbl;
 
-		sapTbl = Application.currentSapFunction.getTableParameterList().getTable("ZINVPOITEMS");
-		String xml_ZINVPOITEMS_Str = sapTbl.getNumRows() > 0 ? sapTbl.toXML() : "<ZINVPOITEMS/>";
+		sapTbl = Application.currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE");
+		String xml_ERROR_MSG_TABLE = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTPOERR", "ERROR_MSG_TABLE") : "<ERROR_MSG_TABLE/>";
 		
 			String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";
-			newBody += "<ZARIBA_INVOICED_PO_ITEMS_SOAPResponse xmlns=\"urn:iwaysoftware:ibse:jul2003:ZARIBA_INVOICED_PO_ITEMS_SOAP:response\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ZARIBA_INVOICED_PO_ITEMS_SOAP.Response>";
-				newBody +=  xmlSendDateStr + xml_ZINVPOITEMS_Str;
-			newBody += "</ZARIBA_INVOICED_PO_ITEMS_SOAP.Response></ZARIBA_INVOICED_PO_ITEMS_SOAPResponse>";
+			newBody += "<Z_ARIBA_BAPI_PO_CANCELResponse xmlns=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_BAPI_PO_CANCEL:response\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Z_ARIBA_BAPI_PO_CANCEL.Response>";
+				newBody +=  xml_ERPORDERID + xml_E_PARTITION + xml_E_VARIANT + xml_RETURNMSG + xml_ERROR_MSG_TABLE;
+			newBody += "</Z_ARIBA_BAPI_PO_CANCEL.Response></Z_ARIBA_BAPI_PO_CANCELResponse>";
 		newBody += "</SOAP-ENV:Body></SOAP-ENV:Envelope>";
 		
 		final Message message = exchange.getIn();
 		message.setBody(newBody);
-		System.out.println("- MUIS : New soap body set in read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response() to : " + newBody);
+		System.out.println("- MUIS : New soap body set in read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response() to : " + newBody);
 	}
 
 }

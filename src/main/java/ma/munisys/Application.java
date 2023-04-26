@@ -95,6 +95,10 @@ public class Application  {
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_PUSH.")
 										.process(Z_ARIBA_GR_PUSH::execute_SapFunc_Z_ARIBA_GR_PUSH)
 										.process(Z_ARIBA_GR_PUSH::read_SapFunc_Z_ARIBA_GR_PUSH_Response)
+									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_BAPI_PO_CANCEL'"))
+										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CANCEL.")
+										.process(Z_ARIBA_BAPI_PO_CANCEL::execute_SapFunc_Z_ARIBA_BAPI_PO_CANCEL)
+										.process(Z_ARIBA_BAPI_PO_CANCEL::read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response)
 					.end();
 				}
 			});
