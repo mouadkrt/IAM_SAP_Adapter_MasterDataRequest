@@ -4,7 +4,7 @@
     <soapenv:Header>
         <ns1:ibsinfo xmlns:ns1="urn:schemas-iwaysoftware-com:iwse">
             <ns1:service>InvoiceImport_V1</ns1:service>
-            <ns1:method>Z_ARIBA_GR_PUSH</ns1:method>
+            <ns1:method>Z_ARIBA_GR_QUALITY</ns1:method>
             <ns1:license>test</ns1:license>
             <ns1:Username>ARIBA_CPIC</ns1:Username>
             <ns1:Password>ENCR(312531493234280318631613211321732473227321431973252)</ns1:Password>
