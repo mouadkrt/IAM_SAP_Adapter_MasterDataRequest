@@ -13,16 +13,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.underscore.U; // https://javadev.github.io/underscore-java/
 import com.sap.conn.jco.AbapException;
 import com.sap.conn.jco.JCoException;
-import com.sap.conn.jco.JCoField;
-import com.sap.conn.jco.JCoFieldIterator;
 import com.sap.conn.jco.JCoTable;
-import java.lang.reflect.Field;
 
 public class Z_ARIBA_BAPI_PO_CANCEL {
 	public String PARTITION;
 	public String VARIANT;
 	public PO_HEADER PO_HEADER;
 	public ERROR_MSG_TABLE ERROR_MSG_TABLE;
+
+	public Z_ARIBA_BAPI_PO_CANCEL() {
+
+		this.PARTITION = "";
+		this.VARIANT = "";
+
+		this.PO_HEADER = new PO_HEADER();
+
+		this.ERROR_MSG_TABLE = new ERROR_MSG_TABLE();
+		this.ERROR_MSG_TABLE.items = new ArrayList<>();
+	}
 
     public String toString() {
         // You may print the Z_ARIBA_BAPI_PO_CANCEL Java object back as a JSON format, to inspect it :
