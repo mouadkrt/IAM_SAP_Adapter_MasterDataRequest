@@ -45,15 +45,19 @@ public class Application  {
 	private static String MUIS_DEBUG = System.getenv().getOrDefault("MUIS_DEBUG", "0");
 	public static void main(String[] args) {
 		registerDestinationDataProvider();
-		//if(!MUIS_DEBUG.equals("0")) describeAllAribaFunctions();
+		if(!MUIS_DEBUG.equals("0")) describeAllAribaFunctions();
 		CamelContext context = new DefaultCamelContext();
 		try {
 			context.addRoutes(new RouteBuilder() {
 				public void configure() {
 					//Namespaces ns = new Namespaces("ns0", "urn:Ariba:Buyer:vsap");
+					//Integer min=1;
+					//Integer max=10;
+					
 					from("netty4-http:http://0.0.0.0:8088/")
 						.routeId("muis_route_sap_1")
-						.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START -----------------------\n")
+						.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START with random delay  -----------------------\n")
+						//.delay((int) Math.floor(Math.random() *(max - min + 1) + min)*1000)
 						.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers} \n")
             			.log(LoggingLevel.INFO, "Initial received body : \n${body} \n")
 						.to("direct:storeSapMethodInHeader", "direct:execSapMethod")
