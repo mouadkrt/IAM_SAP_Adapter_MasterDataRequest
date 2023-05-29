@@ -20,11 +20,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.underscore.U; // https://javadev.github.io/underscore-java/
 import com.sap.conn.jco.AbapException;
 import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoTable;
 
 public class Z_ARIBA_BAPI_PO_CHANGE {
 
-public String PARTITION;
+	public JCoFunction currentSapFunction;
+	public String PARTITION;
 	public String VARIANT;
 	public PO_HEADER PO_HEADER;
 	public ERROR_MSG_TABLE ERROR_MSG_TABLE;
@@ -341,7 +343,7 @@ public String PARTITION;
 		return z_ariba_bapi_po_change;
 	}
 
-    public static void execute_SapFunc_Z_ARIBA_BAPI_PO_CHANGE(final Exchange exchange) throws IllegalArgumentException, IllegalAccessException
+    public void execute_SapFunc_Z_ARIBA_BAPI_PO_CHANGE(final Exchange exchange) throws IllegalArgumentException, IllegalAccessException
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
@@ -358,31 +360,31 @@ public String PARTITION;
 				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
 
 				String sapFunctionStr = "Z_ARIBA_BAPI_PO_CHANGE"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				Application.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
-				if (Application.currentSapFunction==null) throw new RuntimeException(Application.currentSapFunction + " not found in SAP.");
+				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(Application.currentSapFunction);
+				Application.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
-				Application.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_change.PARTITION);
-				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_change.VARIANT);
+				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_change.PARTITION);
+				this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_change.VARIANT);
 
 				// SAP Structures :
-				Application.feed_SAP_Structure("PO_HEADER", z_ariba_bapi_po_change.PO_HEADER, PO_HEADER.class);
+				Application.feed_SAP_Structure("PO_HEADER", z_ariba_bapi_po_change.PO_HEADER, PO_HEADER.class, this.currentSapFunction);
 				
 				// SAP Tables :
-				Application.feed_SAP_Table("DELPO_ACCNTS", z_ariba_bapi_po_change.DELPO_ACCNTS.items, ZXTCPODELACCNT.class);
-				Application.feed_SAP_Table("DELPO_ITEMS", z_ariba_bapi_po_change.DELPO_ITEMS.items, ZXTCPODELITEMS.class);
-				Application.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_bapi_po_change.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_item.class);
-				Application.feed_SAP_Table("PO_ACCOUNTS", z_ariba_bapi_po_change.PO_ACCOUNTS.items, ZXTCPOACCNT.class);
-				Application.feed_SAP_Table("PO_COND", z_ariba_bapi_po_change.PO_COND.items, ZXTPOCOND.class);
-				Application.feed_SAP_Table("PO_ITEMS", z_ariba_bapi_po_change.PO_ITEMS.items, ZXTCPOITEMS.class);
-				Application.feed_SAP_Table("PO_TEXT", z_ariba_bapi_po_change.PO_TEXT.items, ZARSTRING.class);
-				Application.feed_SAP_Table("PUR_ORDER_DELIVERY", z_ariba_bapi_po_change.PUR_ORDER_DELIVERY.items, ZXTPODELIV.class);
-				Application.feed_SAP_Table("PUR_ORDER_DETAILS", z_ariba_bapi_po_change.PUR_ORDER_DETAILS.items, ZXTPODET.class);
+				Application.feed_SAP_Table("DELPO_ACCNTS", z_ariba_bapi_po_change.DELPO_ACCNTS.items, ZXTCPODELACCNT.class, this.currentSapFunction);
+				Application.feed_SAP_Table("DELPO_ITEMS", z_ariba_bapi_po_change.DELPO_ITEMS.items, ZXTCPODELITEMS.class, this.currentSapFunction);
+				Application.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_bapi_po_change.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_ACCOUNTS", z_ariba_bapi_po_change.PO_ACCOUNTS.items, ZXTCPOACCNT.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_COND", z_ariba_bapi_po_change.PO_COND.items, ZXTPOCOND.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_ITEMS", z_ariba_bapi_po_change.PO_ITEMS.items, ZXTCPOITEMS.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_TEXT", z_ariba_bapi_po_change.PO_TEXT.items, ZARSTRING.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PUR_ORDER_DELIVERY", z_ariba_bapi_po_change.PUR_ORDER_DELIVERY.items, ZXTPODELIV.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PUR_ORDER_DETAILS", z_ariba_bapi_po_change.PUR_ORDER_DETAILS.items, ZXTPODET.class, this.currentSapFunction);
 				
 				try {
-                    Application.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(Application.dest);
 				}
 				catch (AbapException e)
 				{
@@ -397,19 +399,19 @@ public String PARTITION;
         }
     }
 
-	public static void read_SapFunc_Z_ARIBA_BAPI_PO_CHANGE_Response(Exchange exchange) {
+	public void read_SapFunc_Z_ARIBA_BAPI_PO_CHANGE_Response(Exchange exchange) {
 
-		String sapFunctionStr = Application.currentSapFunction.getName();
+		String sapFunctionStr = this.currentSapFunction.getName();
 		Application.muis_debug("read_SapFunc_Z_ARIBA_BAPI_PO_CHANGE_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
 		// Let's build our soap response step by step -Each time seeking some values from the SAP response values/tables/..etc :
 		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";
 		newBody += "<Z_ARIBA_BAPI_PO_CHANGEResponse xmlns=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_BAPI_PO_CHANGE:response\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Z_ARIBA_BAPI_PO_CHANGE.Response>";
 		
-		String xml_ERPORDERID = "<ERPORDERID>"+ Application.currentSapFunction.getExportParameterList().getString("ERPORDERID") + "</ERPORDERID>";
-		String xml_E_PARTITION = "<E_PARTITION>"+ Application.currentSapFunction.getExportParameterList().getString("E_PARTITION") + "</E_PARTITION>";
-		String xml_E_VARIANT = "<E_VARIANT>"+ Application.currentSapFunction.getExportParameterList().getString("E_VARIANT") + "</E_VARIANT>";
-		String xml_RETURNMSG = "<RETURNMSG>"+ Application.currentSapFunction.getExportParameterList().getString("RETURNMSG") + "</RETURNMSG>";
+		String xml_ERPORDERID = "<ERPORDERID>"+ this.currentSapFunction.getExportParameterList().getString("ERPORDERID") + "</ERPORDERID>";
+		String xml_E_PARTITION = "<E_PARTITION>"+ this.currentSapFunction.getExportParameterList().getString("E_PARTITION") + "</E_PARTITION>";
+		String xml_E_VARIANT = "<E_VARIANT>"+ this.currentSapFunction.getExportParameterList().getString("E_VARIANT") + "</E_VARIANT>";
+		String xml_RETURNMSG = "<RETURNMSG>"+ this.currentSapFunction.getExportParameterList().getString("RETURNMSG") + "</RETURNMSG>";
 		newBody +=  xml_ERPORDERID + xml_E_PARTITION + xml_E_VARIANT + xml_RETURNMSG; // Scalar values
 
 		JCoTable sapTbl;
@@ -417,7 +419,7 @@ public String PARTITION;
 		for (Map.Entry<String, String> entry : sapTables.entrySet()) {
 			String tblCode = entry.getKey();
 			String tblName = entry.getValue();
-			sapTbl = Application.currentSapFunction.getTableParameterList().getTable(tblName);
+			sapTbl = this.currentSapFunction.getTableParameterList().getTable(tblName);
 			String xml_TblOut_Str = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll(tblCode, tblName) : "<"+tblName+"/>";
 			newBody +=  xml_TblOut_Str; // Tables
 		}

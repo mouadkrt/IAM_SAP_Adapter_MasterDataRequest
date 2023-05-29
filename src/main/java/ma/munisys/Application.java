@@ -3,9 +3,9 @@ package ma.munisys;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
-import org.apache.camel.Message;								
+import org.apache.camel.Message;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.builder.xml.Namespaces;
 import org.apache.camel.impl.DefaultCamelContext;
 
 import com.sap.conn.jco.AbapException;
@@ -23,8 +23,6 @@ import com.sap.conn.jco.ext.DestinationDataProvider;
 import com.sap.conn.jco.ext.Environment;
 
 import java.lang.reflect.Field;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,13 +31,10 @@ import java.util.LinkedHashMap;
 import java.util.Properties;
 
 import com.github.underscore.U;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class Application  {
   	
-	public static JCoFunction currentSapFunction;
 	private static InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
 	public static JCoDestination dest;
 	private static String MUIS_DEBUG = System.getenv().getOrDefault("MUIS_DEBUG", "0");
@@ -69,6 +64,16 @@ public class Application  {
 						.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 					.end();
 
+					Z_ARIBA_BAPI_PO_CHANGE _Z_ARIBA_BAPI_PO_CHANGE = new Z_ARIBA_BAPI_PO_CHANGE();
+					Z_ARIBA_BAPI_PO_CANCEL	_Z_ARIBA_BAPI_PO_CANCEL = new Z_ARIBA_BAPI_PO_CANCEL();
+					Z_ARIBA_BAPI_PO_CREATE _Z_ARIBA_BAPI_PO_CREATE = new Z_ARIBA_BAPI_PO_CREATE();
+					Z_ARIBA_GR_PUSH _Z_ARIBA_GR_PUSH = new Z_ARIBA_GR_PUSH();
+					Z_ARIBA_GR_QUALITY _Z_ARIBA_GR_QUALITY = new Z_ARIBA_GR_QUALITY();
+					Z_ARIBA_GR_TRANSFER _Z_ARIBA_GR_TRANSFER = new Z_ARIBA_GR_TRANSFER();
+					Z_ARIBA_PO_HEADER_STATUS _Z_ARIBA_PO_HEADER_STATUS = new Z_ARIBA_PO_HEADER_STATUS();
+					ZARIBA_INVOICED_PO_ITEMS_SOAP _ZARIBA_INVOICED_PO_ITEMS_SOAP = new ZARIBA_INVOICED_PO_ITEMS_SOAP();
+
+
 					from("direct:execSapMethod")
 					.routeId("muis_route_sap_1.2")
 						.choice()
@@ -79,36 +84,100 @@ public class Application  {
 								.choice()
 									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_GR_TRANSFER'"))
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_TRANSFER. \n")
-										.process(Z_ARIBA_GR_TRANSFER::execute_SapFunc_Z_ARIBA_GR_TRANSFER)
-										.process(Z_ARIBA_GR_TRANSFER::read_SapFunc_Z_ARIBA_GR_TRANSFER_Response)
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_GR_TRANSFER.execute_SapFunc_Z_ARIBA_GR_TRANSFER(exchange);
+										   }
+										})
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_GR_TRANSFER.read_SapFunc_Z_ARIBA_GR_TRANSFER_Response(exchange);
+										   }
+										})
 									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'ZARIBA_INVOICED_PO_ITEMS_SOAP'"))
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : ZARIBA_INVOICED_PO_ITEMS_SOAP. \n")
-										.process(ZARIBA_INVOICED_PO_ITEMS_SOAP::execute_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP)
-										.process(ZARIBA_INVOICED_PO_ITEMS_SOAP::read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response)
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_ZARIBA_INVOICED_PO_ITEMS_SOAP.execute_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP(exchange);
+										   }
+										})
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_ZARIBA_INVOICED_PO_ITEMS_SOAP.read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response(exchange);
+										   }
+										})
 									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_BAPI_PO_CHANGE'"))
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CHANGE. \n")
-										.process(Z_ARIBA_BAPI_PO_CHANGE::execute_SapFunc_Z_ARIBA_BAPI_PO_CHANGE)
-										.process(Z_ARIBA_BAPI_PO_CHANGE::read_SapFunc_Z_ARIBA_BAPI_PO_CHANGE_Response)
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_BAPI_PO_CHANGE.execute_SapFunc_Z_ARIBA_BAPI_PO_CHANGE(exchange);
+										   }
+										})
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_BAPI_PO_CHANGE.read_SapFunc_Z_ARIBA_BAPI_PO_CHANGE_Response(exchange);
+										   }
+										})
 									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_BAPI_PO_CREATE'"))
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CREATE. \n")
-										.process(Z_ARIBA_BAPI_PO_CREATE::execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE)
-										.process(Z_ARIBA_BAPI_PO_CREATE::read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response)
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_BAPI_PO_CREATE.execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE(exchange);
+										   }
+										})
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_BAPI_PO_CREATE.read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response(exchange);
+										   }
+										})
 									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_PO_HEADER_STATUS'"))
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_PO_HEADER_STATUS. \n")
-										.process(Z_ARIBA_PO_HEADER_STATUS::execute_SapFunc_Z_ARIBA_PO_HEADER_STATUS)
-										.process(Z_ARIBA_PO_HEADER_STATUS::read_SapFunc_Z_ARIBA_PO_HEADER_STATUS_Response)
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_PO_HEADER_STATUS.execute_SapFunc_Z_ARIBA_PO_HEADER_STATUS(exchange);
+										   }
+										})
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_PO_HEADER_STATUS.read_SapFunc_Z_ARIBA_PO_HEADER_STATUS_Response(exchange);
+										   }
+										})
 									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_GR_QUALITY'"))
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_QUALITY. \n")
-										.process(Z_ARIBA_GR_QUALITY::execute_SapFunc_Z_ARIBA_GR_QUALITY)
-										.process(Z_ARIBA_GR_QUALITY::read_SapFunc_Z_ARIBA_GR_QUALITY_Response)
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_GR_QUALITY.execute_SapFunc_Z_ARIBA_GR_QUALITY(exchange);
+										   }
+										})
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_GR_QUALITY.read_SapFunc_Z_ARIBA_GR_QUALITY_Response(exchange);
+										   }
+										})
 									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_GR_PUSH'"))
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_PUSH. \n")
-										.process(Z_ARIBA_GR_PUSH::execute_SapFunc_Z_ARIBA_GR_PUSH)
-										.process(Z_ARIBA_GR_PUSH::read_SapFunc_Z_ARIBA_GR_PUSH_Response)
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_GR_PUSH.execute_SapFunc_Z_ARIBA_GR_PUSH(exchange);
+										   }
+										})
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_GR_PUSH.read_SapFunc_Z_ARIBA_GR_PUSH_Response(exchange);
+										   }
+										})
 									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_BAPI_PO_CANCEL'"))
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CANCEL. \n")
-										.process(Z_ARIBA_BAPI_PO_CANCEL::execute_SapFunc_Z_ARIBA_BAPI_PO_CANCEL)
-										.process(Z_ARIBA_BAPI_PO_CANCEL::read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response)
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_BAPI_PO_CANCEL.execute_SapFunc_Z_ARIBA_BAPI_PO_CANCEL(exchange);
+										   }
+										})
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_BAPI_PO_CANCEL.read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response(exchange);
+										   }
+										})
 					.end();
 				}
 			});
@@ -175,8 +244,8 @@ public class Application  {
 		return returnn;
 	}
 
-	public static <itemType> void feed_SAP_Table(String sapTableName, ArrayList<itemType> items, Class<?> itemType) {
-		JCoTable sapTable = Application.currentSapFunction.getTableParameterList().getTable(sapTableName);
+	public static <itemType> void feed_SAP_Table(String sapTableName, ArrayList<itemType> items, Class<?> itemType, JCoFunction sapFunction) {
+		JCoTable sapTable = sapFunction.getTableParameterList().getTable(sapTableName);
 		for (itemType zItem : items) {
 			sapTable.appendRow();
 			JCoFieldIterator it = sapTable.getFieldIterator();
@@ -195,11 +264,11 @@ public class Application  {
 		}
 	}
 
-	public static <itemType> void feed_SAP_Structure(String sapStructName, itemType obj, Class<?> itemType) {
+	public static <itemType> void feed_SAP_Structure(String sapStructName, itemType obj, Class<?> itemType, JCoFunction sapFunction) {
 		
 		if(obj==null) return;
 		
-		JCoStructure sapStruct = Application.currentSapFunction.getImportParameterList().getStructure(sapStructName);
+		JCoStructure sapStruct = sapFunction.getImportParameterList().getStructure(sapStructName);
 		
 		JCoFieldIterator it = sapStruct.getFieldIterator();
 		while(it.hasNextField()) {

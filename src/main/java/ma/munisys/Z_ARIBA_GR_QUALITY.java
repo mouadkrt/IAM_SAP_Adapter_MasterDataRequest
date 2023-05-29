@@ -16,10 +16,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.underscore.U; // https://javadev.github.io/underscore-java/
 import com.sap.conn.jco.AbapException;
 import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoTable;
 
 public class Z_ARIBA_GR_QUALITY {
 
+	public JCoFunction currentSapFunction;
 	public String PARTITION;
 	public String VARIANT;
 	public String STARTDATE;
@@ -138,7 +140,7 @@ public class Z_ARIBA_GR_QUALITY {
 		return z_ariba_gr_quality;
 	}
 
-    public static void execute_SapFunc_Z_ARIBA_GR_QUALITY(final Exchange exchange)
+    public void execute_SapFunc_Z_ARIBA_GR_QUALITY(final Exchange exchange)
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
@@ -154,22 +156,22 @@ public class Z_ARIBA_GR_QUALITY {
 				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
 					
 				String sapFunctionStr = "Z_ARIBA_GR_QUALITY"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				Application.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
-				if (Application.currentSapFunction==null) throw new RuntimeException(Application.currentSapFunction + " not found in SAP.");
+				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(Application.currentSapFunction);
+				Application.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
-				Application.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_quality.PARTITION);
-				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_quality.VARIANT);
-				Application.currentSapFunction.getImportParameterList().setValue("STARTDATE", z_ariba_gr_quality.STARTDATE);
+				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_quality.PARTITION);
+				this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_quality.VARIANT);
+				this.currentSapFunction.getImportParameterList().setValue("STARTDATE", z_ariba_gr_quality.STARTDATE);
 				
 				// SAP Tables :
-				Application.feed_SAP_Table("GOOD_RECEIPT_PO", z_ariba_gr_quality.GOOD_RECEIPT_PO.items, GOOD_RECEIPT_PO_Items.class);
+				Application.feed_SAP_Table("GOOD_RECEIPT_PO", z_ariba_gr_quality.GOOD_RECEIPT_PO.items, GOOD_RECEIPT_PO_Items.class, this.currentSapFunction);
 		
 				
 				try {
-                    Application.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(Application.dest);
 				}
 				catch (AbapException e)
 				{
@@ -184,9 +186,9 @@ public class Z_ARIBA_GR_QUALITY {
         }
     }
 
-	public static void read_SapFunc_Z_ARIBA_GR_QUALITY_Response(Exchange exchange) {
+	public void read_SapFunc_Z_ARIBA_GR_QUALITY_Response(Exchange exchange) {
 
-		String sapFunctionStr = Application.currentSapFunction.getName();
+		String sapFunctionStr = this.currentSapFunction.getName();
 		Application.muis_debug("read_SapFunc_Z_ARIBA_GR_QUALITY_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
 		// Let's build our soap response step by step -Each time seeking some values from the SAP response values/tables/..etc :
@@ -201,7 +203,7 @@ public class Z_ARIBA_GR_QUALITY {
 		for (Map.Entry<String, String> entry : sapTables.entrySet()) {
 			String tblCode = entry.getKey();
 			String tblName = entry.getValue();
-			sapTbl = Application.currentSapFunction.getTableParameterList().getTable(tblName);
+			sapTbl = this.currentSapFunction.getTableParameterList().getTable(tblName);
 			String xml_TblOut_Str = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll(tblCode, tblName) : "<"+tblName+"/>";
 			newBody +=  xml_TblOut_Str; // Tables
 		}

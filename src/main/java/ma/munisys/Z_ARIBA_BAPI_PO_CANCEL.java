@@ -13,9 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.underscore.U; // https://javadev.github.io/underscore-java/
 import com.sap.conn.jco.AbapException;
 import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoTable;
 
 public class Z_ARIBA_BAPI_PO_CANCEL {
+
+	public JCoFunction currentSapFunction;
 	public String PARTITION;
 	public String VARIANT;
 	public PO_HEADER PO_HEADER;
@@ -140,7 +143,7 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
 		return z_ariba_bapi_po_cancel;
 	}
 
-    public static void execute_SapFunc_Z_ARIBA_BAPI_PO_CANCEL(final Exchange exchange)
+    public void execute_SapFunc_Z_ARIBA_BAPI_PO_CANCEL(final Exchange exchange)
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
@@ -156,25 +159,25 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
 				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
 
 				String sapFunctionStr = "Z_ARIBA_BAPI_PO_CANCEL"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				Application.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
-				if (Application.currentSapFunction==null) throw new RuntimeException(Application.currentSapFunction + " not found in SAP.");
+				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(Application.currentSapFunction);
+				Application.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
-				Application.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_cancel.PARTITION);
-				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_cancel.VARIANT);
+				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_cancel.PARTITION);
+				this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_cancel.VARIANT);
 							
 				// SAP Structures :
-				Application.feed_SAP_Structure("PO_HEADER", z_ariba_bapi_po_cancel.PO_HEADER, PO_HEADER.class);
+				Application.feed_SAP_Structure("PO_HEADER", z_ariba_bapi_po_cancel.PO_HEADER, PO_HEADER.class, this.currentSapFunction);
 				
 				// SAP Tables :
-				Application.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_bapi_po_cancel.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_item.class);
+				Application.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_bapi_po_cancel.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_item.class, this.currentSapFunction);
 
 				
 				
 				try {
-                    Application.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(Application.dest);
 				}
 				catch (AbapException e)
 				{
@@ -189,19 +192,19 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
         }
     }
 
-	public static void read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response(Exchange exchange) {
+	public void read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response(Exchange exchange) {
 
-		String sapFunctionStr = Application.currentSapFunction.getName();
+		String sapFunctionStr = this.currentSapFunction.getName();
 		Application.muis_debug("read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
-		String xml_ERPORDERID = "<ERPORDERID>"+ Application.currentSapFunction.getExportParameterList().getString("ERPORDERID") + "</ERPORDERID>";
-		String xml_E_PARTITION = "<E_PARTITION>"+ Application.currentSapFunction.getExportParameterList().getString("E_PARTITION") + "</E_PARTITION>";
-		String xml_E_VARIANT = "<E_VARIANT>"+ Application.currentSapFunction.getExportParameterList().getString("E_VARIANT") + "</E_VARIANT>";
-		String xml_RETURNMSG = "<RETURNMSG>"+ Application.currentSapFunction.getExportParameterList().getString("RETURNMSG") + "</RETURNMSG>";
+		String xml_ERPORDERID = "<ERPORDERID>"+ this.currentSapFunction.getExportParameterList().getString("ERPORDERID") + "</ERPORDERID>";
+		String xml_E_PARTITION = "<E_PARTITION>"+ this.currentSapFunction.getExportParameterList().getString("E_PARTITION") + "</E_PARTITION>";
+		String xml_E_VARIANT = "<E_VARIANT>"+ this.currentSapFunction.getExportParameterList().getString("E_VARIANT") + "</E_VARIANT>";
+		String xml_RETURNMSG = "<RETURNMSG>"+ this.currentSapFunction.getExportParameterList().getString("RETURNMSG") + "</RETURNMSG>";
 
 		JCoTable sapTbl;
 
-		sapTbl = Application.currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE");
+		sapTbl = this.currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE");
 		String xml_ERROR_MSG_TABLE = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTPOERR", "ERROR_MSG_TABLE") : "<ERROR_MSG_TABLE/>";
 		
 			String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";

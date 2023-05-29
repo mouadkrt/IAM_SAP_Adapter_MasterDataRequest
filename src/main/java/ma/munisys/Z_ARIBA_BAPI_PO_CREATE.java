@@ -21,11 +21,13 @@ import com.sap.conn.jco.AbapException;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoField;
 import com.sap.conn.jco.JCoFieldIterator;
+import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoTable;
 import java.lang.reflect.Field;
 
 public class Z_ARIBA_BAPI_PO_CREATE {
 
+	public JCoFunction currentSapFunction;
 	public String PARTITION;
 	public String VARIANT;
 	public String HEADER_ADD_DATA_RELEVANT;
@@ -719,7 +721,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		return z_ariba_bapi_po_create;
 	}
 
-    public static void execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE(final Exchange exchange)
+    public void execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE(final Exchange exchange)
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
@@ -735,44 +737,44 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
 					
 				String sapFunctionStr = "Z_ARIBA_BAPI_PO_CREATE"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				Application.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
-				if (Application.currentSapFunction==null) throw new RuntimeException(Application.currentSapFunction + " not found in SAP.");
+				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(Application.currentSapFunction);
+				Application.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
-				Application.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_create.PARTITION);
-				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_create.VARIANT);
-				Application.currentSapFunction.getImportParameterList().setValue("HEADER_ADD_DATA_RELEVANT", z_ariba_bapi_po_create.HEADER_ADD_DATA_RELEVANT);
-				Application.currentSapFunction.getImportParameterList().setValue("ITEM_ADD_DATA_RELEVANT", z_ariba_bapi_po_create.ITEM_ADD_DATA_RELEVANT);
-				Application.currentSapFunction.getImportParameterList().setValue("SKIP_ITEMS_WITH_ERROR", z_ariba_bapi_po_create.SKIP_ITEMS_WITH_ERROR);
+				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_create.PARTITION);
+				this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_create.VARIANT);
+				this.currentSapFunction.getImportParameterList().setValue("HEADER_ADD_DATA_RELEVANT", z_ariba_bapi_po_create.HEADER_ADD_DATA_RELEVANT);
+				this.currentSapFunction.getImportParameterList().setValue("ITEM_ADD_DATA_RELEVANT", z_ariba_bapi_po_create.ITEM_ADD_DATA_RELEVANT);
+				this.currentSapFunction.getImportParameterList().setValue("SKIP_ITEMS_WITH_ERROR", z_ariba_bapi_po_create.SKIP_ITEMS_WITH_ERROR);
 				
 				// SAP Structures :
-				Application.feed_SAP_Structure("PO_ADDRESS", z_ariba_bapi_po_create.PO_ADDRESS, PO_ADDRESS.class);
-				Application.feed_SAP_Structure("PO_HEADER", z_ariba_bapi_po_create.PO_HEADER, PO_HEADER.class);
-				Application.feed_SAP_Structure("PO_HEADER_ADD_DATA", z_ariba_bapi_po_create.PO_HEADER_ADD_DATA, PO_HEADER_ADD_DATA.class);
+				Application.feed_SAP_Structure("PO_ADDRESS", z_ariba_bapi_po_create.PO_ADDRESS, PO_ADDRESS.class, this.currentSapFunction);
+				Application.feed_SAP_Structure("PO_HEADER", z_ariba_bapi_po_create.PO_HEADER, PO_HEADER.class, this.currentSapFunction);
+				Application.feed_SAP_Structure("PO_HEADER_ADD_DATA", z_ariba_bapi_po_create.PO_HEADER_ADD_DATA, PO_HEADER_ADD_DATA.class, this.currentSapFunction);
 				
 				// SAP Tables :
-				Application.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_bapi_po_create.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_Item.class);
-				Application.feed_SAP_Table("PO_COND", z_ariba_bapi_po_create.PO_COND.items, PO_COND_Item.class);
-				Application.feed_SAP_Table("PO_CONTRACT_LIMITS", z_ariba_bapi_po_create.PO_CONTRACT_LIMITS.items, PO_CONTRACT_LIMITS_Item.class);
-				Application.feed_SAP_Table("PO_ITEMS", z_ariba_bapi_po_create.PO_ITEMS.items, PO_ITEMS_Item.class);
-				Application.feed_SAP_Table("PO_ITEM_ACCOUNT_ASSIGNMENT", z_ariba_bapi_po_create.PO_ITEM_ACCOUNT_ASSIGNMENT.items, PO_ITEM_ACCOUNT_ASSIGNMENT_Item.class);
-				Application.feed_SAP_Table("PO_ITEM_ADD_DATA", z_ariba_bapi_po_create.PO_ITEM_ADD_DATA.items, PO_ITEM_ADD_DATA_Item.class);
-				Application.feed_SAP_Table("PO_ITEM_SCHEDULES", z_ariba_bapi_po_create.PO_ITEM_SCHEDULES.items, PO_ITEM_SCHEDULES_Item.class);
-				Application.feed_SAP_Table("PO_ITEM_TEXT", z_ariba_bapi_po_create.PO_ITEM_TEXT.items, PO_ITEM_TEXT_Item.class);
-				Application.feed_SAP_Table("PO_LIMITS", z_ariba_bapi_po_create.PO_LIMITS.items, PO_LIMITS_Item.class);
-				Application.feed_SAP_Table("PO_SERVICES", z_ariba_bapi_po_create.PO_SERVICES.items, PO_SERVICES_Item.class);
-				Application.feed_SAP_Table("PO_SERVICES_TEXT", z_ariba_bapi_po_create.PO_SERVICES_TEXT.items, PO_SERVICES_TEXT_Item.class);
-				Application.feed_SAP_Table("PO_SRV_ACCASS_VALUES", z_ariba_bapi_po_create.PO_SRV_ACCASS_VALUES.items, PO_SRV_ACCASS_VALUES_Item.class);
-				Application.feed_SAP_Table("PO_ZZIMMOS", z_ariba_bapi_po_create.PO_ZZIMMOS.items, PO_ZZIMMOS_Item.class);
-				Application.feed_SAP_Table("PUR_ORDER_DELIVERY", z_ariba_bapi_po_create.PUR_ORDER_DELIVERY.items, PUR_ORDER_DELIVERY_Item.class);
-				Application.feed_SAP_Table("PUR_ORDER_DETAILS", z_ariba_bapi_po_create.PUR_ORDER_DETAILS.items, PUR_ORDER_DETAILS_Item.class);
-				Application.feed_SAP_Table("RETURN", z_ariba_bapi_po_create.RETURN.items,RETURN_Item.class);
+				Application.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_bapi_po_create.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_COND", z_ariba_bapi_po_create.PO_COND.items, PO_COND_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_CONTRACT_LIMITS", z_ariba_bapi_po_create.PO_CONTRACT_LIMITS.items, PO_CONTRACT_LIMITS_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_ITEMS", z_ariba_bapi_po_create.PO_ITEMS.items, PO_ITEMS_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_ITEM_ACCOUNT_ASSIGNMENT", z_ariba_bapi_po_create.PO_ITEM_ACCOUNT_ASSIGNMENT.items, PO_ITEM_ACCOUNT_ASSIGNMENT_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_ITEM_ADD_DATA", z_ariba_bapi_po_create.PO_ITEM_ADD_DATA.items, PO_ITEM_ADD_DATA_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_ITEM_SCHEDULES", z_ariba_bapi_po_create.PO_ITEM_SCHEDULES.items, PO_ITEM_SCHEDULES_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_ITEM_TEXT", z_ariba_bapi_po_create.PO_ITEM_TEXT.items, PO_ITEM_TEXT_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_LIMITS", z_ariba_bapi_po_create.PO_LIMITS.items, PO_LIMITS_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_SERVICES", z_ariba_bapi_po_create.PO_SERVICES.items, PO_SERVICES_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_SERVICES_TEXT", z_ariba_bapi_po_create.PO_SERVICES_TEXT.items, PO_SERVICES_TEXT_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_SRV_ACCASS_VALUES", z_ariba_bapi_po_create.PO_SRV_ACCASS_VALUES.items, PO_SRV_ACCASS_VALUES_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PO_ZZIMMOS", z_ariba_bapi_po_create.PO_ZZIMMOS.items, PO_ZZIMMOS_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PUR_ORDER_DELIVERY", z_ariba_bapi_po_create.PUR_ORDER_DELIVERY.items, PUR_ORDER_DELIVERY_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("PUR_ORDER_DETAILS", z_ariba_bapi_po_create.PUR_ORDER_DETAILS.items, PUR_ORDER_DETAILS_Item.class, this.currentSapFunction);
+				Application.feed_SAP_Table("RETURN", z_ariba_bapi_po_create.RETURN.items,RETURN_Item.class, this.currentSapFunction);
 				
 				
 				try {
-                    Application.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(Application.dest);
 				}
 				catch (AbapException e)
 				{
@@ -787,18 +789,18 @@ public class Z_ARIBA_BAPI_PO_CREATE {
         }
     }
 
-	public static void read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response(Exchange exchange) {
+	public void read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response(Exchange exchange) {
 
-		String sapFunctionStr = Application.currentSapFunction.getName();
+		String sapFunctionStr = this.currentSapFunction.getName();
 		Application.muis_debug("read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
 		// Let's build our soap response step by step -Each time seeking some values from the SAP response values/tables/..etc :
 		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";
 		newBody += "<Z_ARIBA_BAPI_PO_CREATEResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_BAPI_PO_CREATE:response\"><Z_ARIBA_BAPI_PO_CREATE.Response>";
 		
-		String xml_E_PARTITION = "<E_PARTITION>"+ Application.currentSapFunction.getExportParameterList().getString("E_PARTITION") + "</E_PARTITION>";
-		String xml_E_VARIANT = "<E_VARIANT>"+ Application.currentSapFunction.getExportParameterList().getString("E_VARIANT") + "</E_VARIANT>";
-		String xml_PURCHASEORDER = "<PURCHASEORDER>"+ Application.currentSapFunction.getExportParameterList().getString("PURCHASEORDER") + "</PURCHASEORDER>";
+		String xml_E_PARTITION = "<E_PARTITION>"+ this.currentSapFunction.getExportParameterList().getString("E_PARTITION") + "</E_PARTITION>";
+		String xml_E_VARIANT = "<E_VARIANT>"+ this.currentSapFunction.getExportParameterList().getString("E_VARIANT") + "</E_VARIANT>";
+		String xml_PURCHASEORDER = "<PURCHASEORDER>"+ this.currentSapFunction.getExportParameterList().getString("PURCHASEORDER") + "</PURCHASEORDER>";
 		newBody +=  xml_E_PARTITION + xml_E_VARIANT + xml_PURCHASEORDER; // Scalar values
 
 		JCoTable sapTbl;
@@ -825,7 +827,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 		for (Map.Entry<String, String> entry : sapTables.entrySet()) {
 			String tblCode = entry.getKey();
 			String tblName = entry.getValue();
-			sapTbl = Application.currentSapFunction.getTableParameterList().getTable(tblName);
+			sapTbl = this.currentSapFunction.getTableParameterList().getTable(tblName);
 			String xml_TblOut_Str = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll(tblCode, tblName) : "<"+tblName+"/>";
 			newBody +=  xml_TblOut_Str; // Tables
 		}

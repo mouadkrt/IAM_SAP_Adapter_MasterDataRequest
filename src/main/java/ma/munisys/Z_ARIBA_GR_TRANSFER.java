@@ -19,8 +19,11 @@ import com.sap.conn.jco.AbapException;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoField;
 import com.sap.conn.jco.JCoFieldIterator;
+import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoTable;
 public class Z_ARIBA_GR_TRANSFER {
+
+	public JCoFunction currentSapFunction;
 	public String PARTITION;
 	public String VARIANT;
 	public ERROR_MSG_TABLE ERROR_MSG_TABLE;
@@ -144,7 +147,7 @@ public class Z_ARIBA_GR_TRANSFER {
 		return z_ariba_gr_transfer;
 	}
 
-    public static void execute_SapFunc_Z_ARIBA_GR_TRANSFER(final Exchange exchange)
+    public void execute_SapFunc_Z_ARIBA_GR_TRANSFER(final Exchange exchange)
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
@@ -160,19 +163,19 @@ public class Z_ARIBA_GR_TRANSFER {
 				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
 
 				String sapFunctionStr = "Z_ARIBA_GR_TRANSFER"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				Application.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
-				if (Application.currentSapFunction==null) throw new RuntimeException(Application.currentSapFunction + " not found in SAP.");
+				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(Application.currentSapFunction);
+				Application.describeFunction(this.currentSapFunction);
 				
 				// The following will be used sftp adapter side :
 					//sapFunction.getImportParameterList().setValue("ENCODING", "UTF-8");
 					//sapFunction.getImportParameterList().setValue("FILE_NAME", "/exportQ11/DATAARIBA/Asset.csv");
 
-					Application.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_transfer.PARTITION);
-					Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_transfer.VARIANT);
+					this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_transfer.PARTITION);
+					this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_transfer.VARIANT);
 				
-				JCoTable GR_ITEM = Application.currentSapFunction.getTableParameterList().getTable("GR_ITEM");
+				JCoTable GR_ITEM = this.currentSapFunction.getTableParameterList().getTable("GR_ITEM");
 				
 				for (GR_ITEM_item grItem : z_ariba_gr_transfer.GR_ITEM.items) {
 					//for( Field f : grItem.getClass().getDeclaredFields() ) {}
@@ -190,16 +193,16 @@ public class Z_ARIBA_GR_TRANSFER {
 				}
 				
 				try {
-                    Application.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(Application.dest);
 						
 						//JCoStructure exportStructure = currentSapFunction.getTableParameterList().getStructure("GR_ITEM");
 						//for (int i = 0; i < exportStructure.getMetaData().getFieldCount(); i++)
 						//	System.out.println( "\n- MUIS2 :" + exportStructure.getMetaData().getName(i) + ":\t" + exportStructure.getString(i));
 						
-						System.out.println("\nMUIS : STATUS = " + Application.currentSapFunction.getExportParameterList().getString("STATUS"));
-						Application.getTableValues(Application.currentSapFunction, "GR_ITEM");
-						Application.getTableValues(Application.currentSapFunction, "GR_SERIAL");
-						Application.getTableValues(Application.currentSapFunction, "ERROR_MSG_TABLE");
+						System.out.println("\nMUIS : STATUS = " + this.currentSapFunction.getExportParameterList().getString("STATUS"));
+						Application.getTableValues(this.currentSapFunction, "GR_ITEM");
+						Application.getTableValues(this.currentSapFunction, "GR_SERIAL");
+						Application.getTableValues(this.currentSapFunction, "ERROR_MSG_TABLE");
 						//System.out.println("MUIS : ERROR_MSG_TABLE isTable = " + currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE").isTable());
 						//System.out.println("MUIS : ERROR_MSG_TABLE isStructure = " + currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE").isStructure());
 						
@@ -220,22 +223,22 @@ public class Z_ARIBA_GR_TRANSFER {
         }
     }
 
-	public static void read_SapFunc_Z_ARIBA_GR_TRANSFER_Response(Exchange exchange) {
+	public void read_SapFunc_Z_ARIBA_GR_TRANSFER_Response(Exchange exchange) {
 
-		String sapFunctionStr = Application.currentSapFunction.getName();
+		String sapFunctionStr = this.currentSapFunction.getName();
 		Application.muis_debug("read_SapFunc_Z_ARIBA_GR_TRANSFER_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
-		String xmlStatusStr = "<STATUS>"+ Application.currentSapFunction.getExportParameterList().getString("STATUS") + "</STATUS>";
+		String xmlStatusStr = "<STATUS>"+ this.currentSapFunction.getExportParameterList().getString("STATUS") + "</STATUS>";
 
 		JCoTable sapTbl;
 
-		sapTbl = Application.currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE");
+		sapTbl = this.currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE");
 		String xmlErrorStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTGRERR", "ERROR_MSG_TABLE") : "<ERROR_MSG_TABLE/>";
 		
-		sapTbl = Application.currentSapFunction.getTableParameterList().getTable("GR_ITEM");
+		sapTbl = this.currentSapFunction.getTableParameterList().getTable("GR_ITEM");
 		String xmlGrItemStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTEMTRANS", "GR_ITEM") : "<GR_ITEM/>";
 
-		sapTbl = Application.currentSapFunction.getTableParameterList().getTable("GR_SERIAL");
+		sapTbl = this.currentSapFunction.getTableParameterList().getTable("GR_SERIAL");
 		String xmlGrSerialStr = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll("ZXTSERIAL", "GR_SERIAL") : "<GR_SERIAL/>";
 
 		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";

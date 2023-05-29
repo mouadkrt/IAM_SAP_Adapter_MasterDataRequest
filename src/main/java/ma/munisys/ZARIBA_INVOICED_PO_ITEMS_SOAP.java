@@ -18,10 +18,13 @@ import com.sap.conn.jco.AbapException;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoField;
 import com.sap.conn.jco.JCoFieldIterator;
+import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoTable;
 import java.lang.reflect.Field;
 
 public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
+
+	public JCoFunction currentSapFunction;
 	public String ENDDATE;
 	public String PARTITION;
 	// @JsonFormat(pattern="yyyy/MM/dd")
@@ -116,7 +119,7 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 		return z_ariba_invoiced_po_items_soap;
 	}
 
-    public static void execute_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP(final Exchange exchange)
+    public void execute_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP(final Exchange exchange)
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
@@ -132,17 +135,17 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
 
 				String sapFunctionStr = "ZARIBA_INVOICED_PO_ITEMS_SOAP"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				Application.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
-				if (Application.currentSapFunction==null) throw new RuntimeException(Application.currentSapFunction + " not found in SAP.");
+				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(Application.currentSapFunction);
+				Application.describeFunction(this.currentSapFunction);
 				
-				Application.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_invoiced_po_items_soap.PARTITION);
-				Application.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_invoiced_po_items_soap.VARIANT);
-				Application.currentSapFunction.getImportParameterList().setValue("STARTDATE", z_ariba_invoiced_po_items_soap.STARTDATE);
-				Application.currentSapFunction.getImportParameterList().setValue("ENDDATE", z_ariba_invoiced_po_items_soap.ENDDATE);
+				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_invoiced_po_items_soap.PARTITION);
+				this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_invoiced_po_items_soap.VARIANT);
+				this.currentSapFunction.getImportParameterList().setValue("STARTDATE", z_ariba_invoiced_po_items_soap.STARTDATE);
+				this.currentSapFunction.getImportParameterList().setValue("ENDDATE", z_ariba_invoiced_po_items_soap.ENDDATE);
 				
-				JCoTable t_ZINVPOITEMS = Application.currentSapFunction.getTableParameterList().getTable("ZINVPOITEMS");
+				JCoTable t_ZINVPOITEMS = this.currentSapFunction.getTableParameterList().getTable("ZINVPOITEMS");
 				
 				for (ZINVPOITEMS_item zItem : z_ariba_invoiced_po_items_soap.ZINVPOITEMS.items) {
 					//for( Field f : grItem.getClass().getDeclaredFields() ) {}
@@ -160,14 +163,14 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 				}
 				
 				try {
-                    Application.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(Application.dest);
 						
 						//JCoStructure exportStructure = currentSapFunction.getTableParameterList().getStructure("GR_ITEM");
 						//for (int i = 0; i < exportStructure.getMetaData().getFieldCount(); i++)
 						//	System.out.println( "\n- MUIS2 :" + exportStructure.getMetaData().getName(i) + ":\t" + exportStructure.getString(i));
 						
-						System.out.println("\nMUIS : SENDDATE = " + Application.currentSapFunction.getExportParameterList().getString("SENDDATE"));
-						Application.getTableValues(Application.currentSapFunction, "ZINVPOITEMS");
+						System.out.println("\nMUIS : SENDDATE = " + this.currentSapFunction.getExportParameterList().getString("SENDDATE"));
+						Application.getTableValues(this.currentSapFunction, "ZINVPOITEMS");
 					}
 					catch (AbapException e)
 					{
@@ -182,16 +185,16 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
         }
     }
 
-	public static void read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response(Exchange exchange) {
+	public void read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response(Exchange exchange) {
 
-		String sapFunctionStr = Application.currentSapFunction.getName();
+		String sapFunctionStr = this.currentSapFunction.getName();
 		Application.muis_debug("read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
-		String xmlSendDateStr = "<SENDDATE>"+ Application.currentSapFunction.getExportParameterList().getString("SENDDATE") + "</SENDDATE>";
+		String xmlSendDateStr = "<SENDDATE>"+ this.currentSapFunction.getExportParameterList().getString("SENDDATE") + "</SENDDATE>";
 
 		JCoTable sapTbl;
 
-		sapTbl = Application.currentSapFunction.getTableParameterList().getTable("ZINVPOITEMS");
+		sapTbl = this.currentSapFunction.getTableParameterList().getTable("ZINVPOITEMS");
 		String xml_ZINVPOITEMS_Str = sapTbl.getNumRows() > 0 ? sapTbl.toXML() : "<ZINVPOITEMS/>";
 		
 			String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";
