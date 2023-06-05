@@ -734,12 +734,13 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 
         try
         {
-				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
+				Application.muis_debug("MUIS : Repository name dest.getRepository().getName() ", Application.dest.getRepository().getName());
 					
 				String sapFunctionStr = "Z_ARIBA_BAPI_PO_CREATE"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
 				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
-				
+				try {Application.dumpObject(this.currentSapFunction);} catch (IllegalArgumentException|IllegalAccessException e) {e.printStackTrace();} 
+				System.out.println("this.currentSapFunction : " + this.currentSapFunction);
 				Application.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
@@ -771,8 +772,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 				Application.feed_SAP_Table("PUR_ORDER_DELIVERY", z_ariba_bapi_po_create.PUR_ORDER_DELIVERY.items, PUR_ORDER_DELIVERY_Item.class, this.currentSapFunction);
 				Application.feed_SAP_Table("PUR_ORDER_DETAILS", z_ariba_bapi_po_create.PUR_ORDER_DETAILS.items, PUR_ORDER_DETAILS_Item.class, this.currentSapFunction);
 				Application.feed_SAP_Table("RETURN", z_ariba_bapi_po_create.RETURN.items,RETURN_Item.class, this.currentSapFunction);
-				
-				
+								
 				try {
                     this.currentSapFunction.execute(Application.dest);
 				}
@@ -793,7 +793,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 
 		String sapFunctionStr = this.currentSapFunction.getName();
 		Application.muis_debug("read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
-		
+		System.out.println("this.currentSapFunction : " + this.currentSapFunction);
 		// Let's build our soap response step by step -Each time seeking some values from the SAP response values/tables/..etc :
 		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";
 		newBody += "<Z_ARIBA_BAPI_PO_CREATEResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"urn:iwaysoftware:ibse:jul2003:Z_ARIBA_BAPI_PO_CREATE:response\"><Z_ARIBA_BAPI_PO_CREATE.Response>";
@@ -828,6 +828,7 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 			String tblCode = entry.getKey();
 			String tblName = entry.getValue();
 			sapTbl = this.currentSapFunction.getTableParameterList().getTable(tblName);
+			try {Application.dumpObject(this.currentSapFunction);} catch (IllegalArgumentException|IllegalAccessException e) {e.printStackTrace();} 
 			String xml_TblOut_Str = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll(tblCode, tblName) : "<"+tblName+"/>";
 			newBody +=  xml_TblOut_Str; // Tables
 		}
