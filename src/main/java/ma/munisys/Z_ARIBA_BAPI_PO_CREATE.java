@@ -739,8 +739,9 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 				String sapFunctionStr = "Z_ARIBA_BAPI_PO_CREATE"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
 				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
-				try {Application.dumpObject(this.currentSapFunction);} catch (IllegalArgumentException|IllegalAccessException e) {e.printStackTrace();} 
-				System.out.println("this.currentSapFunction : " + this.currentSapFunction);
+				//try {Application.dumpObject(this.currentSapFunction);} catch (IllegalArgumentException|IllegalAccessException e) {e.printStackTrace();} 
+				System.out.println("this.currentSapFunction : \n");
+				System.out.println(this.currentSapFunction);
 				Application.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
@@ -828,7 +829,9 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 			String tblCode = entry.getKey();
 			String tblName = entry.getValue();
 			sapTbl = this.currentSapFunction.getTableParameterList().getTable(tblName);
-			try {Application.dumpObject(this.currentSapFunction);} catch (IllegalArgumentException|IllegalAccessException e) {e.printStackTrace();} 
+			//try {Application.dumpObject(this.currentSapFunction);} catch (IllegalArgumentException|IllegalAccessException e) {e.printStackTrace();} 
+			System.out.println("this.currentSapFunction : \n");
+			System.out.println(this.currentSapFunction);
 			String xml_TblOut_Str = sapTbl.getNumRows() > 0 ? sapTbl.toXML().replaceAll(tblCode, tblName) : "<"+tblName+"/>";
 			newBody +=  xml_TblOut_Str; // Tables
 		}
