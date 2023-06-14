@@ -7,6 +7,7 @@ import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.sap.conn.jco.AbapException;
 import com.sap.conn.jco.JCoDestination;
@@ -33,6 +34,7 @@ import java.util.Properties;
 import com.github.underscore.U;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@SpringBootApplication
 public class Application  {
   	
 	private static InMemoryDestinationDataProvider memoryProvider=new Application.InMemoryDestinationDataProvider();
@@ -51,11 +53,15 @@ public class Application  {
 					
 					from("netty4-http:http://0.0.0.0:8088/")
 						.routeId("muis_route_sap_1")
-						.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.2.2  -----------------------\n")
+						.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.2.5 (using AMQ)  -----------------------\n")
 						//.delay((int) Math.floor(Math.random() *(max - min + 1) + min)*1000)
 						.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers} \n")
             			.log(LoggingLevel.INFO, "Initial received body : \n${body} \n")
-						.to("direct:storeSapMethodInHeader", "direct:execSapMethod")
+						//.to("direct:storeSapMethodInHeader", "direct:execSapMethod")
+						.to("direct:storeSapMethodInHeader")
+						.convertBodyTo(String.class)
+						.log("Storing message into QueueIN - ${body}")
+						.to("jms:queue:QueueIN?exchangePattern=InOnly")
 					.end();
 
 					from("direct:storeSapMethodInHeader")
@@ -64,6 +70,11 @@ public class Application  {
 						.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 					.end();
 
+					from("jms:queue:QueueIN?maxMessagesPerTask=1&concurrentConsumers=1&maxConcurrentConsumers=1&receiveTimeout=12000&requestTimeout=120000&disableReplyTo=true&synchronous=1")
+					.log("Received message from QueueIN - ${body}")
+					.convertBodyTo(String.class)
+					.to("direct:execSapMethod");
+					
 					Z_ARIBA_BAPI_PO_CHANGE _Z_ARIBA_BAPI_PO_CHANGE = new Z_ARIBA_BAPI_PO_CHANGE();
 					Z_ARIBA_BAPI_PO_CANCEL	_Z_ARIBA_BAPI_PO_CANCEL = new Z_ARIBA_BAPI_PO_CANCEL();
 					Z_ARIBA_BAPI_PO_CREATE _Z_ARIBA_BAPI_PO_CREATE = new Z_ARIBA_BAPI_PO_CREATE();
@@ -119,7 +130,17 @@ public class Application  {
 										   }
 										})
 									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_BAPI_PO_CREATE'"))
-										.to("direct:ROUTE_Z_ARIBA_BAPI_PO_CREATE")
+										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CREATE. \n")
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_BAPI_PO_CREATE.execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE(exchange);
+										}
+										})
+										.process(new Processor() {
+											public void process(Exchange exchange) throws Exception {
+												_Z_ARIBA_BAPI_PO_CREATE.read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response(exchange);
+										}
+										})
 									.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_PO_HEADER_STATUS'"))
 										.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_PO_HEADER_STATUS. \n")
 										.process(new Processor() {
@@ -168,23 +189,6 @@ public class Application  {
 												_Z_ARIBA_BAPI_PO_CANCEL.read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response(exchange);
 										   }
 										})
-					.end();
-
-
-					from("direct:ROUTE_Z_ARIBA_BAPI_PO_CREATE")
-						.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CREATE. \n")
-						.process(new Processor() {
-							public void process(Exchange exchange) throws Exception {
-								_Z_ARIBA_BAPI_PO_CREATE.execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE(exchange);
-						}
-						})
-						.log("Delaying 2000 ms ...")
-						.delay(2000)
-						.process(new Processor() {
-							public void process(Exchange exchange) throws Exception {
-								_Z_ARIBA_BAPI_PO_CREATE.read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response(exchange);
-						}
-						})
 					.end();
 				}
 			});
