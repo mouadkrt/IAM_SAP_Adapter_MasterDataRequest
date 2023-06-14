@@ -140,17 +140,17 @@ public class Z_ARIBA_GR_PUSH {
             Z_ARIBA_GR_PUSH	z_ariba_gr_push = new Z_ARIBA_GR_PUSH();
 		
 		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
-		Application.muis_debug("soap_envelope", soap_envelope);
+		MuisApp.muis_debug("soap_envelope", soap_envelope);
 		
 		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
-		Application.muis_debug("soap_body", soap_body);
+		MuisApp.muis_debug("soap_body", soap_body);
 		
 		Map<String, Object> Z_ARIBA_GR_PUSHH = (Map<String, Object>) soap_body.get("Z_ARIBA_GR_PUSH");
-		Application.muis_debug("Z_ARIBA_GR_PUSHH", Z_ARIBA_GR_PUSHH);
+		MuisApp.muis_debug("Z_ARIBA_GR_PUSHH", Z_ARIBA_GR_PUSHH);
 		
 		// SAP Scalars :
 		Map<String, Object> Z_ARIBA_GR_PUSHH2 = (Map<String, Object>) Z_ARIBA_GR_PUSHH.get("Z_ARIBA_GR_PUSH");
-			Application.muis_debug("Z_ARIBA_GR_PUSHH2", Z_ARIBA_GR_PUSHH2);
+			MuisApp.muis_debug("Z_ARIBA_GR_PUSHH2", Z_ARIBA_GR_PUSHH2);
 			z_ariba_gr_push.PARTITION =  !(Z_ARIBA_GR_PUSHH2.get("PARTITION") instanceof String) ? "" : (String) Z_ARIBA_GR_PUSHH2.get("PARTITION");
 			z_ariba_gr_push.VARIANT = !(Z_ARIBA_GR_PUSHH2.get("VARIANT") instanceof String) ? "" : (String) Z_ARIBA_GR_PUSHH2.get("VARIANT");
 		
@@ -158,17 +158,17 @@ public class Z_ARIBA_GR_PUSH {
 
 		// SAP Structures :
 		Map<String, Object> grheader = (Map<String, Object>) Z_ARIBA_GR_PUSHH2.get("GR_HEADER");
-			Application.muis_debug("grheader", grheader);
+			MuisApp.muis_debug("grheader", grheader);
 			z_ariba_gr_push.GR_HEADER = (GR_HEADER) mapper.convertValue(grheader,GR_HEADER.class);
 				
 		// SAP Tables :
 		Map<String, Object> ERROR_MSG_TABLE2 = (Map<String, Object>) Z_ARIBA_GR_PUSHH2.get("ERROR_MSG_TABLE");
-			Application.muis_debug("ERROR_MSG_TABLE2", ERROR_MSG_TABLE2);
-			z_ariba_gr_push.ERROR_MSG_TABLE.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) ERROR_MSG_TABLE2, ERROR_MSG_TABLE_Item.class);
+			MuisApp.muis_debug("ERROR_MSG_TABLE2", ERROR_MSG_TABLE2);
+			z_ariba_gr_push.ERROR_MSG_TABLE.items = MuisApp.getItemsAsArrayList((LinkedHashMap<String, Object>) ERROR_MSG_TABLE2, ERROR_MSG_TABLE_Item.class);
 		
 		Map<String, Object> GR_ITEMS2 = (Map<String, Object>) Z_ARIBA_GR_PUSHH2.get("GR_ITEMS");
-			Application.muis_debug("GR_ITEMS2", GR_ITEMS2);
-			z_ariba_gr_push.GR_ITEMS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) GR_ITEMS2, GR_ITEMS_Item.class);
+			MuisApp.muis_debug("GR_ITEMS2", GR_ITEMS2);
+			z_ariba_gr_push.GR_ITEMS.items = MuisApp.getItemsAsArrayList((LinkedHashMap<String, Object>) GR_ITEMS2, GR_ITEMS_Item.class);
 			
 	
 		return z_ariba_gr_push;
@@ -187,25 +187,25 @@ public class Z_ARIBA_GR_PUSH {
 
         try
         {
-				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
+				MuisApp.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", MuisApp.dest.getRepository().getName());
 					
 				String sapFunctionStr = "Z_ARIBA_GR_PUSH"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(this.currentSapFunction);
+				MuisApp.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
 				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_push.PARTITION);
 				this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_push.VARIANT);
 				
 				// SAP Tables :
-				Application.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_gr_push.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_Item.class, this.currentSapFunction);
-				Application.feed_SAP_Table("GR_ITEMS", z_ariba_gr_push.GR_ITEMS.items, GR_ITEMS_Item.class, this.currentSapFunction);
+				MuisApp.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_gr_push.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_Item.class, this.currentSapFunction);
+				MuisApp.feed_SAP_Table("GR_ITEMS", z_ariba_gr_push.GR_ITEMS.items, GR_ITEMS_Item.class, this.currentSapFunction);
 		
 				
 				try {
-                    this.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(MuisApp.dest);
 				}
 				catch (AbapException e)
 				{
@@ -223,7 +223,7 @@ public class Z_ARIBA_GR_PUSH {
 	public void read_SapFunc_Z_ARIBA_GR_PUSH_Response(Exchange exchange) {
 
 		String sapFunctionStr = this.currentSapFunction.getName();
-		Application.muis_debug("read_SapFunc_Z_ARIBA_GR_PUSH_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
+		MuisApp.muis_debug("read_SapFunc_Z_ARIBA_GR_PUSH_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
 		// Let's build our soap response step by step -Each time seeking some values from the SAP response values/tables/..etc :
 		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";

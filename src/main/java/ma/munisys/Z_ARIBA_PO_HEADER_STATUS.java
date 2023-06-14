@@ -90,24 +90,24 @@ public class Z_ARIBA_PO_HEADER_STATUS {
             Z_ARIBA_PO_HEADER_STATUS	z_ariba_po_header_status = new Z_ARIBA_PO_HEADER_STATUS();
 		
 		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
-		Application.muis_debug("soap_envelope", soap_envelope);
+		MuisApp.muis_debug("soap_envelope", soap_envelope);
 		
 		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
-		Application.muis_debug("soap_body", soap_body);
+		MuisApp.muis_debug("soap_body", soap_body);
 		
 		Map<String, Object> Z_ARIBA_PO_HEADER_STATUSS = (Map<String, Object>) soap_body.get("Z_ARIBA_PO_HEADER_STATUS");
-		Application.muis_debug("Z_ARIBA_PO_HEADER_STATUS", Z_ARIBA_PO_HEADER_STATUSS);
+		MuisApp.muis_debug("Z_ARIBA_PO_HEADER_STATUS", Z_ARIBA_PO_HEADER_STATUSS);
 		
 		// SAP Scalars :
 		Map<String, Object> Z_ARIBA_PO_HEADER_STATUSS2 = (Map<String, Object>) Z_ARIBA_PO_HEADER_STATUSS.get("Z_ARIBA_PO_HEADER_STATUS");
-			Application.muis_debug("Z_ARIBA_PO_HEADER_STATUSS2", Z_ARIBA_PO_HEADER_STATUSS2);
+			MuisApp.muis_debug("Z_ARIBA_PO_HEADER_STATUSS2", Z_ARIBA_PO_HEADER_STATUSS2);
 			z_ariba_po_header_status.PARTITION =  !(Z_ARIBA_PO_HEADER_STATUSS2.get("PARTITION") instanceof String) ? "" : (String) Z_ARIBA_PO_HEADER_STATUSS2.get("PARTITION");
 			z_ariba_po_header_status.VARIANT = !(Z_ARIBA_PO_HEADER_STATUSS2.get("VARIANT") instanceof String) ? "" : (String) Z_ARIBA_PO_HEADER_STATUSS2.get("VARIANT");
 
 		// SAP Tables :
 		Map<String, Object> ERROR_MSG_TABLE2 = (Map<String, Object>) Z_ARIBA_PO_HEADER_STATUSS2.get("ERROR_MSG_TABLE");
-			Application.muis_debug("ERROR_MSG_TABLE2", ERROR_MSG_TABLE2);
-			z_ariba_po_header_status.HEADERSTATUSINFO.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) ERROR_MSG_TABLE2, HEADERSTATUSINFO_Item.class);
+			MuisApp.muis_debug("ERROR_MSG_TABLE2", ERROR_MSG_TABLE2);
+			z_ariba_po_header_status.HEADERSTATUSINFO.items = MuisApp.getItemsAsArrayList((LinkedHashMap<String, Object>) ERROR_MSG_TABLE2, HEADERSTATUSINFO_Item.class);
 			
 	
 		return z_ariba_po_header_status;
@@ -126,24 +126,24 @@ public class Z_ARIBA_PO_HEADER_STATUS {
 
         try
         {
-				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
+				MuisApp.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", MuisApp.dest.getRepository().getName());
 					
 				String sapFunctionStr = "Z_ARIBA_PO_HEADER_STATUS"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(this.currentSapFunction);
+				MuisApp.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
 				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_po_header_status.PARTITION);
 				this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_po_header_status.VARIANT);
 				
 				// SAP Tables :
-				Application.feed_SAP_Table("HEADERSTATUSINFO", z_ariba_po_header_status.HEADERSTATUSINFO.items, HEADERSTATUSINFO_Item.class, this.currentSapFunction);
+				MuisApp.feed_SAP_Table("HEADERSTATUSINFO", z_ariba_po_header_status.HEADERSTATUSINFO.items, HEADERSTATUSINFO_Item.class, this.currentSapFunction);
 		
 				
 				try {
-                    this.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(MuisApp.dest);
 				}
 				catch (AbapException e)
 				{
@@ -161,7 +161,7 @@ public class Z_ARIBA_PO_HEADER_STATUS {
 	public void read_SapFunc_Z_ARIBA_PO_HEADER_STATUS_Response(Exchange exchange) {
 
 		String sapFunctionStr = this.currentSapFunction.getName();
-		Application.muis_debug("read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
+		MuisApp.muis_debug("read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
 		// Let's build our soap response step by step -Each time seeking some values from the SAP response values/tables/..etc :
 		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";

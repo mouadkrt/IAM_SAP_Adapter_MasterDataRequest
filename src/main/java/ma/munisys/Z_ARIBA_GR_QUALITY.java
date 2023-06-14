@@ -117,25 +117,25 @@ public class Z_ARIBA_GR_QUALITY {
             Z_ARIBA_GR_QUALITY	z_ariba_gr_quality = new Z_ARIBA_GR_QUALITY();
 		
 		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
-		Application.muis_debug("soap_envelope", soap_envelope);
+		MuisApp.muis_debug("soap_envelope", soap_envelope);
 		
 		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
-		Application.muis_debug("soap_body", soap_body);
+		MuisApp.muis_debug("soap_body", soap_body);
 		
 		Map<String, Object> Z_ARIBA_GR_QUALITYY = (Map<String, Object>) soap_body.get("Z_ARIBA_GR_QUALITY");
-		Application.muis_debug("Z_ARIBA_GR_QUALITYY", Z_ARIBA_GR_QUALITYY);
+		MuisApp.muis_debug("Z_ARIBA_GR_QUALITYY", Z_ARIBA_GR_QUALITYY);
 		
 		// SAP Scalars :
 		Map<String, Object> Z_ARIBA_GR_QUALITYY2 = (Map<String, Object>) Z_ARIBA_GR_QUALITYY.get("Z_ARIBA_GR_QUALITY");
-			Application.muis_debug("Z_ARIBA_GR_QUALITYY2", Z_ARIBA_GR_QUALITYY2);
+			MuisApp.muis_debug("Z_ARIBA_GR_QUALITYY2", Z_ARIBA_GR_QUALITYY2);
 			z_ariba_gr_quality.PARTITION =  !(Z_ARIBA_GR_QUALITYY2.get("PARTITION") instanceof String) ? "" : (String) Z_ARIBA_GR_QUALITYY2.get("PARTITION");
 			z_ariba_gr_quality.VARIANT = !(Z_ARIBA_GR_QUALITYY2.get("VARIANT") instanceof String) ? "" : (String) Z_ARIBA_GR_QUALITYY2.get("VARIANT");
 			z_ariba_gr_quality.STARTDATE = !(Z_ARIBA_GR_QUALITYY2.get("STARTDATE") instanceof String) ? "" : (String) Z_ARIBA_GR_QUALITYY2.get("STARTDATE");
 		
 		// SAP Tables :
 		Map<String, Object> GOOD_RECEIPT_PO2 = (Map<String, Object>) Z_ARIBA_GR_QUALITYY2.get("GOOD_RECEIPT_PO");
-			Application.muis_debug("GOOD_RECEIPT_PO2", GOOD_RECEIPT_PO2);
-			z_ariba_gr_quality.GOOD_RECEIPT_PO.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) GOOD_RECEIPT_PO2, GOOD_RECEIPT_PO_Items.class);
+			MuisApp.muis_debug("GOOD_RECEIPT_PO2", GOOD_RECEIPT_PO2);
+			z_ariba_gr_quality.GOOD_RECEIPT_PO.items = MuisApp.getItemsAsArrayList((LinkedHashMap<String, Object>) GOOD_RECEIPT_PO2, GOOD_RECEIPT_PO_Items.class);
 			
 		return z_ariba_gr_quality;
 	}
@@ -153,13 +153,13 @@ public class Z_ARIBA_GR_QUALITY {
 
         try
         {
-				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
+				MuisApp.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", MuisApp.dest.getRepository().getName());
 					
 				String sapFunctionStr = "Z_ARIBA_GR_QUALITY"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(this.currentSapFunction);
+				MuisApp.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
 				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_quality.PARTITION);
@@ -167,11 +167,11 @@ public class Z_ARIBA_GR_QUALITY {
 				this.currentSapFunction.getImportParameterList().setValue("STARTDATE", z_ariba_gr_quality.STARTDATE);
 				
 				// SAP Tables :
-				Application.feed_SAP_Table("GOOD_RECEIPT_PO", z_ariba_gr_quality.GOOD_RECEIPT_PO.items, GOOD_RECEIPT_PO_Items.class, this.currentSapFunction);
+				MuisApp.feed_SAP_Table("GOOD_RECEIPT_PO", z_ariba_gr_quality.GOOD_RECEIPT_PO.items, GOOD_RECEIPT_PO_Items.class, this.currentSapFunction);
 		
 				
 				try {
-                    this.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(MuisApp.dest);
 				}
 				catch (AbapException e)
 				{
@@ -189,7 +189,7 @@ public class Z_ARIBA_GR_QUALITY {
 	public void read_SapFunc_Z_ARIBA_GR_QUALITY_Response(Exchange exchange) {
 
 		String sapFunctionStr = this.currentSapFunction.getName();
-		Application.muis_debug("read_SapFunc_Z_ARIBA_GR_QUALITY_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
+		MuisApp.muis_debug("read_SapFunc_Z_ARIBA_GR_QUALITY_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
 		// Let's build our soap response step by step -Each time seeking some values from the SAP response values/tables/..etc :
 		String newBody ="<SOAP-ENV:Envelope xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><SOAP-ENV:Body>";

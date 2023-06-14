@@ -17,17 +17,17 @@ RUN echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH, CLASSPATH=$CLASSPATH, PATH=$PATH"
 ENTRYPOINT ["java","-cp", "sap-libs/sapjco3.jar:app.jar", "org.springframework.boot.loader.JarLauncher"]
 #ENTRYPOINT ["/bin/sh"] # Use this entry with openjdk:19-jdk-alpine3.16 image to inspect java env behaviour inside container
 
-# Update version in Application.java ~ line 54
+# Update version in MuisApp.java ~ line 54
 # mvn spring-boot:run
 # mvn clean install
 
 # Start Docker deamon
 # docker login registry.redhat.io 
-# docker build -t muis-fuse-sap-adapter:iam_0.2.5 .
+# docker build -t muis-fuse-sap-adapter:iam_0.3.2 .
 # Tag it and push to quay
-# docker tag muis-fuse-sap-adapter:iam_0.2.5 quay.io/msentissi/muis-fuse-sap-adapter:iam_0.2.5
-# docker push quay.io/msentissi/muis-fuse-sap-adapter:iam_0.2.5
+# docker tag muis-fuse-sap-adapter:iam_0.3.2 quay.io/msentissi/muis-fuse-sap-adapter:iam_0.3.2
+# docker push quay.io/msentissi/muis-fuse-sap-adapter:iam_0.3.2
 # OR tag it and push to dockerhub
-#   docker push msentissi/muis-fuse-sap-adapter:iam_0.2.5
+#   docker push msentissi/muis-fuse-sap-adapter:iam_0.3.2
 
-# docker run --rm -ti muis-fuse-sap-adapter:iam_0.2.5 bash
+# docker run --rm -ti muis-fuse-sap-adapter:iam_0.3.2 bash

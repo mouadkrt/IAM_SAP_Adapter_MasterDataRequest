@@ -89,16 +89,16 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
             ZARIBA_INVOICED_PO_ITEMS_SOAP	z_ariba_invoiced_po_items_soap = new ZARIBA_INVOICED_PO_ITEMS_SOAP();
 		
 		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
-		Application.muis_debug("soap_envelope", soap_envelope);
+		MuisApp.muis_debug("soap_envelope", soap_envelope);
 		
 		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
-		Application.muis_debug("soap_body", soap_body);
+		MuisApp.muis_debug("soap_body", soap_body);
 		
 		Map<String, Object> ZARIBA_INVOICED_PO_ITEMS_SOAPP = (Map<String, Object>) soap_body.get("ZARIBA_INVOICED_PO_ITEMS_SOAP");
-		Application.muis_debug("ZARIBA_INVOICED_PO_ITEMS_SOAPP", ZARIBA_INVOICED_PO_ITEMS_SOAPP);
+		MuisApp.muis_debug("ZARIBA_INVOICED_PO_ITEMS_SOAPP", ZARIBA_INVOICED_PO_ITEMS_SOAPP);
 		
 		Map<String, Object> ZARIBA_INVOICED_PO_ITEMS_SOAPP2 = (Map<String, Object>) ZARIBA_INVOICED_PO_ITEMS_SOAPP.get("ZARIBA_INVOICED_PO_ITEMS_SOAP");
-		Application.muis_debug("Z_ARIBA_GR_TRANSFERR2", ZARIBA_INVOICED_PO_ITEMS_SOAPP2);
+		MuisApp.muis_debug("Z_ARIBA_GR_TRANSFERR2", ZARIBA_INVOICED_PO_ITEMS_SOAPP2);
 		
 
 		z_ariba_invoiced_po_items_soap.PARTITION =  !(ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("PARTITION") instanceof String) ? "" : (String) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("PARTITION");
@@ -109,11 +109,11 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 		z_ariba_invoiced_po_items_soap.ZINVPOITEMS = z_ariba_invoiced_po_items_soap.new ZINVPOITEMS();
 
 		Map<String, Object> ZINVPOITEMS2 = (Map<String, Object>) ZARIBA_INVOICED_PO_ITEMS_SOAPP2.get("ZINVPOITEMS");
-		Application.muis_debug("ZINVPOITEMS2", ZINVPOITEMS2);
+		MuisApp.muis_debug("ZINVPOITEMS2", ZINVPOITEMS2);
 		if(!(ZINVPOITEMS2 == null)) {
-			Application.muis_debug("ZINVPOITEMS2.get('item')", ZINVPOITEMS2.get("item"));
-			Application.muis_debug("... class : ", ZINVPOITEMS2.get("item").getClass().getName());
-			z_ariba_invoiced_po_items_soap.ZINVPOITEMS.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) ZINVPOITEMS2, ZINVPOITEMS_item.class);
+			MuisApp.muis_debug("ZINVPOITEMS2.get('item')", ZINVPOITEMS2.get("item"));
+			MuisApp.muis_debug("... class : ", ZINVPOITEMS2.get("item").getClass().getName());
+			z_ariba_invoiced_po_items_soap.ZINVPOITEMS.items = MuisApp.getItemsAsArrayList((LinkedHashMap<String, Object>) ZINVPOITEMS2, ZINVPOITEMS_item.class);
 		}
 		
 		return z_ariba_invoiced_po_items_soap;
@@ -132,13 +132,13 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 
         try
         {
-				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
+				MuisApp.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", MuisApp.dest.getRepository().getName());
 
 				String sapFunctionStr = "ZARIBA_INVOICED_PO_ITEMS_SOAP"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(this.currentSapFunction);
+				MuisApp.describeFunction(this.currentSapFunction);
 				
 				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_invoiced_po_items_soap.PARTITION);
 				this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_invoiced_po_items_soap.VARIANT);
@@ -163,14 +163,14 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 				}
 				
 				try {
-                    this.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(MuisApp.dest);
 						
 						//JCoStructure exportStructure = currentSapFunction.getTableParameterList().getStructure("GR_ITEM");
 						//for (int i = 0; i < exportStructure.getMetaData().getFieldCount(); i++)
 						//	System.out.println( "\n- MUIS2 :" + exportStructure.getMetaData().getName(i) + ":\t" + exportStructure.getString(i));
 						
 						System.out.println("\nMUIS : SENDDATE = " + this.currentSapFunction.getExportParameterList().getString("SENDDATE"));
-						Application.getTableValues(this.currentSapFunction, "ZINVPOITEMS");
+						MuisApp.getTableValues(this.currentSapFunction, "ZINVPOITEMS");
 					}
 					catch (AbapException e)
 					{
@@ -188,7 +188,7 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 	public void read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response(Exchange exchange) {
 
 		String sapFunctionStr = this.currentSapFunction.getName();
-		Application.muis_debug("read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
+		MuisApp.muis_debug("read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
 		String xmlSendDateStr = "<SENDDATE>"+ this.currentSapFunction.getExportParameterList().getString("SENDDATE") + "</SENDDATE>";
 

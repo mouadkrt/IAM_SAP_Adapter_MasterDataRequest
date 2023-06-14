@@ -17,6 +17,8 @@ public class AppConfig {
         String BROKER_USER = System.getenv().getOrDefault("BROKER_USER", "admin");
         String BROKER_PWD = System.getenv().getOrDefault("BROKER_PWD", "123.pwdMunisys");
 
+        System.out.println("Using BROKER_URL : " + BROKER_URL);
+
         cf.setBrokerURL(BROKER_URL);
         cf.setUser(BROKER_USER);
         cf.setPassword(BROKER_PWD);

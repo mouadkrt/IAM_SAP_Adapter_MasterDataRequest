@@ -121,28 +121,28 @@ public class Z_ARIBA_GR_TRANSFER {
 		Z_ARIBA_GR_TRANSFER	z_ariba_gr_transfer = new Z_ARIBA_GR_TRANSFER();
 		
 		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
-		Application.muis_debug("soap_envelope", soap_envelope);
+		MuisApp.muis_debug("soap_envelope", soap_envelope);
 		
 		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
-		Application.muis_debug("soap_body", soap_body);
+		MuisApp.muis_debug("soap_body", soap_body);
 		
 		Map<String, Object> Z_ARIBA_GR_TRANSFERR = (Map<String, Object>) soap_body.get("Z_ARIBA_GR_TRANSFER");
-		Application.muis_debug("Z_ARIBA_GR_TRANSFERR", Z_ARIBA_GR_TRANSFERR);
+		MuisApp.muis_debug("Z_ARIBA_GR_TRANSFERR", Z_ARIBA_GR_TRANSFERR);
 		
 		Map<String, Object> Z_ARIBA_GR_TRANSFERR2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFERR.get("Z_ARIBA_GR_TRANSFER");
-		Application.muis_debug("Z_ARIBA_GR_TRANSFERR2", Z_ARIBA_GR_TRANSFERR2);
+		MuisApp.muis_debug("Z_ARIBA_GR_TRANSFERR2", Z_ARIBA_GR_TRANSFERR2);
 		
 		z_ariba_gr_transfer.PARTITION =  !(Z_ARIBA_GR_TRANSFERR2.get("PARTITION") instanceof String) ? "" : (String) Z_ARIBA_GR_TRANSFERR2.get("PARTITION");
 		z_ariba_gr_transfer.VARIANT =  !(Z_ARIBA_GR_TRANSFERR2.get("VARIANT") instanceof String) ? "" : (String) Z_ARIBA_GR_TRANSFERR2.get("VARIANT");
 				
 		Map<String, Object> GR_ITEMs2 = (Map<String, Object>) Z_ARIBA_GR_TRANSFERR2.get("GR_ITEM");
-		Application.muis_debug("GR_ITEMs2", GR_ITEMs2);
+		MuisApp.muis_debug("GR_ITEMs2", GR_ITEMs2);
 		
-		Application.muis_debug("GR_ITEMs2.get('item')", GR_ITEMs2.get("item"));
-		Application.muis_debug("... class : ", GR_ITEMs2.get("item").getClass().getName());
+		MuisApp.muis_debug("GR_ITEMs2.get('item')", GR_ITEMs2.get("item"));
+		MuisApp.muis_debug("... class : ", GR_ITEMs2.get("item").getClass().getName());
 		
 		z_ariba_gr_transfer.GR_ITEM = z_ariba_gr_transfer.new GR_ITEM();
-		z_ariba_gr_transfer.GR_ITEM.items = Application.getItemsAsArrayList((LinkedHashMap<String, Object>) GR_ITEMs2, GR_ITEM_item.class);
+		z_ariba_gr_transfer.GR_ITEM.items = MuisApp.getItemsAsArrayList((LinkedHashMap<String, Object>) GR_ITEMs2, GR_ITEM_item.class);
 
 		return z_ariba_gr_transfer;
 	}
@@ -160,13 +160,13 @@ public class Z_ARIBA_GR_TRANSFER {
 
         try
         {
-				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
+				MuisApp.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", MuisApp.dest.getRepository().getName());
 
 				String sapFunctionStr = "Z_ARIBA_GR_TRANSFER"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(this.currentSapFunction);
+				MuisApp.describeFunction(this.currentSapFunction);
 				
 				// The following will be used sftp adapter side :
 					//sapFunction.getImportParameterList().setValue("ENCODING", "UTF-8");
@@ -193,16 +193,16 @@ public class Z_ARIBA_GR_TRANSFER {
 				}
 				
 				try {
-                    this.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(MuisApp.dest);
 						
 						//JCoStructure exportStructure = currentSapFunction.getTableParameterList().getStructure("GR_ITEM");
 						//for (int i = 0; i < exportStructure.getMetaData().getFieldCount(); i++)
 						//	System.out.println( "\n- MUIS2 :" + exportStructure.getMetaData().getName(i) + ":\t" + exportStructure.getString(i));
 						
 						System.out.println("\nMUIS : STATUS = " + this.currentSapFunction.getExportParameterList().getString("STATUS"));
-						Application.getTableValues(this.currentSapFunction, "GR_ITEM");
-						Application.getTableValues(this.currentSapFunction, "GR_SERIAL");
-						Application.getTableValues(this.currentSapFunction, "ERROR_MSG_TABLE");
+						MuisApp.getTableValues(this.currentSapFunction, "GR_ITEM");
+						MuisApp.getTableValues(this.currentSapFunction, "GR_SERIAL");
+						MuisApp.getTableValues(this.currentSapFunction, "ERROR_MSG_TABLE");
 						//System.out.println("MUIS : ERROR_MSG_TABLE isTable = " + currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE").isTable());
 						//System.out.println("MUIS : ERROR_MSG_TABLE isStructure = " + currentSapFunction.getTableParameterList().getTable("ERROR_MSG_TABLE").isStructure());
 						
@@ -226,7 +226,7 @@ public class Z_ARIBA_GR_TRANSFER {
 	public void read_SapFunc_Z_ARIBA_GR_TRANSFER_Response(Exchange exchange) {
 
 		String sapFunctionStr = this.currentSapFunction.getName();
-		Application.muis_debug("read_SapFunc_Z_ARIBA_GR_TRANSFER_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
+		MuisApp.muis_debug("read_SapFunc_Z_ARIBA_GR_TRANSFER_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
 		String xmlStatusStr = "<STATUS>"+ this.currentSapFunction.getExportParameterList().getString("STATUS") + "</STATUS>";
 

@@ -110,35 +110,35 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
             Z_ARIBA_BAPI_PO_CANCEL	z_ariba_bapi_po_cancel = new Z_ARIBA_BAPI_PO_CANCEL();
 		
 		Map<String, Object> soap_envelope = (Map<String, Object>) map.get("Envelope");
-		Application.muis_debug("soap_envelope", soap_envelope);
+		MuisApp.muis_debug("soap_envelope", soap_envelope);
 		
 		Map<String, Object> soap_body = (Map<String, Object>) soap_envelope.get("Body");
-		Application.muis_debug("soap_body", soap_body);
+		MuisApp.muis_debug("soap_body", soap_body);
 		
 		Map<String, Object> Z_ARIBA_BAPI_PO_CANCELL = (Map<String, Object>) soap_body.get("Z_ARIBA_BAPI_PO_CANCEL");
-		Application.muis_debug("Z_ARIBA_BAPI_PO_CANCEL", Z_ARIBA_BAPI_PO_CANCELL);
+		MuisApp.muis_debug("Z_ARIBA_BAPI_PO_CANCEL", Z_ARIBA_BAPI_PO_CANCELL);
 		
 		Map<String, Object> Z_ARIBA_BAPI_PO_CANCELL2 = (Map<String, Object>) Z_ARIBA_BAPI_PO_CANCELL.get("Z_ARIBA_BAPI_PO_CANCEL");
-			Application.muis_debug("Z_ARIBA_BAPI_PO_CANCELL2", Z_ARIBA_BAPI_PO_CANCELL2);
+			MuisApp.muis_debug("Z_ARIBA_BAPI_PO_CANCELL2", Z_ARIBA_BAPI_PO_CANCELL2);
 			z_ariba_bapi_po_cancel.PARTITION =  !(Z_ARIBA_BAPI_PO_CANCELL2.get("PARTITION") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CANCELL2.get("PARTITION");
 			z_ariba_bapi_po_cancel.VARIANT = !(Z_ARIBA_BAPI_PO_CANCELL2.get("VARIANT") instanceof String) ? "" : (String) Z_ARIBA_BAPI_PO_CANCELL2.get("VARIANT");
 		
 		Map<String, Object> poheader = (Map<String, Object>) Z_ARIBA_BAPI_PO_CANCELL2.get("PO_HEADER");
-			Application.muis_debug("poheader", poheader);
-			z_ariba_bapi_po_cancel.PO_HEADER.AEDAT 		= Application.forceString(poheader, "AEDAT");
-			z_ariba_bapi_po_cancel.PO_HEADER.CHGSTATE 	= Application.forceString(poheader, "CHGSTATE");
-			z_ariba_bapi_po_cancel.PO_HEADER.EBELN 		= Application.forceString(poheader, "EBELN");
-			z_ariba_bapi_po_cancel.PO_HEADER.EKGRP 		= Application.forceString(poheader, "EKGRP");
-			z_ariba_bapi_po_cancel.PO_HEADER.EKORG 		= Application.forceString(poheader, "EKORG");
-			z_ariba_bapi_po_cancel.PO_HEADER.ERPORDERID = Application.forceString(poheader, "ERPORDERID");
-			z_ariba_bapi_po_cancel.PO_HEADER.LIFNR 		= Application.forceString(poheader, "LIFNR");
-			z_ariba_bapi_po_cancel.PO_HEADER.ORDERTYPE	= Application.forceString(poheader, "ORDERTYPE");
-			z_ariba_bapi_po_cancel.PO_HEADER.UNSEZ 		= Application.forceString(poheader, "UNSEZ");
-			z_ariba_bapi_po_cancel.PO_HEADER.VERSION 	= Application.forceString(poheader, "VERSION");
-			z_ariba_bapi_po_cancel.PO_HEADER.WAERS 		= Application.forceString(poheader, "WAERS");
+			MuisApp.muis_debug("poheader", poheader);
+			z_ariba_bapi_po_cancel.PO_HEADER.AEDAT 		= MuisApp.forceString(poheader, "AEDAT");
+			z_ariba_bapi_po_cancel.PO_HEADER.CHGSTATE 	= MuisApp.forceString(poheader, "CHGSTATE");
+			z_ariba_bapi_po_cancel.PO_HEADER.EBELN 		= MuisApp.forceString(poheader, "EBELN");
+			z_ariba_bapi_po_cancel.PO_HEADER.EKGRP 		= MuisApp.forceString(poheader, "EKGRP");
+			z_ariba_bapi_po_cancel.PO_HEADER.EKORG 		= MuisApp.forceString(poheader, "EKORG");
+			z_ariba_bapi_po_cancel.PO_HEADER.ERPORDERID = MuisApp.forceString(poheader, "ERPORDERID");
+			z_ariba_bapi_po_cancel.PO_HEADER.LIFNR 		= MuisApp.forceString(poheader, "LIFNR");
+			z_ariba_bapi_po_cancel.PO_HEADER.ORDERTYPE	= MuisApp.forceString(poheader, "ORDERTYPE");
+			z_ariba_bapi_po_cancel.PO_HEADER.UNSEZ 		= MuisApp.forceString(poheader, "UNSEZ");
+			z_ariba_bapi_po_cancel.PO_HEADER.VERSION 	= MuisApp.forceString(poheader, "VERSION");
+			z_ariba_bapi_po_cancel.PO_HEADER.WAERS 		= MuisApp.forceString(poheader, "WAERS");
 
 			ERROR_MSG_TABLE err = (ERROR_MSG_TABLE) Z_ARIBA_BAPI_PO_CANCELL2.get("ERROR_MSG_TABLE");
-			Application.muis_debug("ERROR_MSG_TABLE", err);
+			MuisApp.muis_debug("ERROR_MSG_TABLE", err);
 
 		return z_ariba_bapi_po_cancel;
 	}
@@ -156,28 +156,28 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
 
         try
         {
-				Application.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", Application.dest.getRepository().getName());
+				MuisApp.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", MuisApp.dest.getRepository().getName());
 
 				String sapFunctionStr = "Z_ARIBA_BAPI_PO_CANCEL"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
-				this.currentSapFunction = Application.dest.getRepository().getFunction(sapFunctionStr);
+				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				Application.describeFunction(this.currentSapFunction);
+				MuisApp.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
 				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_cancel.PARTITION);
 				this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_bapi_po_cancel.VARIANT);
 							
 				// SAP Structures :
-				Application.feed_SAP_Structure("PO_HEADER", z_ariba_bapi_po_cancel.PO_HEADER, PO_HEADER.class, this.currentSapFunction);
+				MuisApp.feed_SAP_Structure("PO_HEADER", z_ariba_bapi_po_cancel.PO_HEADER, PO_HEADER.class, this.currentSapFunction);
 				
 				// SAP Tables :
-				Application.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_bapi_po_cancel.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_item.class, this.currentSapFunction);
+				MuisApp.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_bapi_po_cancel.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_item.class, this.currentSapFunction);
 
 				
 				
 				try {
-                    this.currentSapFunction.execute(Application.dest);
+                    this.currentSapFunction.execute(MuisApp.dest);
 				}
 				catch (AbapException e)
 				{
@@ -195,7 +195,7 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
 	public void read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response(Exchange exchange) {
 
 		String sapFunctionStr = this.currentSapFunction.getName();
-		Application.muis_debug("read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
+		MuisApp.muis_debug("read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response", "Processing SAP function " + sapFunctionStr + " output tables :");
 		
 		String xml_ERPORDERID = "<ERPORDERID>"+ this.currentSapFunction.getExportParameterList().getString("ERPORDERID") + "</ERPORDERID>";
 		String xml_E_PARTITION = "<E_PARTITION>"+ this.currentSapFunction.getExportParameterList().getString("E_PARTITION") + "</E_PARTITION>";
