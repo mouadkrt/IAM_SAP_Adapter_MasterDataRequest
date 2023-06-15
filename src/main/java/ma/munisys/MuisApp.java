@@ -51,7 +51,7 @@ public class MuisApp  extends RouteBuilder {
 		
 		from("netty4-http:http://0.0.0.0:8088/")
 			.routeId("muis_route_sap_1")
-			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.3.2 (using AMQ)  -----------------------\n")
+			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.4.5 (using AMQ)  -----------------------\n")
 			//.delay((int) Math.floor(Math.random() *(max - min + 1) + min)*1000)
 			.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers} \n")
 			.log(LoggingLevel.INFO, "Initial received body : \n${body} \n")
