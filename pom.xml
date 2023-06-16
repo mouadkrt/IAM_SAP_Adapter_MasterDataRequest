@@ -102,7 +102,7 @@
           <version>3.0.15</version>
       </dependency> -->
     <!-- https://mvnrepository.com/artifact/org.fusesource/camel-sap -->
-    <dependency>
+   <!--  <dependency>
       <groupId>org.fusesource</groupId>
       <artifactId>camel-sap-starter</artifactId>
       <exclusions>
@@ -115,7 +115,7 @@
           <artifactId>sapjco3</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
+    </dependency> -->
       <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jms-starter</artifactId>
