@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application {
 
     public static void main(String[] args) {
-        System.out.println("-------------- SAP-ADAPTER START version iam_0.4.6 (using AMQ)  -----------------------\n");
+        System.out.println("-------------- SAP-ADAPTER START version iam_0.4.9 (using AMQ)  -----------------------\n");
         SpringApplication.run(Application.class, args);
     }
 

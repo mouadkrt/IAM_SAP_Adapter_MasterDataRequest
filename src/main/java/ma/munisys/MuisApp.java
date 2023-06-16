@@ -51,7 +51,7 @@ public class MuisApp  extends RouteBuilder {
 		
 		from("netty4-http:http://0.0.0.0:8088/")
 			.routeId("muis_route_sap_1")
-			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.4.6 (using AMQ)  -----------------------\n")
+			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.4.9 (using AMQ)  -----------------------\n")
 			//.delay((int) Math.floor(Math.random() *(max - min + 1) + min)*1000)
 			.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers} \n")
 			.log(LoggingLevel.INFO, "Initial received body : \n${body} \n")
@@ -85,7 +85,18 @@ public class MuisApp  extends RouteBuilder {
 
 		from("direct:execSapMethod")
 		.routeId("muis_route_sap_1.2")
-			.choice()
+		.log("Inside Camel route direct:execSapMethod. MUIS_SOAP_ROOT_TAG = ${header.MUIS_SOAP_ROOT_TAG}")
+		.process(new Processor() {
+				public void process(Exchange exchange) throws Exception {
+					_Z_ARIBA_BAPI_PO_CREATE.execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE(exchange);
+			}
+			})
+			.process(new Processor() {
+				public void process(Exchange exchange) throws Exception {
+					_Z_ARIBA_BAPI_PO_CREATE.read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response(exchange);
+			}
+			});
+			/* .choice()
 				.when(simple("${header.MasterDataImport_Request} == '1'"))
 					.log(LoggingLevel.INFO, "MUIS - MasterDataImport_Request detected in header.")
 					.process(MuisApp::execute_SapFunc_MasterDataImport)
@@ -187,7 +198,7 @@ public class MuisApp  extends RouteBuilder {
 									_Z_ARIBA_BAPI_PO_CANCEL.read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response(exchange);
 								}
 							})
-		.end();
+		.end(); */
     }
 	
 	public static void muis_debug(String label, Object txt) {

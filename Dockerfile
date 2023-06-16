@@ -19,16 +19,17 @@ ENTRYPOINT ["java","-cp", "sap-libs/sapjco3.jar:app.jar", "org.springframework.b
 
 # Update version in MuisApp.java ~ line 54
 # mvn dependency:tree | grep xyz
+# mvn dependency:purge-local-repository clean install -U
 # mvn spring-boot:run
 # mvn clean install
 
 # Start Docker deamon
 # docker login registry.redhat.io 
-# docker build -t muis-fuse-sap-adapter:iam_0.4.6 .
+# docker build -t muis-fuse-sap-adapter:iam_0.4.9 .
 # Tag it and push to quay
-# docker tag muis-fuse-sap-adapter:iam_0.4.6 quay.io/msentissi/muis-fuse-sap-adapter:iam_0.4.6
-# docker push quay.io/msentissi/muis-fuse-sap-adapter:iam_0.4.6
+# docker tag muis-fuse-sap-adapter:iam_0.4.9 quay.io/msentissi/muis-fuse-sap-adapter:iam_0.4.9
+# docker push quay.io/msentissi/muis-fuse-sap-adapter:iam_0.4.9
 # OR tag it and push to dockerhub
-#   docker push msentissi/muis-fuse-sap-adapter:iam_0.4.6
+#   docker push msentissi/muis-fuse-sap-adapter:iam_0.4.9
 
-# docker run --rm -ti muis-fuse-sap-adapter:iam_0.4.6 bash
+# docker run --rm -ti muis-fuse-sap-adapter:iam_0.4.9 bash
