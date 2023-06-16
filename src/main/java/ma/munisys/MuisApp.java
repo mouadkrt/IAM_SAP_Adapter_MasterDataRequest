@@ -43,11 +43,13 @@ public class MuisApp  extends RouteBuilder {
 	private static String MUIS_DEBUG = System.getenv().getOrDefault("MUIS_DEBUG", "0");
 
 	public static void main(String[] args) {
-		registerDestinationDataProvider();
-		if(!MUIS_DEBUG.equals("0")) describeAllAribaFunctions();
+		/* registerDestinationDataProvider();
+		if(!MUIS_DEBUG.equals("0")) describeAllAribaFunctions(); */
 	}
 
 	public void configure() throws Exception {
+		registerDestinationDataProvider();
+		if(!MUIS_DEBUG.equals("0")) describeAllAribaFunctions();
 		
 		from("netty4-http:http://0.0.0.0:8088/")
 			.routeId("muis_route_sap_1")
