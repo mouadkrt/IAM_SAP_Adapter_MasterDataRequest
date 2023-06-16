@@ -59,7 +59,17 @@ public class MuisApp  extends RouteBuilder {
 			.to("direct:storeSapMethodInHeader")
 			.convertBodyTo(String.class)
 			.log("Storing message into QueueIN - ${body}")
-			.to("jms:queue:QueueIN?exchangePattern=InOnly")
+			// If "InOnly" is used here, then Camel when send back the response at the end of this route, since it considers the other route as async processing (The calling should then use the adequate channels (callbacks for eg), to get the async message processed by the rest of the other routes)
+			// Checkout the Request/Reply pattern here : https://camel.apache.org/components/3.20.x/jms-component.html#_request_reply_over_jms
+				// replyToType :
+				//	Temporary 							: Queue auto created by Camel (Do not specied a replyTo queue, Camel will handle this)
+				//	Shared (Slow Perf) (default value)	: (replyTo queue must be specified) (can be used in a clustered environment)
+				//	Exclusive 							: (replyTo queue must be specified) (cannot [easily] be used in a clustered environment)
+				
+				.to("jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=120s")
+				// configured requestTimeout of 120 seconds. So Camel will wait up till 120 seconds for that reply message to come back on the QueueOUT queue
+				// While waiting for the reply of a given message placed on Queu (Processed down here in other routes),
+				// time is still ticking for the other messages that still waits their turn in that QueueIN queue (Since we're picking only one message at a time)
 		.end();
 
 		from("direct:storeSapMethodInHeader")
@@ -68,10 +78,11 @@ public class MuisApp  extends RouteBuilder {
 			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 		.end();
 
-		from("jms:queue:QueueIN?maxMessagesPerTask=1&concurrentConsumers=1&maxConcurrentConsumers=1&receiveTimeout=12000&requestTimeout=120000&disableReplyTo=true&synchronous=1")
+		from("jms:queue:QueueIN?maxMessagesPerTask=1&concurrentConsumers=1&maxConcurrentConsumers=1&receiveTimeout=2000&requestTimeout=120s&disableReplyTo=true&synchronous=1")
 		.log("Received message from QueueIN - ${body}")
 		.convertBodyTo(String.class)
-		.to("direct:execSapMethod");
+		.to("direct:execSapMethod")
+		.to("jms:queue:QueueOUT") ;
 		
 		Z_ARIBA_BAPI_PO_CHANGE _Z_ARIBA_BAPI_PO_CHANGE = new Z_ARIBA_BAPI_PO_CHANGE();
 		Z_ARIBA_BAPI_PO_CANCEL	_Z_ARIBA_BAPI_PO_CANCEL = new Z_ARIBA_BAPI_PO_CANCEL();
