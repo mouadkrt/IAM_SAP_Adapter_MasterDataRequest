@@ -40,7 +40,7 @@ public class MuisApp  extends RouteBuilder {
   	
 	private static InMemoryDestinationDataProvider memoryProvider=new MuisApp.InMemoryDestinationDataProvider();
 	public  static JCoDestination dest;
-	private static String MUIS_DEBUG = System.getenv().getOrDefault("MUIS_DEBUG", "0");
+	static String MUIS_DEBUG = System.getenv().getOrDefault("MUIS_DEBUG", "0");
 
 	public static void main(String[] args) {
 		/* registerDestinationDataProvider();
@@ -48,12 +48,10 @@ public class MuisApp  extends RouteBuilder {
 	}
 
 	public void configure() throws Exception {
-		registerDestinationDataProvider();
-		if(!MUIS_DEBUG.equals("0")) describeAllAribaFunctions();
 		
 		from("netty4-http:http://0.0.0.0:8088/")
 			.routeId("muis_route_sap_1")
-			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.4.9 (using AMQ)  -----------------------\n")
+			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.4.8 (using AMQ)  -----------------------\n")
 			//.delay((int) Math.floor(Math.random() *(max - min + 1) + min)*1000)
 			.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers} \n")
 			.log(LoggingLevel.INFO, "Initial received body : \n${body} \n")
@@ -300,7 +298,7 @@ public class MuisApp  extends RouteBuilder {
 		}
 	}
 	
-	private static void registerDestinationDataProvider() {
+	static void registerDestinationDataProvider() {
 
 		System.out.println("- Muis : Registering SAP Destination Data Provider ...");
 
@@ -423,7 +421,7 @@ public class MuisApp  extends RouteBuilder {
 		System.out.println("*********************************************************************************************************");
 	}
 	
-	private static void describeAllAribaFunctions() {
+	static void describeAllAribaFunctions() {
 
 		System.out.println("####################### START describeAllAribaFunctions() ######################");
 
