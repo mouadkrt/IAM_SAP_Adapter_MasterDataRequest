@@ -51,14 +51,14 @@ public class MuisApp  extends RouteBuilder {
 		
 		// Camel route 1/3 : Listening to HTTP Client calls and storing them in an Artemis JMS QueueIN (And also arching them in QueueIN_Arch):
 		from("netty4-http:http://0.0.0.0:8088/")
-			.routeId("muis_route_from_netty4-http_to_QueueIN")
+			.routeId("muisRouteFromNetty4httpToQueueIN")
 			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.4.8 (using AMQ)  -----------------------\n")
-			.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers} \n")
-			.log(LoggingLevel.INFO, "Initial received body : \n${body} \n")
+			.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers}\n")
+			.log(LoggingLevel.INFO, "Initial received body : \n${body}\n")
 			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
 			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
-			.log("Storing message into QueueIN - ${body}")
+			.log(LoggingLevel.INFO,"Sending message to QueueIN :\n${body}\n")
 
 			// If "InOnly" is used here, then Camel when send back the response at the end of this route, since it considers the other route as async processing (The calling should then use the adequate channels (callbacks for eg), to get the async message processed by the rest of the other routes)
 			// Checkout the Request/Reply pattern here : https://camel.apache.org/components/3.20.x/jms-component.html#_request_reply_over_jms
@@ -69,7 +69,6 @@ public class MuisApp  extends RouteBuilder {
 				//	Exclusive 							: (replyTo queue must be specified) (cannot [easily] be used in a clustered environment)
 				
 			.to("jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=120s")
-			.to("jms:queue:QueueIN_Arch")
 			// configured requestTimeout of 120 seconds. So Camel will wait up till 120 seconds for that reply message to come back on the QueueOUT queue
 			// While waiting for the reply of a given message placed on Queu (Processed down here in other routes),
 			// time is still ticking for the other messages that still waits their turn in that QueueIN queue (Since we're picking only one message at a time)
@@ -81,14 +80,14 @@ public class MuisApp  extends RouteBuilder {
 		// 	storing the result in QueueOUT (So that route 1/3 send it back to the client Requet/Reply Camel JMS Pattern):
 		// And finaly archiving the result in QueueOUT_Arch
 		from("jms:queue:QueueIN?maxMessagesPerTask=1&concurrentConsumers=1&maxConcurrentConsumers=1&receiveTimeout=2000&requestTimeout=120s&disableReplyTo=true&synchronous=1")
-			.routeId("muis_route_from_QueueIN_to_execSapMethod+QueueOUT")
-			.log(LoggingLevel.INFO,"Received message from QueueIN - ${body}")
-			//.setHeader("MUIS_SOAP_ROOT_TAG", simple("${in.headers.MUIS_SOAP_ROOT_TAG}"))
+			.routeId("muisRouteFromQueueINToExecSapMethod+QueueOUT")
+			.log(LoggingLevel.INFO,"Received message from QueueIN :\n ${body}\n")
 			.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
+			.log(LoggingLevel.INFO,"Sending message execSapMethod ...")
 			.to("direct:execSapMethod")
-			.to("jms:queue:QueueOUT")
-			.to("jms:queue:QueueOUT_Arch");
+			.log(LoggingLevel.INFO,"Sending message into QueueOUT ...")
+			.to("jms:queue:QueueOUT");
 		
 		Z_ARIBA_BAPI_PO_CHANGE _Z_ARIBA_BAPI_PO_CHANGE = new Z_ARIBA_BAPI_PO_CHANGE();
 		Z_ARIBA_BAPI_PO_CANCEL	_Z_ARIBA_BAPI_PO_CANCEL = new Z_ARIBA_BAPI_PO_CANCEL();
@@ -104,21 +103,6 @@ public class MuisApp  extends RouteBuilder {
 		.routeId("muis_route_execSapMethod")
 		.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
 		.choice()
-			.when().simple("${in.headers.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_BAPI_PO_CREATE'")
-				.log(LoggingLevel.INFO, "MUIS - MUIS_SOAP_ROOT_TAG_prop = Z_ARIBA_BAPI_PO_CREATE")
-			.otherwise()
-				.log(LoggingLevel.INFO, "MUIS - otherwise");
-	/* 	.process(new Processor() {
-				public void process(Exchange exchange) throws Exception {
-					_Z_ARIBA_BAPI_PO_CREATE.execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE(exchange);
-			}
-			})
-			.process(new Processor() {
-				public void process(Exchange exchange) throws Exception {
-					_Z_ARIBA_BAPI_PO_CREATE.read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response(exchange);
-			}
-			}); */
-			/* .choice()
 				.when(simple("${header.MasterDataImport_Request} == '1'"))
 					.log(LoggingLevel.INFO, "MUIS - MasterDataImport_Request detected in header.")
 					.process(MuisApp::execute_SapFunc_MasterDataImport)
@@ -220,7 +204,7 @@ public class MuisApp  extends RouteBuilder {
 									_Z_ARIBA_BAPI_PO_CANCEL.read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response(exchange);
 								}
 							})
-		.end(); */
+		.end();
     }
 	
 	public static void muis_debug(String label, Object txt) {
