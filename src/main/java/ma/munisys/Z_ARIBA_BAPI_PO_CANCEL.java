@@ -162,7 +162,7 @@ public class Z_ARIBA_BAPI_PO_CANCEL {
 				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				MuisApp.describeFunction(this.currentSapFunction);
+				if(!MuisApp.MUIS_DEBUG.equals("0")) MuisApp.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
 				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_cancel.PARTITION);

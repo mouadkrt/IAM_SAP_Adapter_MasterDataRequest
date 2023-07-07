@@ -1571,17 +1571,17 @@ null
 - MUIS : Z_ARIBA_GR_PUSH.getFunctionTemplate() = 
 Function: Z_ARIBA_GR_PUSH
 Input:
-GR_HEADER                     ,ZXTGRHEADR                    ,u ,u,0,0,116,232,0,Goods Receipt header info,IMPORT
-PARTITION                     ,ZARIBTVARV                    ,C ,C,20,0,20,40,0,Ariba partition,IMPORT,ZARIBTVARV,PARTIT
-VARIANT                       ,ZARIBTVARV                    ,C ,C,20,20,20,40,0,Ariba variant,IMPORT,ZARIBTVARV,ZVARIANT
+    GR_HEADER                     ,ZXTGRHEADR                    ,u ,u,0,0,116,232,0,Goods Receipt header info,IMPORT
+    PARTITION                     ,ZARIBTVARV                    ,C ,C,20,0,20,40,0,Ariba partition,IMPORT,ZARIBTVARV,PARTIT
+    VARIANT                       ,ZARIBTVARV                    ,C ,C,20,20,20,40,0,Ariba variant,IMPORT,ZARIBTVARV,ZVARIANT
 Changing:
-null
+    null
 Output:
-E_PARTITION                   ,ZARIBTVARV                    ,C ,C,20,0,20,40,0,EXPORT,OPTIONAL,ZARIBTVARV,PARTIT
-E_VARIANT                     ,ZARIBTVARV                    ,C ,C,20,20,20,40,0,EXPORT,OPTIONAL,ZARIBTVARV,ZVARIANT
+    E_PARTITION                   ,ZARIBTVARV                    ,C ,C,20,0,20,40,0,EXPORT,OPTIONAL,ZARIBTVARV,PARTIT
+    E_VARIANT                     ,ZARIBTVARV                    ,C ,C,20,20,20,40,0,EXPORT,OPTIONAL,ZARIBTVARV,ZVARIANT
 Tables:
-ERROR_MSG_TABLE               ,ZXTGRERR                      ,h   ,u,0,0,355,710,0,Error messages
-GR_ITEMS                      ,ZXTGRITEMS                    ,h ,u,0,0,127,248,0,Goods Receipt line item info
+    ERROR_MSG_TABLE               ,ZXTGRERR                      ,h   ,u,0,0,355,710,0,Error messages
+    GR_ITEMS                      ,ZXTGRITEMS                    ,h ,u,0,0,127,248,0,Goods Receipt line item info
 Exceptions:
 *********************************************************************************************************
 

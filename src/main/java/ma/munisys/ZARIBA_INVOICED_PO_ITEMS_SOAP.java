@@ -138,7 +138,7 @@ public class ZARIBA_INVOICED_PO_ITEMS_SOAP {
 				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				MuisApp.describeFunction(this.currentSapFunction);
+				if(!MuisApp.MUIS_DEBUG.equals("0")) MuisApp.describeFunction(this.currentSapFunction);
 				
 				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_invoiced_po_items_soap.PARTITION);
 				this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_invoiced_po_items_soap.VARIANT);

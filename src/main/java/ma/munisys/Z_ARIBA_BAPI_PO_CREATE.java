@@ -742,7 +742,8 @@ public class Z_ARIBA_BAPI_PO_CREATE {
 				//try {MuisApp.dumpObject(this.currentSapFunction);} catch (IllegalArgumentException|IllegalAccessException e) {e.printStackTrace();} 
 				System.out.println("this.currentSapFunction : \n");
 				System.out.println(this.currentSapFunction);
-				MuisApp.describeFunction(this.currentSapFunction);
+				
+				if(!MuisApp.MUIS_DEBUG.equals("0")) MuisApp.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
 				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_bapi_po_create.PARTITION);

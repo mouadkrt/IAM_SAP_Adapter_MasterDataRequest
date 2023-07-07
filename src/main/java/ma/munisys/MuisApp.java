@@ -84,9 +84,9 @@ public class MuisApp  extends RouteBuilder {
 			.log(LoggingLevel.INFO,"Received message from QueueIN :\n ${body}\n")
 			.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
-			.log(LoggingLevel.INFO,"Sending message execSapMethod ...")
+			.log(LoggingLevel.INFO,"Sending message to execSapMethod ...")
 			.to("direct:execSapMethod")
-			.log(LoggingLevel.INFO,"Sending message into QueueOUT ...")
+			.log(LoggingLevel.INFO,"Sending message to QueueOUT ...")
 			.to("jms:queue:QueueOUT");
 		
 		Z_ARIBA_BAPI_PO_CHANGE _Z_ARIBA_BAPI_PO_CHANGE = new Z_ARIBA_BAPI_PO_CHANGE();

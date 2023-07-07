@@ -45,12 +45,16 @@ public class Z_ARIBA_GR_PUSH {
 	static class GR_HEADER {
 		public String MBLNR;
 
-		//@JsonFormat(pattern="yyyy/MM/dd")
-		public String BLDAT;
+		// https://answers.sap.com/questions/12757653/how-do-i-set-date-in-custom-rfc-jco-call-.html :
+			// If the data type of the function module parameter is of type DATS you can easily pass a java.util.date object and the SAP JCo implementation will convert it correctly.
+			// You could also pass a YYYYMMDD formated String, which will also work
 
-		//@JsonFormat(pattern="yyyy/MM/dd")
-		public String BUDAT;
-		
+			//@JsonFormat(pattern="yyyy/MM/dd")
+			public String BLDAT;
+
+			//@JsonFormat(pattern="yyyy/MM/dd")
+			public String BUDAT;
+			
 		public String FRBNR;
 		public String LFSNR;
 		public String BWARTWE;
@@ -187,17 +191,20 @@ public class Z_ARIBA_GR_PUSH {
 
         try
         {
-				MuisApp.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", MuisApp.dest.getRepository().getName());
+				MuisApp.muis_debug("MUIS : Repository name dest.getRepository().getName() ", MuisApp.dest.getRepository().getName());
 					
 				String sapFunctionStr = "Z_ARIBA_GR_PUSH"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
 				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				MuisApp.describeFunction(this.currentSapFunction);
+				if(!MuisApp.MUIS_DEBUG.equals("0")) MuisApp.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
 				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_gr_push.PARTITION);
 				this.currentSapFunction.getImportParameterList().setValue("VARIANT", z_ariba_gr_push.VARIANT);
+				
+				// SAP Structures :
+				MuisApp.feed_SAP_Structure("GR_HEADER", z_ariba_gr_push.GR_HEADER, GR_HEADER.class, this.currentSapFunction);
 				
 				// SAP Tables :
 				MuisApp.feed_SAP_Table("ERROR_MSG_TABLE", z_ariba_gr_push.ERROR_MSG_TABLE.items, ERROR_MSG_TABLE_Item.class, this.currentSapFunction);

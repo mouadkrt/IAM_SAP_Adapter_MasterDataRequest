@@ -132,7 +132,7 @@ public class Z_ARIBA_PO_HEADER_STATUS {
 				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				MuisApp.describeFunction(this.currentSapFunction);
+				if(!MuisApp.MUIS_DEBUG.equals("0")) MuisApp.describeFunction(this.currentSapFunction);
 				
 				// SAP Scalar fields
 				this.currentSapFunction.getImportParameterList().setValue("PARTITION", z_ariba_po_header_status.PARTITION);
