@@ -1,13 +1,10 @@
 package ma.munisys;
 
-import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.impl.DefaultCamelContext;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
 
 import com.sap.conn.jco.AbapException;
@@ -52,7 +49,7 @@ public class MuisApp  extends RouteBuilder {
 		// Camel route 1/3 : Listening to HTTP Client calls and storing them in an Artemis JMS QueueIN (And also arching them in QueueIN_Arch):
 		from("netty4-http:http://0.0.0.0:8088/")
 			.routeId("muisRouteFromNetty4httpToQueueIN")
-			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.4.8 (using AMQ)  -----------------------\n")
+			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.6.1 (using AMQ)  -----------------------\n")
 			.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers}\n")
 			.log(LoggingLevel.INFO, "Initial received body : \n${body}\n")
 			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
