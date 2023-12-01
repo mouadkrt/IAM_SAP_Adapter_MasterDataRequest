@@ -414,14 +414,14 @@ public class MuisApp  extends RouteBuilder {
 	{
 		if(MUIS_DEBUG.equals("0")) return;
 		String sapFunctionStr = sapFunction.getName();
-		System.out.println("\n\n********************************* " + sapFunctionStr + "  *************************************************");
+		System.out.println("\n\n********************************* Describing SAP function : " + sapFunctionStr + "  *************************************************");
 		System.out.println("SAP Function name = " + sapFunctionStr );
 		System.out.println(sapFunctionStr + " as XML : " + sapFunction.toXML() );
 		System.out.println("\n\n- MUIS : " + sapFunctionStr + ".getChangingParameterList() = \n" + sapFunction.getChangingParameterList());
 		System.out.println("\n\n- MUIS : " + sapFunctionStr + ".getExportParameterList() = \n" + sapFunction.getExportParameterList());
 		System.out.println("\n\n- MUIS : " + sapFunctionStr + ".getTableParameterList() = \n" + sapFunction.getTableParameterList());
 		System.out.println("\n\n- MUIS : " + sapFunctionStr + ".getFunctionTemplate() = \n" + sapFunction.getFunctionTemplate());
-		System.out.println("*********************************************************************************************************");
+		System.out.println("\n\n********************************* End of describing SAP function : " + sapFunctionStr + "  ************\n\n");
 	}
 	
 	static void describeAllAribaFunctions() {
@@ -496,7 +496,7 @@ public class MuisApp  extends RouteBuilder {
 
         try
         {
-				muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", dest.getRepository().getName());
+				muis_debug("MUIS : Repository name dest.getRepository().getName() ", dest.getRepository().getName());
 					
 				JCoFunction sapFunction = dest.getRepository().getFunction(sapFunctionStr);
 				if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
@@ -514,7 +514,8 @@ public class MuisApp  extends RouteBuilder {
 					sapFunction.getImportParameterList().setValue("PARTITION", partition);
 					sapFunction.getImportParameterList().setValue("VARIANT", variant);
 
-					if(sapFunctionStr == "ZARIBA_VENDOR" || sapFunctionStr == "ZARIBA_VENDOR_INC") {
+					if(sapFunctionStr.equals("ZARIBA_VENDOR") || sapFunctionStr.equals("ZARIBA_VENDOR_INC")) {
+						System.out.println("\nMUIS : Setting specific FILE_NAME_PORG_VEN and FILE_NAME_VENDOR for ZARIBA_VENDOR or ZARIBA_VENDOR_INC sap function");
 						// ZARIBA_VENDOR and ZARIBA_VENDOR_INC SAP Functions has a different two params for FILE_NAME, and also are named differently :
 						// FILE_NAME_PORG_VEN and FILE_NAME_VENDOR
 						String fileName_PORG_VEN = (String) sapFunctionInputs.get("FILE_NAME_PORG_VEN");
@@ -526,6 +527,7 @@ public class MuisApp  extends RouteBuilder {
 						System.out.println("ENCODING="+ encoding + ", FILE_NAME_PORG_VEN=" + fileName_PORG_VEN + ", fileName_VENDOR=" + fileName_VENDOR + ", PARTITION=" + partition + ", VARIANT=" + variant);
 					}
 					else {
+						System.out.println("\nMUIS : Setting usual FILE_NAME field for sap function, since sap function nor ZARIBA_VENDOR, neither ZARIBA_VENDOR_INC ");
 						String fileName = (String) sapFunctionInputs.get("FILE_NAME");
 						sapFunction.getImportParameterList().setValue("FILE_NAME", fileName);
 
