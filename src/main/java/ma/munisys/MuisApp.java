@@ -49,7 +49,7 @@ public class MuisApp  extends RouteBuilder {
 		// Camel route 1/3 : Listening to HTTP Client calls and storing them in an Artemis JMS QueueIN (And also arching them in QueueIN_Arch):
 		from("netty4-http:http://0.0.0.0:8088/")
 			.routeId("muisRouteFromNetty4httpToQueueIN")
-			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.7 (using AMQ)  -----------------------\n")
+			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.7.1 (using AMQ)  -----------------------\n")
 			.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers}\n")
 			.log(LoggingLevel.INFO, "Initial received body : \n${body}\n")
 			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
