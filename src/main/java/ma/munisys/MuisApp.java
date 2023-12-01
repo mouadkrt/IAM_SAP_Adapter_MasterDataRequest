@@ -494,12 +494,6 @@ public class MuisApp  extends RouteBuilder {
 		String sapFunctionStr = (String) method2.keySet().toArray()[0];
 		System.out.println("sapFunction extracted from XML payload : " + sapFunctionStr);
 
-		Map<String, Object> sapFunctionInputs = (Map<String, Object>) method2.get(sapFunctionStr);
-		String encoding = (String) sapFunctionInputs.get("ENCODING");
-		String fileName = (String) sapFunctionInputs.get("FILE_NAME");
-		String partition = (String) sapFunctionInputs.get("PARTITION");
-		String variant = (String) sapFunctionInputs.get("VARIANT");
-
         try
         {
 				muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", dest.getRepository().getName());
@@ -511,12 +505,33 @@ public class MuisApp  extends RouteBuilder {
 			
 				try {
 					
-					System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params :");
-					System.out.println("ENCODING="+ encoding + ", FILE_NAME=" + fileName + ", PARTITION=" + partition + ", VARIANT=" + variant);
+					Map<String, Object> sapFunctionInputs = (Map<String, Object>) method2.get(sapFunctionStr);
+					String encoding = (String) sapFunctionInputs.get("ENCODING");
+					String partition = (String) sapFunctionInputs.get("PARTITION");
+					String variant = (String) sapFunctionInputs.get("VARIANT");
+										
 					sapFunction.getImportParameterList().setValue("ENCODING", encoding);
-					sapFunction.getImportParameterList().setValue("FILE_NAME", fileName);
 					sapFunction.getImportParameterList().setValue("PARTITION", partition);
 					sapFunction.getImportParameterList().setValue("VARIANT", variant);
+
+					if(sapFunctionStr == "ZARIBA_VENDOR" || sapFunctionStr == "ZARIBA_VENDOR_INC") {
+						// ZARIBA_VENDOR and ZARIBA_VENDOR_INC SAP Functions has a different two params for FILE_NAME, and also are named differently :
+						// FILE_NAME_PORG_VEN and FILE_NAME_VENDOR
+						String fileName_PORG_VEN = (String) sapFunctionInputs.get("FILE_NAME_PORG_VEN");
+						String fileName_VENDOR = (String) sapFunctionInputs.get("FILE_NAME_VENDOR");
+						sapFunction.getImportParameterList().setValue("FILE_NAME_PORG_VEN", fileName_PORG_VEN);
+						sapFunction.getImportParameterList().setValue("FILE_NAME_VENDOR", fileName_VENDOR);
+
+						System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params :");
+						System.out.println("ENCODING="+ encoding + ", FILE_NAME_PORG_VEN=" + fileName_PORG_VEN + ", fileName_VENDOR=" + fileName_VENDOR + ", PARTITION=" + partition + ", VARIANT=" + variant);
+					}
+					else {
+						String fileName = (String) sapFunctionInputs.get("FILE_NAME");
+						sapFunction.getImportParameterList().setValue("FILE_NAME", fileName);
+
+						System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params :");
+						System.out.println("ENCODING="+ encoding + ", FILE_NAME=" + fileName + ", PARTITION=" + partition + ", VARIANT=" + variant);
+					}
 
 					sapFunction.execute(dest);
 				}
