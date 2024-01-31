@@ -1,6 +1,0 @@
-<ZARIBA_INVOICED_PO_ITEMS_SOAPResponse cid="BA321DC366F126363B8DBC9C390217EB" xmlns="urn:iwaysoftware:ibse:jul2003:ZARIBA_INVOICED_PO_ITEMS_SOAP:response" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <ZARIBA_INVOICED_PO_ITEMS_SOAP.Response>
-    <SENDDATE>2018-10-22</SENDDATE>
-    <ZINVPOITEMS/>
-  </ZARIBA_INVOICED_PO_ITEMS_SOAP.Response>
-</ZARIBA_INVOICED_PO_ITEMS_SOAPResponse>
