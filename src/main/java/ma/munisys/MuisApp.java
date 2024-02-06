@@ -38,7 +38,7 @@ public class MuisApp  extends RouteBuilder {
 	private static InMemoryDestinationDataProvider memoryProvider=new MuisApp.InMemoryDestinationDataProvider();
 	public  static JCoDestination dest;
 	static String MUIS_DEBUG = System.getenv().getOrDefault("MUIS_DEBUG", "0");
-	static String CAMEL_JMS_REQUEST_TIMEMOUT = System.getenv().getOrDefault("CAMEL_JMS_REQUEST_TIMEMOUT", "300s");
+	static String CAMEL_JMS_REQUEST_TIMEOUT = System.getenv().getOrDefault("CAMEL_JMS_REQUEST_TIMEOUT", "300s");
 
 	/*public static void main(String[] args) {
 		 registerDestinationDataProvider();
@@ -50,7 +50,7 @@ public class MuisApp  extends RouteBuilder {
 		// Camel route 1/3 : Listening to HTTP Client calls and storing them in an Artemis JMS QueueIN (And also arching them in QueueIN_Arch):
 		from("netty4-http:http://0.0.0.0:8088/")
 			.routeId("muisRouteFromNetty4httpToQueueIN")
-			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.7.3 (using AMQ)  -----------------------\n")
+			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.7.4 (using AMQ)  -----------------------\n")
 			.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers}\n")
 			.log(LoggingLevel.INFO, "Initial received body : \n${body}\n")
 			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
@@ -65,10 +65,10 @@ public class MuisApp  extends RouteBuilder {
 				//	Temporary 							: Queue auto created by Camel (Do not specied a replyTo queue, Camel will handle this)
 				//	Shared (Slow Perf) (default value)	: (replyTo queue must be specified) (can be used in a clustered environment)
 				//	Exclusive 							: (replyTo queue must be specified) (cannot [easily] be used in a clustered environment)
-				
-			.to("jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEMOUT)
-			// configured requestTimeout of 120 seconds. So Camel will wait up till 120 seconds for that reply message to come back on the QueueOUT queue
-			// While waiting for the reply of a given message placed on Queu (Processed down here in other routes),
+			.log(LoggingLevel.INFO, "MUIS routing to : jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT)
+			.to("jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT)
+			// configured requestTimeout, So Camel will wait up for that reply message to come back on the QueueOUT queue
+			// While waiting for the reply of a given message placed on Queue (Processed down here in other routes),
 			// time is still ticking for the other messages that still waits their turn in that QueueIN queue (Since we're picking only one message at a time)
 		.end();
 
@@ -77,7 +77,7 @@ public class MuisApp  extends RouteBuilder {
 		//	processing the message in SAP,
 		// 	storing the result in QueueOUT (So that route 1/3 send it back to the client Requet/Reply Camel JMS Pattern):
 		// And finaly archiving the result in QueueOUT_Arch
-		from("jms:queue:QueueIN?maxMessagesPerTask=1&concurrentConsumers=1&maxConcurrentConsumers=1&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEMOUT + "&disableReplyTo=true&synchronous=1")
+		from("jms:queue:QueueIN?maxMessagesPerTask=1&concurrentConsumers=1&maxConcurrentConsumers=1&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT + "&disableReplyTo=true&synchronous=1")
 			.routeId("muisRouteFromQueueINToExecSapMethod+QueueOUT")
 			.log(LoggingLevel.INFO,"Received message from QueueIN :\n ${body}\n")
 			.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
