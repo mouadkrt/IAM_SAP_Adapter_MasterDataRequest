@@ -32,3 +32,9 @@ mvn spring-boot:run
 
 
 # java -cp sap-libs/sapjco3.jar:target/Muis-Fuse-SAP-Adapter-1.0.0.jar org.springframework.boot.loader.JarLauncher
+
+# Local run :
+. sap_rec.env
+mvn spring-boot:run
+docker run --rm -it -p 61616:61616 -p 8161:8161 -e AMQ_USER=$AMQ_USER -e AMQ_PASSWORD=$AMQ_PASSWORD activemq-artemis-broker-init:artemis.2.28.0
+#http://10.100.20.31:8161/console/auth/login

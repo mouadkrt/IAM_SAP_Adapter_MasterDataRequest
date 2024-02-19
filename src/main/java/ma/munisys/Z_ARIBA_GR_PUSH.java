@@ -138,8 +138,11 @@ public class Z_ARIBA_GR_PUSH {
 	public static Z_ARIBA_GR_PUSH create_Z_ARIBA_GR_PUSH_ObjectFromXML(String httpBody)  {
 		// https://javadev.github.io/underscore-java/
 			Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(httpBody);
-			System.out.println("\n U.fromXmlWithoutNamespacesAndAttributes(httpBody) : \n");
-			System.out.println(map);
+			
+			MuisApp.muis_debug("U.fromXmlWithoutNamespacesAndAttributes(httpBody)", map);
+			
+			//System.out.println("\n U.fromXmlWithoutNamespacesAndAttributes(httpBody) : \n");
+			//System.out.println(map);
 		
             Z_ARIBA_GR_PUSH	z_ariba_gr_push = new Z_ARIBA_GR_PUSH();
 		
@@ -186,8 +189,9 @@ public class Z_ARIBA_GR_PUSH {
 
 		Z_ARIBA_GR_PUSH z_ariba_gr_push = create_Z_ARIBA_GR_PUSH_ObjectFromXML(body);
 		
-		System.out.println("MUIS : Parsing HTTP XML Body : Extracted vars are : ");
-		System.out.println("MUIS : z_ariba_gr_push = \n" + z_ariba_gr_push);
+		MuisApp.muis_debug("Parsing HTTP XML Body : Extracted vars are : z_ariba_gr_push :", z_ariba_gr_push);
+		//System.out.println("MUIS : Parsing HTTP XML Body : Extracted vars are : ");
+		//System.out.println("MUIS : z_ariba_gr_push = \n" + z_ariba_gr_push);
 
         try
         {
@@ -260,7 +264,10 @@ public class Z_ARIBA_GR_PUSH {
 				
 		final Message message = exchange.getIn();
 		message.setBody(newBody);
-		System.out.println("- MUIS : New soap body set in read_SapFunc_Z_ARIBA_GR_PUSH_Response() to : " + newBody);
+		System.out.println("\n- MUIS : New soap body set in read_SapFunc_Z_ARIBA_GR_PUSH_Response() to : " + newBody);
+		
+		//System.out.println("- MUIS read_SapFunc_Z_ARIBA_GR_PUSH_Response : : Adding explicit 10s delay ... before delivering back response body ...");
+		//try { Thread.sleep(10000); } catch (Exception e) {}
 	}
 
 }

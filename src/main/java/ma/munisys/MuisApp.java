@@ -56,20 +56,25 @@ public class MuisApp  extends RouteBuilder {
 			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
 			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
-			.log(LoggingLevel.INFO,"Sending message to QueueIN :\n${body}\n")
+			.choice()
+				.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_GR_PUSH'"))
+				.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_PUSH. Sending to execSapMethod camel route (no AMQ).\n")
+				.to("direct:execSapMethod")
+			.otherwise()
+				.log(LoggingLevel.INFO,"Sending message to QueueIN :\n${body}\n")
 
-			// If "InOnly" is used here, then Camel when send back the response at the end of this route, since it considers the other route as async processing (The calling should then use the adequate channels (callbacks for eg), to get the async message processed by the rest of the other routes)
-			// Checkout the Request/Reply pattern here : https://camel.apache.org/components/3.20.x/jms-component.html#_request_reply_over_jms
-			// https://i.stack.imgur.com/Jddwq.png
-				// replyToType :
-				//	Temporary 							: Queue auto created by Camel (Do not specied a replyTo queue, Camel will handle this)
-				//	Shared (Slow Perf) (default value)	: (replyTo queue must be specified) (can be used in a clustered environment)
-				//	Exclusive 							: (replyTo queue must be specified) (cannot [easily] be used in a clustered environment)
-			.log(LoggingLevel.INFO, "MUIS routing to : jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT)
-			.to("jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT)
-			// configured requestTimeout, So Camel will wait up for that reply message to come back on the QueueOUT queue
-			// While waiting for the reply of a given message placed on Queue (Processed down here in other routes),
-			// time is still ticking for the other messages that still waits their turn in that QueueIN queue (Since we're picking only one message at a time)
+				// If "InOnly" is used here, then Camel when send back the response at the end of this route, since it considers the other route as async processing (The calling should then use the adequate channels (callbacks for eg), to get the async message processed by the rest of the other routes)
+				// Checkout the Request/Reply pattern here : https://camel.apache.org/components/3.20.x/jms-component.html#_request_reply_over_jms
+				// https://i.stack.imgur.com/Jddwq.png
+					// replyToType :
+					//	Temporary 							: Queue auto created by Camel (Do not specied a replyTo queue, Camel will handle this)
+					//	Shared (Slow Perf) (default value)	: (replyTo queue must be specified) (can be used in a clustered environment)
+					//	Exclusive 							: (replyTo queue must be specified) (cannot [easily] be used in a clustered environment)
+				.log(LoggingLevel.INFO, "MUIS routing to : jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT)
+				.to("jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT)
+				// configured requestTimeout, So Camel will wait up for that reply message to come back on the QueueOUT queue
+				// While waiting for the reply of a given message placed on Queue (Processed down here in other routes),
+				// time is still ticking for the other messages that still waits their turn in that QueueIN queue (Since we're picking only one message at a time)
 		.end();
 
 		// Camel route 2/3 : 
@@ -180,6 +185,7 @@ public class MuisApp  extends RouteBuilder {
 							})
 						.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_GR_PUSH'"))
 							.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_PUSH. \n")
+							//.delay(60000)
 							.process(new Processor() {
 								public void process(Exchange exchange) throws Exception {
 									_Z_ARIBA_GR_PUSH.execute_SapFunc_Z_ARIBA_GR_PUSH(exchange);
