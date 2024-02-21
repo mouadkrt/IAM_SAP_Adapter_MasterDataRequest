@@ -48,19 +48,19 @@ public class MuisApp  extends RouteBuilder {
 	public void configure() throws Exception {
 		
 		// Camel route 1/3 : Listening to HTTP Client calls and storing them in an Artemis JMS QueueIN (And also arching them in QueueIN_Arch):
-		from("netty4-http:http://0.0.0.0:8088/")
+		from("netty4-http:http://0.0.0.0:8088?ssl=true&keyStoreFile=/keystore_iam.jks&passphrase=123.pwdMunisys&trustStoreFile=/keystore_iam.jks")
 			.routeId("muisRouteFromNetty4httpToQueueIN")
-			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.7.8 (using AMQ)  -----------------------\n")
+			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.7.9 (using AMQ)  -----------------------\n")
 			.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers}\n")
 			.log(LoggingLevel.INFO, "Initial received body : \n${body}\n")
 			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
 			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
-			.choice()
+			/*.choice()
 				.when(simple("${header.MUIS_SOAP_ROOT_TAG} != 'Z_ARIBA_BAPI_PO_CREATE'"))
 				.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload != Z_ARIBA_BAPI_PO_CREATE => sending directly to execSapMethod camel route (no AMQ).\n")
 				.to("direct:execSapMethod")
-			.otherwise()
+			.otherwise()*/
 				.log(LoggingLevel.INFO,"Sending message to QueueIN :\n${body}\n")
 
 				// If "InOnly" is used here, then Camel when send back the response at the end of this route, since it considers the other route as async processing (The calling should then use the adequate channels (callbacks for eg), to get the async message processed by the rest of the other routes)

@@ -5,6 +5,7 @@ RUN mkdir -p /opt/app/sap-libs
 WORKDIR /opt/app
 ARG JAR_FILE=target/Muis-Fuse-SAP-Adapter-1.0.0.jar
 COPY ${JAR_FILE} app.jar
+COPY keystore_iam.jks /
 COPY sap-libs/* /opt/app/sap-libs
 #COPY src /opt/app/src
 #COPY pom.xml  /opt/app/pom.xml
@@ -25,11 +26,11 @@ ENTRYPOINT ["java","-cp", "sap-libs/sapjco3.jar:app.jar", "org.springframework.b
 
 # Start Docker deamon
 # docker login registry.redhat.io 
-# docker build -t muis-fuse-sap-adapter:iam_0.7.8 .
+# docker build -t muis-fuse-sap-adapter:iam_0.7.9 .
 # Tag it and push to quay
-# docker tag muis-fuse-sap-adapter:iam_0.7.8 quay.io/msentissi/muis-fuse-sap-adapter:iam_0.7.8
-# docker push quay.io/msentissi/muis-fuse-sap-adapter:iam_0.7.8
+# docker tag muis-fuse-sap-adapter:iam_0.7.9 quay.io/msentissi/muis-fuse-sap-adapter:iam_0.7.9
+# docker push quay.io/msentissi/muis-fuse-sap-adapter:iam_0.7.9
 # OR tag it and push to dockerhub
-#   docker push msentissi/muis-fuse-sap-adapter:iam_0.7.8
+#   docker push msentissi/muis-fuse-sap-adapter:iam_0.7.9
 
-# docker run --rm -ti muis-fuse-sap-adapter:iam_0.7.8 bash
+# docker run --rm -ti muis-fuse-sap-adapter:iam_0.7.9 bash
