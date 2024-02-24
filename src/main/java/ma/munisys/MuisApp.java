@@ -51,8 +51,7 @@ public class MuisApp  extends RouteBuilder {
 		from("netty4-http:http://0.0.0.0:8088?ssl=true&keyStoreFile=/keystore_iam.jks&passphrase=123.pwdMunisys&trustStoreFile=/keystore_iam.jks")
 			.routeId("muisRouteFromNetty4httpToQueueIN")
 			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.7.9 (using AMQ)  -----------------------\n")
-			.log(LoggingLevel.INFO, "Initial received headers : \n${in.headers}\n")
-			.log(LoggingLevel.INFO, "Initial received body : \n${body}\n")
+			.log(LoggingLevel.INFO, "Initial received message :\nHEADER :\n${in.headers}\nBODY :\n${body}\n")
 			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
 			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
@@ -61,13 +60,11 @@ public class MuisApp  extends RouteBuilder {
 				.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload != Z_ARIBA_BAPI_PO_CREATE => sending directly to execSapMethod camel route (no AMQ).\n")
 				.to("direct:execSapMethod")
 			.otherwise()*/
-				.log(LoggingLevel.INFO,"Sending message to QueueIN :\n${body}\n")
-
 				// If "InOnly" is used here, then Camel when send back the response at the end of this route, since it considers the other route as async processing (The calling should then use the adequate channels (callbacks for eg), to get the async message processed by the rest of the other routes)
 				// Checkout the Request/Reply pattern here : https://camel.apache.org/components/3.20.x/jms-component.html#_request_reply_over_jms
 				// https://i.stack.imgur.com/Jddwq.png
 					// replyToType :
-					//	Temporary 							: Queue auto created by Camel (Do not specied a replyTo queue, Camel will handle this)
+					//	Temporary 							: Queue auto created by Camel (Do not specify a replyTo queue, Camel will handle this)
 					//	Shared (Slow Perf) (default value)	: (replyTo queue must be specified) (can be used in a clustered environment)
 					//	Exclusive 							: (replyTo queue must be specified) (cannot [easily] be used in a clustered environment)
 				.log(LoggingLevel.INFO, "MUIS routing to : jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT)
@@ -84,7 +81,7 @@ public class MuisApp  extends RouteBuilder {
 		// And finaly archiving the result in QueueOUT_Arch
 		from("jms:queue:QueueIN?maxMessagesPerTask=1&concurrentConsumers=1&maxConcurrentConsumers=1&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT + "&disableReplyTo=true&synchronous=1")
 			.routeId("muisRouteFromQueueINToExecSapMethod+QueueOUT")
-			.log(LoggingLevel.INFO,"Received message from QueueIN :\n ${body}\n")
+			.log(LoggingLevel.INFO,"Received message from QueueIN : \n HEADERS :\n${in.headers}\nBODY :\n ${body}\n")
 			.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
 			.log(LoggingLevel.INFO,"Sending message to execSapMethod ...")
@@ -482,7 +479,7 @@ public class MuisApp  extends RouteBuilder {
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
-		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_MasterDataImport() : " + body);
+		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_MasterDataImport() : " + body + "\n");
 		
 		Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(body);
 			

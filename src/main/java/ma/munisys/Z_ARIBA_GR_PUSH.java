@@ -7,7 +7,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.Message;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,6 +24,8 @@ import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoTable;
 
 public class Z_ARIBA_GR_PUSH {
+
+	 private static final Logger LOGGER = LoggerFactory.getLogger(Z_ARIBA_GR_PUSH.class.getName());
 
 	public JCoFunction currentSapFunction;
 	public String PARTITION;
@@ -185,7 +191,7 @@ public class Z_ARIBA_GR_PUSH {
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
-		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_Z_ARIBA_GR_PUSH() : " + body);
+		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_Z_ARIBA_GR_PUSH() :\n" + body);
 
 		Z_ARIBA_GR_PUSH z_ariba_gr_push = create_Z_ARIBA_GR_PUSH_ObjectFromXML(body);
 		
@@ -264,10 +270,12 @@ public class Z_ARIBA_GR_PUSH {
 				
 		final Message message = exchange.getIn();
 		message.setBody(newBody);
-		System.out.println("\n- MUIS : New soap body set in read_SapFunc_Z_ARIBA_GR_PUSH_Response() to : " + newBody);
-		
-		//System.out.println("- MUIS read_SapFunc_Z_ARIBA_GR_PUSH_Response : : Adding explicit 10s delay ... before delivering back response body ...");
-		//try { Thread.sleep(10000); } catch (Exception e) {}
+		LOGGER.info("- MUIS : New soap body set in read_SapFunc_Z_ARIBA_GR_PUSH_Response() to :\n" + newBody + "\n");
+		LOGGER.info("\nHEADERS :\n" + exchange.getIn().getHeaders() + "\nBODY :\n " + exchange.getIn().getBody() + "\n");
+		Integer DELAY_RESPONSE = Integer.valueOf(System.getenv().getOrDefault("DELAY_RESPONSE", "1"));
+		LOGGER.info("- MUIS read_SapFunc_Z_ARIBA_GR_PUSH_Response : Adding explicit DELAY_RESPONSE=" + DELAY_RESPONSE + "ms delay (Thread.sleep) ... before delivering back response body ...");
+		try { Thread.sleep(DELAY_RESPONSE); } catch (Exception e) {}
+		LOGGER.info("- MUIS read_SapFunc_Z_ARIBA_GR_PUSH_Response : Thread.sleep() done.");
 	}
 
 }
