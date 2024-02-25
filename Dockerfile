@@ -5,7 +5,7 @@ RUN mkdir -p /opt/app/sap-libs
 WORKDIR /opt/app
 ARG JAR_FILE=target/Muis-Fuse-SAP-Adapter-1.0.0.jar
 COPY ${JAR_FILE} app.jar
-COPY keystore_iam.jks /
+COPY certs/certs_prod/keystore_prod_iam.jks /
 COPY sap-libs/* /opt/app/sap-libs
 #COPY src /opt/app/src
 #COPY pom.xml  /opt/app/pom.xml

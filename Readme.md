@@ -38,3 +38,18 @@ mvn spring-boot:run
 mvn spring-boot:run
 docker run --rm -it -p 61616:61616 -p 8161:8161 -e AMQ_USER=$AMQ_USER -e AMQ_PASSWORD=$AMQ_PASSWORD activemq-artemis-broker-init:artemis.2.28.0
 #http://10.100.20.31:8161/console/auth/login
+
+
+
+#Keytools :
+
+keytool -genkey -alias iam-complex-trf -keyalg RSA -keypass changeit -storepass changeit -keystore keystore_iam.jks
+
+
+keytool.exe -import -file openshift.apps.munisyslab.munisys.net.ma.pem -alias openshift_certif -keystore keystore_iam.jks -deststorepass changeit
+
+keytool -list -v -keystore keystore_iam.jks
+
+openssl pkcs12 -export -in openshift.pem -inkey openshift_key.pem -out opensift.p12 -name "openshift"
+
+keytool -importkeystore -srckeystore opensift.p12 -srcstoretype pkcs12 -destkeystore keystore_iam.jks
