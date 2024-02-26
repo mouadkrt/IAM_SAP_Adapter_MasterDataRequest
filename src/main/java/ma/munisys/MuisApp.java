@@ -505,7 +505,7 @@ public class MuisApp  extends RouteBuilder {
 				JCoFunction sapFunction = dest.getRepository().getFunction(sapFunctionStr);
 				if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
 				
-				describeFunction(sapFunction);
+				//describeFunction(sapFunction);
 			
 				try {
 					

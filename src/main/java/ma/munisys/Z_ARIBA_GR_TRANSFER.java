@@ -166,7 +166,7 @@ public class Z_ARIBA_GR_TRANSFER {
 				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
-				if(!MuisApp.MUIS_DEBUG.equals("0")) MuisApp.describeFunction(this.currentSapFunction);
+				// if(!MuisApp.MUIS_DEBUG.equals("0")) MuisApp.describeFunction(this.currentSapFunction);
 				
 				// The following will be used sftp adapter side :
 					//sapFunction.getImportParameterList().setValue("ENCODING", "UTF-8");
