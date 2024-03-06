@@ -222,6 +222,7 @@ public class Z_ARIBA_GR_PUSH {
 		
 				
 				try {
+					// Executes the function on the given target destination **synchronously** :
                     this.currentSapFunction.execute(MuisApp.dest);
 				}
 				catch (AbapException e)
