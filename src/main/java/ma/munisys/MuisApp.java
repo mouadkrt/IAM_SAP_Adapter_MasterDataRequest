@@ -48,9 +48,9 @@ public class MuisApp  extends RouteBuilder {
 	public void configure() throws Exception {
 		
 		// Camel route 1/3 : Listening to HTTP Client calls and storing them in an Artemis JMS QueueIN (And also arching them in QueueIN_Arch):
-		from("netty4-http:http://0.0.0.0:8088?ssl=true&keyStoreFile=/keystore_iam.jks&passphrase=changeit&trustStoreFile=/keystore_iam.jks")
+		from("netty4-http:http://0.0.0.0:8088?ssl=true&keyStoreFile=/certs/keystore_iam.jks&passphrase=changeit&trustStoreFile=/certs/keystore_iam.jks")
 			.routeId("muisRouteFromNetty4httpToQueueIN")
-			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.8 (using AMQ)  -----------------------\n")
+			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.7.9.1-rec (using AMQ)  -----------------------\n")
 			.log(LoggingLevel.INFO, "Initial received message :\nHEADER :\n${in.headers}\nBODY :\n${body}\n")
 			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
 			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
@@ -318,6 +318,34 @@ public class MuisApp  extends RouteBuilder {
 			dest = JCoDestinationManager.getDestination(DestinationConcept.SAPqualif.ABAP_AS1);
 			dest.ping();
 			System.out.println("\n- MUIS : SAP PING OK \n");
+			
+			// Max time in ms for the allocation of a connection to a destination in case that the peak limit is already reached; Returns max wait time in ms :
+				System.out.println("\n- MUIS : dest.getMaxGetClientTime :" + dest.getMaxGetClientTime());
+
+			// the maximum number of idle connections, that will be kept open in a pool.
+			// A value of 0 means that the connections will be closed immediately after being released, which has the effect that there is no connection pooling
+			// Returns maximum number of pooled connections :
+				System.out.println("\n- MUIS : dest.getPeakLimit :" + dest.getPeakLimit());
+
+			// Returns the interval in seconds how often a WebSocket connection, which is currently not writing/reading any data, is checked for incoming ping messages :
+				System.out.println("\n- MUIS : dest.getPingCheckInterval :" + dest.getPingCheckInterval());
+
+			// Returns the time in ms, after which a free connection, that is held internally for the destination, is being regarded as expired and will be closed during the next run of the expiration timeout checker.
+			// A value of 0 means that the connections will be closed immediately after release :
+				System.out.println("\n- MUIS : dest.getExpirationTime :" + dest.getExpirationTime());
+
+			// Returns the maximum number of idle connections, that will be kept open in a pool.
+			// A value of 0 means that the connections will be closed immediately after being released, which has the effect that there is no connection pooling.
+				System.out.println("\n- MUIS : dest.getPoolCapacity :" + dest.getPoolCapacity());
+
+			System.out.println("\n- MUIS : dest.getProperties :");
+			// Iterate over the properties
+			for (Map.Entry<Object, Object> entry : dest.getProperties().entrySet()) {
+				String key = (String) entry.getKey(); // Key is always a String in Properties
+				String value = (String) entry.getValue(); // Value is also always a String in Properties
+				System.out.println("	Key: " + key + ", Value: " + value);
+			}
+
 		}
 		catch (JCoException e)
         {
@@ -416,7 +444,7 @@ public class MuisApp  extends RouteBuilder {
 
 	public static void describeFunction(JCoFunction sapFunction)
 	{
-		if(MUIS_DEBUG.equals("0")) return;
+		//if(MUIS_DEBUG.equals("0")) return;
 		String sapFunctionStr = sapFunction.getName();
 		System.out.println("\n\n********************************* Describing SAP function : " + sapFunctionStr + "  *************************************************");
 		System.out.println("SAP Function name = " + sapFunctionStr );
