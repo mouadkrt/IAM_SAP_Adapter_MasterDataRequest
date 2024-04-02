@@ -23,6 +23,7 @@ import com.sap.conn.jco.ext.Environment;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+//import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -50,7 +51,7 @@ public class MuisApp  extends RouteBuilder {
 		// Camel route 1/3 : Listening to HTTP Client calls and storing them in an Artemis JMS QueueIN (And also arching them in QueueIN_Arch):
 		from("netty4-http:http://0.0.0.0:8088?ssl=true&keyStoreFile=/certs/keystore_iam.jks&passphrase=changeit&trustStoreFile=/certs/keystore_iam.jks")
 			.routeId("muisRouteFromNetty4httpToQueueIN")
-			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.7.9.1-rec (using AMQ)  -----------------------\n")
+			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.7.9.2-rec (using AMQ)  -----------------------\n")
 			.log(LoggingLevel.INFO, "Initial received message :\nHEADER :\n${in.headers}\nBODY :\n${body}\n")
 			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
 			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
@@ -545,28 +546,35 @@ public class MuisApp  extends RouteBuilder {
 					sapFunction.getImportParameterList().setValue("ENCODING", encoding);
 					sapFunction.getImportParameterList().setValue("PARTITION", partition);
 					sapFunction.getImportParameterList().setValue("VARIANT", variant);
+					String paramsStr = "ENCODING="+ encoding + ", PARTITION=" + partition + ", VARIANT=" + variant;
 
-					if(sapFunctionStr.equals("ZARIBA_VENDOR") || sapFunctionStr.equals("ZARIBA_VENDOR_INC")) {
-						System.out.println("\nMUIS : Setting specific FILE_NAME_PORG_VEN and FILE_NAME_VENDOR for ZARIBA_VENDOR(SupplierImport_TR_V1) or ZARIBA_VENDOR_INC(SupplierIncImport_TR_V1) SAP function");
-						// ZARIBA_VENDOR and ZARIBA_VENDOR_INC SAP Functions has a different two params for FILE_NAME, and also are named differently :
-						// FILE_NAME_PORG_VEN and FILE_NAME_VENDOR
-						String fileName_PORG_VEN = (String) sapFunctionInputs.get("FILE_NAME_PORG_VEN");
-						String fileName_VENDOR = (String) sapFunctionInputs.get("FILE_NAME_VENDOR");
-						sapFunction.getImportParameterList().setValue("FILE_NAME_PORG_VEN", fileName_PORG_VEN);
-						sapFunction.getImportParameterList().setValue("FILE_NAME_VENDOR", fileName_VENDOR);
+					// Some SAP MasterData functions need STARTDATE field to be mapped as well from Ariba's request's input :
+						/*String[] array = {"ZARIBA_MATERIAL_ACC", "ZARIBA_MATERIAL_ALT", "ZARIBA_MATERIAL_MRP", "ZARIBA_MATERIAL_CCR"};
+						if( Arrays.asList(array).contains(sapFunctionStr) ){
+							String startDate = (String) sapFunctionInputs.get("STARTDATE");
+							sapFunction.getImportParameterList().setValue("STARTDATE", startDate);
+							paramsStr += ", STARTDATE=" + startDate;
+						}*/
 
-						System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params :");
-						System.out.println("ENCODING="+ encoding + ", FILE_NAME_PORG_VEN=" + fileName_PORG_VEN + ", fileName_VENDOR=" + fileName_VENDOR + ", PARTITION=" + partition + ", VARIANT=" + variant);
-					}
-					else {
-						System.out.println("\nMUIS : Setting usual FILE_NAME field for sap function, since sap function nor ZARIBA_VENDOR, neither ZARIBA_VENDOR_INC ");
-						String fileName = (String) sapFunctionInputs.get("FILE_NAME");
-						sapFunction.getImportParameterList().setValue("FILE_NAME", fileName);
+					// Some SAP MasterData functions nhave a special namingS for FILE_NAME field :
+						if(sapFunctionStr.equals("ZARIBA_VENDOR") || sapFunctionStr.equals("ZARIBA_VENDOR_INC")) {
+							System.out.println("\nMUIS : Setting specific FILE_NAME_PORG_VEN and FILE_NAME_VENDOR for ZARIBA_VENDOR(SupplierImport_TR_V1) or ZARIBA_VENDOR_INC(SupplierIncImport_TR_V1) SAP function");
+							// ZARIBA_VENDOR and ZARIBA_VENDOR_INC SAP Functions has a different two params for FILE_NAME, and also are named differently :
+							// FILE_NAME_PORG_VEN and FILE_NAME_VENDOR
+							String fileName_PORG_VEN = (String) sapFunctionInputs.get("FILE_NAME_PORG_VEN");
+							String fileName_VENDOR = (String) sapFunctionInputs.get("FILE_NAME_VENDOR");
+							sapFunction.getImportParameterList().setValue("FILE_NAME_PORG_VEN", fileName_PORG_VEN);
+							sapFunction.getImportParameterList().setValue("FILE_NAME_VENDOR", fileName_VENDOR);
+							paramsStr += ", FILE_NAME_PORG_VEN=" + fileName_PORG_VEN + ", fileName_VENDOR=" + fileName_VENDOR;
+						}
+						else {
+							System.out.println("\nMUIS : Setting usual FILE_NAME field for sap function, since sap function is neither ZARIBA_VENDOR, nor ZARIBA_VENDOR_INC ");
+							String fileName = (String) sapFunctionInputs.get("FILE_NAME");
+							sapFunction.getImportParameterList().setValue("FILE_NAME", fileName);
+							paramsStr += ", FILE_NAME=" + fileName;
+						}
 
-						System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params :");
-						System.out.println("ENCODING="+ encoding + ", FILE_NAME=" + fileName + ", PARTITION=" + partition + ", VARIANT=" + variant);
-					}
-
+					System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params : " + paramsStr);
 					sapFunction.execute(dest);
 				}
 				catch (AbapException e)

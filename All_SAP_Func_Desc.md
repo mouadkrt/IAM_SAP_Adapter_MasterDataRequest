@@ -13,6 +13,51 @@ JCO_LANG=fr
 
 ####################### START describeAllAribaFunctions() ######################
 
+********************************* Describing SAP function : ZARIBA_MATERIAL_ACC  *************************************************
+SAP Function name = ZARIBA_MATERIAL_ACC
+ZARIBA_MATERIAL_ACC as XML : <ZARIBA_MATERIAL_ACC><INPUT><ENCODING></ENCODING><FILE_NAME></FILE_NAME><PARTITION></PARTITION><STARTDATE>0000-00-00</STARTDATE><VARIANT></VARIANT></INPUT><TABLES><MATERIAL_ACC_INFO></MATERIAL_ACC_INFO></TABLES></ZARIBA_MATERIAL_ACC>
+
+
+- MUIS : ZARIBA_MATERIAL_ACC.getChangingParameterList() = 
+null
+
+
+- MUIS : ZARIBA_MATERIAL_ACC.getExportParameterList() = 
+null
+
+
+- MUIS : ZARIBA_MATERIAL_ACC.getTableParameterList() = 
+|-----------------|
+| PARAMETERS 'TABLES'
+|-----------------|
+|MATERIAL_ACC_INFO|
+|-----------------|
+|                 |
+|-----------------|
+|MATERIAL_ACC_INFO|
+|-----------------|
+
+
+
+- MUIS : ZARIBA_MATERIAL_ACC.getFunctionTemplate() = 
+Function: ZARIBA_MATERIAL_ACC
+Input:
+ENCODING                      ,CHAR10                        ,C     ,C,10,0,10,20,0,Zone de 10 caractÃ¨res,IMPORT,OPTIONAL,CHAR10
+FILE_NAME                     ,RLGRAP                        ,C     ,C,128,10,128,256,0,Fichier local pour tÃ©lÃ©chargement ou tÃ©lÃ©dÃ©chargement,IMPORT,OPTIONAL,RLGRAP,FILENAME
+PARTITION                     ,ZARIBTVARV                    ,C ,C,20,138,20,40,0,IMPORT,OPTIONAL,ZARIBTVARV,PARTIT
+STARTDATE                     ,SYST                          ,D       ,D,8,158,8,16,0,Date et heure, date actuelle (serveur d'application),IMPORT,OPTIONAL,SYST,DATUM
+VARIANT                       ,ZARIBTVARV                    ,C ,C,20,166,20,40,0,IMPORT,OPTIONAL,ZARIBTVARV,ZVARIANT
+Changing:
+null
+Output:
+null
+Tables:
+MATERIAL_ACC_INFO             ,ZXTMATACC                     ,h  ,u,0,0,48,82,0
+Exceptions:
+
+
+********************************* End of describing SAP function : ZARIBA_MATERIAL_ACC  ************
+
 
 ********************************* ZARIBA_PLANT  *************************************************
 SAP Function name = ZARIBA_PLANT

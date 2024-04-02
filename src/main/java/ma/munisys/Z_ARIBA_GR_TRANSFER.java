@@ -162,7 +162,7 @@ public class Z_ARIBA_GR_TRANSFER {
         {
 				MuisApp.muis_debug("MUIS : Reposiroty name dest.getRepository().getName() ", MuisApp.dest.getRepository().getName());
 
-				String sapFunctionStr = "Z_ARIBA_GR_TRANSFER"; // You may also explore other sap fucniton : "RFC_PING", "STFC_CONNECTION" ...
+				String sapFunctionStr = "Z_ARIBA_GR_TRANSFER"; // You may also explore other sap functions : "RFC_PING", "STFC_CONNECTION" ...
 				this.currentSapFunction = MuisApp.dest.getRepository().getFunction(sapFunctionStr);
 				if (this.currentSapFunction==null) throw new RuntimeException(this.currentSapFunction + " not found in SAP.");
 				
