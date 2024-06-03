@@ -9,7 +9,7 @@ public class Application {
 
     public static void main(String[] args) {
 
-        System.out.println("-------------- SAP-ADAPTER START version iam_0.8-rec (using AMQ)  -----------------------\n");
+        System.out.println("-------------- SAP-ADAPTER START version iam_0.9 (using AMQ)  -----------------------\n");
 
         MuisApp.registerDestinationDataProvider();
 		//if(!MuisApp.MUIS_DEBUG.equals("0"))

@@ -6,7 +6,23 @@ WORKDIR /opt/app
 ARG JAR_FILE=target/Muis-Fuse-SAP-Adapter-1.0.0.jar
 COPY ${JAR_FILE} app.jar
 #COPY certs/certs_prod/keystore_prod_iam.jks /certs/keystore_iam.jks
-COPY certs/certs_rec/keystore_rec_iam.jks /certs/keystore_iam.jks
+##Disabled since iam_0.9 included : COPY certs/certs_rec/keystore_rec_iam.jks /certs/keystore_iam.jks
+
+# Starting from iam_0.9 included, the file /certs/keystore_iam.jks is expected to be mounted as a configMap, eg :
+#    kubectl create configmap sap-adapter-keystore-rec-iam-jks --from-file keystore_iam.jks
+#    Then, in the deployment yaml :
+#    spec:
+#      volumes:
+#        - name: keystore-rec-iam-jks
+#          configMap:
+#            name: keystore-rec-iam-jks
+#            defaultMode: 420
+#      containers:
+#          volumeMounts:
+#            - name: keystore-rec-iam-jks
+#              mountPath: /certs
+
+
 COPY sap-libs/* /opt/app/sap-libs
 #COPY src /opt/app/src
 #COPY pom.xml  /opt/app/pom.xml
@@ -27,11 +43,11 @@ ENTRYPOINT ["java","-cp", "sap-libs/sapjco3.jar:app.jar", "org.springframework.b
 
 # Start Docker deamon
 # docker login registry.redhat.io 
-# docker build -t muis-fuse-sap-adapter:iam_0.8-rec .
+# docker build -t muis-fuse-sap-adapter:iam_0.9 .
 # Tag it and push to quay
-# docker tag muis-fuse-sap-adapter:iam_0.8-rec quay.io/msentissi/muis-fuse-sap-adapter:iam_0.8-rec
-# docker push quay.io/msentissi/muis-fuse-sap-adapter:iam_0.8-rec
+# docker tag muis-fuse-sap-adapter:iam_0.9 quay.io/msentissi/muis-fuse-sap-adapter:iam_0.9
+# docker push quay.io/msentissi/muis-fuse-sap-adapter:iam_0.9
 # OR tag it and push to dockerhub
-#   docker push msentissi/muis-fuse-sap-adapter:iam_0.8-rec
+#   docker push msentissi/muis-fuse-sap-adapter:iam_0.9
 
-# docker run --rm -ti muis-fuse-sap-adapter:iam_0.8-rec bash
+# docker run --rm -ti muis-fuse-sap-adapter:iam_0.9 bash
