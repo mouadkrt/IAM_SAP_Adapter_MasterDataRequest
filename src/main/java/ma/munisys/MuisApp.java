@@ -48,47 +48,16 @@ public class MuisApp  extends RouteBuilder {
 
 	public void configure() throws Exception {
 		
-		// Camel route 1/3 : Listening to HTTP Client calls and storing them in an Artemis JMS QueueIN (And also arching them in QueueIN_Arch):
-		from("netty4-http:http://0.0.0.0:8088?ssl=true&keyStoreFile=/certs/keystore_iam.jks&passphrase=changeit&trustStoreFile=/certs/keystore_iam.jks")
-			.routeId("muisRouteFromNetty4httpToQueueIN")
-			.log(LoggingLevel.INFO, "-------------- SAP-ADAPTER START version iam_0.9.1 (using AMQ)  -----------------------\n")
+		from("netty4-http:http://0.0.0.0:8088")
+			.routeId("muisRouteMasterDataRequest")
+			.log(LoggingLevel.INFO, "-------------- SAP-muisRouteMasterDataRequest START version iam_0.1  -----------------------\n")
 			.log(LoggingLevel.INFO, "Initial received message :\nHEADER :\n${in.headers}\nBODY :\n${body}\n")
 			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
 			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
-			/*.choice()
-				.when(simple("${header.MUIS_SOAP_ROOT_TAG} != 'Z_ARIBA_BAPI_PO_CREATE'"))
-				.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload != Z_ARIBA_BAPI_PO_CREATE => sending directly to execSapMethod camel route (no AMQ).\n")
-				.to("direct:execSapMethod")
-			.otherwise()*/
-				// If "InOnly" is used here, then Camel when send back the response at the end of this route, since it considers the other route as async processing (The calling should then use the adequate channels (callbacks for eg), to get the async message processed by the rest of the other routes)
-				// Checkout the Request/Reply pattern here : https://camel.apache.org/components/3.20.x/jms-component.html#_request_reply_over_jms
-				// https://i.stack.imgur.com/Jddwq.png
-					// replyToType :
-					//	Temporary 							: Queue auto created by Camel (Do not specify a replyTo queue, Camel will handle this)
-					//	Shared (Slow Perf) (default value)	: (replyTo queue must be specified) (can be used in a clustered environment)
-					//	Exclusive 							: (replyTo queue must be specified) (cannot [easily] be used in a clustered environment)
-				.log(LoggingLevel.INFO, "MUIS routing to : jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT)
-				.to("jms:queue:QueueIN?exchangePattern=InOut&replyToType=Shared&replyTo=QueueOUT&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT)
-				// configured requestTimeout, So Camel will wait up for that reply message to come back on the QueueOUT queue
-				// While waiting for the reply of a given message placed on Queue (Processed down here in other routes),
-				// time is still ticking for the other messages that still waits their turn in that QueueIN queue (Since we're picking only one message at a time)
+			.to("direct:execSapMethod")
 		.end();
 
-		// Camel route 2/3 : 
-		//	Listening to any new message in the Artemis JMS QueueIN,
-		//	processing the message in SAP,
-		// 	storing the result in QueueOUT (So that route 1/3 send it back to the client Requet/Reply Camel JMS Pattern):
-		// And finaly archiving the result in QueueOUT_Arch
-		from("jms:queue:QueueIN?maxMessagesPerTask=1&concurrentConsumers=1&maxConcurrentConsumers=1&receiveTimeout=2000&requestTimeout=" + CAMEL_JMS_REQUEST_TIMEOUT + "&disableReplyTo=true&synchronous=1")
-			.routeId("muisRouteFromQueueINToExecSapMethod+QueueOUT")
-			.log(LoggingLevel.INFO,"Received message from QueueIN : \n HEADERS :\n${in.headers}\nBODY :\n ${body}\n")
-			.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
-			.convertBodyTo(String.class)
-			.log(LoggingLevel.INFO,"Sending message to execSapMethod ...")
-			.to("direct:execSapMethod")
-			.log(LoggingLevel.INFO,"Sending message to QueueOUT ...")
-			.to("jms:queue:QueueOUT");
 		
 		Z_ARIBA_BAPI_PO_CHANGE _Z_ARIBA_BAPI_PO_CHANGE = new Z_ARIBA_BAPI_PO_CHANGE();
 		Z_ARIBA_BAPI_PO_CANCEL	_Z_ARIBA_BAPI_PO_CANCEL = new Z_ARIBA_BAPI_PO_CANCEL();
@@ -103,109 +72,8 @@ public class MuisApp  extends RouteBuilder {
 		from("direct:execSapMethod")
 		.routeId("muis_route_execSapMethod")
 		.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
-		.choice()
-				.when(simple("${header.MasterDataImport_Request} == '1'"))
-					.log(LoggingLevel.INFO, "MUIS - MasterDataImport_Request detected in header.")
-					.process(MuisApp::execute_SapFunc_MasterDataImport)
-				.otherwise()
-					.choice()
-						.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_GR_TRANSFER'"))
-							.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_TRANSFER. \n")
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_GR_TRANSFER.execute_SapFunc_Z_ARIBA_GR_TRANSFER(exchange);
-								}
-							})
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_GR_TRANSFER.read_SapFunc_Z_ARIBA_GR_TRANSFER_Response(exchange);
-								}
-							})
-						.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'ZARIBA_INVOICED_PO_ITEMS_SOAP'"))
-							.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : ZARIBA_INVOICED_PO_ITEMS_SOAP. \n")
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_ZARIBA_INVOICED_PO_ITEMS_SOAP.execute_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP(exchange);
-								}
-							})
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_ZARIBA_INVOICED_PO_ITEMS_SOAP.read_SapFunc_ZARIBA_INVOICED_PO_ITEMS_SOAP_Response(exchange);
-								}
-							})
-						.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_BAPI_PO_CHANGE'"))
-							.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CHANGE. \n")
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_BAPI_PO_CHANGE.execute_SapFunc_Z_ARIBA_BAPI_PO_CHANGE(exchange);
-								}
-							})
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_BAPI_PO_CHANGE.read_SapFunc_Z_ARIBA_BAPI_PO_CHANGE_Response(exchange);
-								}
-							})
-						.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_BAPI_PO_CREATE'"))
-							.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CREATE. \n")
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_BAPI_PO_CREATE.execute_SapFunc_Z_ARIBA_BAPI_PO_CREATE(exchange);
-							}
-							})
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_BAPI_PO_CREATE.read_SapFunc_Z_ARIBA_BAPI_PO_CREATE_Response(exchange);
-							}
-							})
-						.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_PO_HEADER_STATUS'"))
-							.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_PO_HEADER_STATUS. \n")
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_PO_HEADER_STATUS.execute_SapFunc_Z_ARIBA_PO_HEADER_STATUS(exchange);
-								}
-							})
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_PO_HEADER_STATUS.read_SapFunc_Z_ARIBA_PO_HEADER_STATUS_Response(exchange);
-								}
-							})
-						.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_GR_QUALITY'"))
-							.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_QUALITY. \n")
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_GR_QUALITY.execute_SapFunc_Z_ARIBA_GR_QUALITY(exchange);
-								}
-							})
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_GR_QUALITY.read_SapFunc_Z_ARIBA_GR_QUALITY_Response(exchange);
-								}
-							})
-						.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_GR_PUSH'"))
-							.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_GR_PUSH. \n")
-							//.delay(60000)
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_GR_PUSH.execute_SapFunc_Z_ARIBA_GR_PUSH(exchange);
-								}
-							})
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_GR_PUSH.read_SapFunc_Z_ARIBA_GR_PUSH_Response(exchange);
-								}
-							})
-						.when(simple("${header.MUIS_SOAP_ROOT_TAG} == 'Z_ARIBA_BAPI_PO_CANCEL'"))
-							.log(LoggingLevel.INFO, "MUIS - Method detected in incoming payload : Z_ARIBA_BAPI_PO_CANCEL. \n")
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_BAPI_PO_CANCEL.execute_SapFunc_Z_ARIBA_BAPI_PO_CANCEL(exchange);
-								}
-							})
-							.process(new Processor() {
-								public void process(Exchange exchange) throws Exception {
-									_Z_ARIBA_BAPI_PO_CANCEL.read_SapFunc_Z_ARIBA_BAPI_PO_CANCEL_Response(exchange);
-								}
-							})
+	    .log(LoggingLevel.INFO, "MUIS - MasterDataImport_Request detected in header.")
+		.process(MuisApp::execute_SapFunc_MasterDataImport)
 		.end();
     }
 	
