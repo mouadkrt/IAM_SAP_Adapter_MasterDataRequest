@@ -13,6 +13,9 @@ import com.sap.conn.jco.JCoDestinationManager;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoStructure;
+import com.sap.conn.jco.server.JCoServer;
+import com.sap.conn.jco.server.JCoServerTIDHandler;
+import com.sap.conn.jco.server.JCoServerContext;
 import com.sap.conn.jco.JCoTable;
 import com.sap.conn.jco.JCoFieldIterator;
 import com.sap.conn.jco.JCoField;
@@ -30,17 +33,53 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Properties;
 
+import java.util.UUID;
+
+
 import com.github.underscore.U;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-public class MuisApp  extends RouteBuilder {
+public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
   	
+	private final Map<String, Boolean> transactionMap = new HashMap<>();
+	
 	private static InMemoryDestinationDataProvider memoryProvider=new MuisApp.InMemoryDestinationDataProvider();
 	public  static JCoDestination dest;
 	static String MUIS_DEBUG = System.getenv().getOrDefault("MUIS_DEBUG", "0");
 	static String CAMEL_JMS_REQUEST_TIMEOUT = System.getenv().getOrDefault("CAMEL_JMS_REQUEST_TIMEOUT", "300s");
 
+	@Override
+    public boolean checkTID(JCoServerContext serverContext, String tid) {
+        // Check if the TID is valid (for example, if it exists in the map)
+        return transactionMap.containsKey(tid);
+    }
+
+	
+    @Override
+    public void rollback(JCoServerContext serverContext, String tid) {
+        // Rollback the transaction
+        
+        System.out.println("Rollback : " + tid);
+    }
+	
+	 @Override
+    public void commit(JCoServerContext serverContext, String tid) {
+                
+        System.out.println("commit : " + tid);
+    }
+	
+	 @Override
+    public void confirmTID(JCoServerContext serverContext, String tid) {
+               
+        System.out.println("confirmTID : " + tid);
+    }
+	
+	public static String generateTID() {
+        // Generate a new TID using a UUID
+        return UUID.randomUUID().toString().replace("-", "");
+    }
+	
 	/*public static void main(String[] args) {
 		 registerDestinationDataProvider();
 		if(!MUIS_DEBUG.equals("0")) describeAllAribaFunctions();
@@ -53,27 +92,10 @@ public class MuisApp  extends RouteBuilder {
 			.log(LoggingLevel.INFO, "-------------- SAP-muisRouteMasterDataRequest START version iam_0.1  -----------------------\n")
 			.log(LoggingLevel.INFO, "Initial received message :\nHEADER :\n${in.headers}\nBODY :\n${body}\n")
 			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
+			.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
-			.to("direct:execSapMethod")
-		.end();
-
-		
-		Z_ARIBA_BAPI_PO_CHANGE _Z_ARIBA_BAPI_PO_CHANGE = new Z_ARIBA_BAPI_PO_CHANGE();
-		Z_ARIBA_BAPI_PO_CANCEL	_Z_ARIBA_BAPI_PO_CANCEL = new Z_ARIBA_BAPI_PO_CANCEL();
-		Z_ARIBA_BAPI_PO_CREATE _Z_ARIBA_BAPI_PO_CREATE = new Z_ARIBA_BAPI_PO_CREATE();
-		Z_ARIBA_GR_PUSH _Z_ARIBA_GR_PUSH = new Z_ARIBA_GR_PUSH();
-		Z_ARIBA_GR_QUALITY _Z_ARIBA_GR_QUALITY = new Z_ARIBA_GR_QUALITY();
-		Z_ARIBA_GR_TRANSFER _Z_ARIBA_GR_TRANSFER = new Z_ARIBA_GR_TRANSFER();
-		Z_ARIBA_PO_HEADER_STATUS _Z_ARIBA_PO_HEADER_STATUS = new Z_ARIBA_PO_HEADER_STATUS();
-		ZARIBA_INVOICED_PO_ITEMS_SOAP _ZARIBA_INVOICED_PO_ITEMS_SOAP = new ZARIBA_INVOICED_PO_ITEMS_SOAP();
-
-
-		from("direct:execSapMethod")
-		.routeId("muis_route_execSapMethod")
-		.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
-	    .log(LoggingLevel.INFO, "MUIS - MasterDataImport_Request detected in header.")
-		.process(MuisApp::execute_SapFunc_MasterDataImport)
+			.process(MuisApp::execute_SapFunc_MasterDataImport)
 		.end();
     }
 	
@@ -400,6 +422,7 @@ public class MuisApp  extends RouteBuilder {
 				muis_debug("MUIS : Repository name dest.getRepository().getName() ", dest.getRepository().getName());
 					
 				JCoFunction sapFunction = dest.getRepository().getFunction(sapFunctionStr);
+				
 				if (sapFunction==null) throw new RuntimeException(sapFunction + " not found in SAP.");
 				
 				//describeFunction(sapFunction);
@@ -442,8 +465,9 @@ public class MuisApp  extends RouteBuilder {
 							paramsStr += ", FILE_NAME=" + fileName;
 						}
 
-					System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params : " + paramsStr);
-					sapFunction.execute(dest);
+					String tid = generateTID();
+					System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params : " + paramsStr + "and Transaction ID = " + tid);
+					sapFunction.execute(dest, tid);
 				}
 				catch (AbapException e)
 				{
