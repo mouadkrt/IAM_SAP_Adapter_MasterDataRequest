@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Properties;
-
 import java.util.UUID;
+import java.sql.Timestamp;
 
 
 import com.github.underscore.U;
@@ -96,8 +96,8 @@ public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
 			.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
-			//.process(MuisApp::execute_SapFunc_MasterDataImport)
-			.process(MuisApp::execute_readRFCTable)
+			.process(MuisApp::execute_SapFunc_MasterDataImport)
+			//.process(MuisApp::execute_readRFCTable)
 		.end();
     }
 	
@@ -415,7 +415,8 @@ public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
     {
 		final Message message = exchange.getIn();
 		String body = message.getBody(String.class);
-		System.out.println("- MUIS : Received HTTP body in execute_SapFunc_MasterDataImport() : " + body + "\n");
+		
+		//System.out.println("- MUIS : Received HTTP body in execute_SapFunc_MasterDataImport() : " + body + "\n");
 		
 		Map<String, Object> map = U.fromXmlWithoutNamespacesAndAttributes(body);
 			
@@ -483,7 +484,9 @@ public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
 						}
 
 					String tid = generateTID();
-					System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params : " + paramsStr + "and Transaction ID = " + tid);
+					System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params : " + paramsStr + " and Transaction ID = " + tid);
+					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+					System.out.println("sapFunction.execute(...) invoked at : timestamp = " + timestamp);
 					sapFunction.execute(dest, tid);
 				}
 				catch (AbapException e)
