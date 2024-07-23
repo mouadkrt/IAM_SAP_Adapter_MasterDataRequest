@@ -23,6 +23,7 @@ import com.sap.conn.jco.ext.DataProviderException;
 import com.sap.conn.jco.ext.DestinationDataEventListener;
 import com.sap.conn.jco.ext.DestinationDataProvider;
 import com.sap.conn.jco.ext.Environment;
+import com.sap.conn.jco.JCoParameterList;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -95,7 +96,8 @@ public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
 			.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
-			.process(MuisApp::execute_SapFunc_MasterDataImport)
+			//.process(MuisApp::execute_SapFunc_MasterDataImport)
+			.process(MuisApp::execute_readRFCTable)
 		.end();
     }
 	
@@ -496,5 +498,69 @@ public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
             System.out.println("Execution on destination  failed");
         }
     }
+	
+	private static void execute_readRFCTable(final Exchange exchange)
+    {
+		
+        try {
+
+
+            JCoFunction function = dest.getRepository().getFunction("RFC_READ_TABLE");
+
+            if (function == null) {
+
+                throw new RuntimeException("RFC_READ_TABLE not found in SAP.");
+
+            }
+ 
+            // Set input parameters for RFC_READ_TABLE
+
+            JCoParameterList importParams = function.getImportParameterList();
+
+            importParams.setValue("QUERY_TABLE", "TFDIR");
+
+            importParams.setValue("DELIMITER", ";");
+ 
+            JCoTable options = function.getTableParameterList().getTable("OPTIONS");
+
+            options.appendRow();
+
+            options.setValue("TEXT", "FUNCNAME LIKE 'QRFC%'");
+ 
+            JCoTable fields = function.getTableParameterList().getTable("FIELDS");
+
+            fields.appendRow();
+
+            fields.setValue("FIELDNAME", "FUNCNAME");
+ 
+            // Execute the function
+
+            function.execute(dest);
+ 
+            // Get the result table
+
+            JCoTable result = function.getTableParameterList().getTable("DATA");
+ 
+            // Print the result
+
+            for (int i = 0; i < result.getNumRows(); i++) {
+
+                result.setRow(i);
+
+                String funcName = result.getString("WA");
+
+                System.out.println(funcName);
+
+            }
+
+        } catch (JCoException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+	
+	
 
 }

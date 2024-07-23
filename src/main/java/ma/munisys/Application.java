@@ -14,7 +14,7 @@ public class Application {
         MuisApp.registerDestinationDataProvider();
 		//if(!MuisApp.MUIS_DEBUG.equals("0"))
         //MuisApp.describeAllAribaFunctions();
-        //MuisApp.describeFunction("RFC_SYSTEM_INFO");
+        MuisApp.describeFunction("RFC_READ_TABLE");
 
         SpringApplication.run(Application.class, args);
     }
