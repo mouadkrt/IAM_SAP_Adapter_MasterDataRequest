@@ -77,7 +77,7 @@ public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
 	
 	public static String generateTID() {
         // Generate a new TID using a UUID
-        return UUID.randomUUID().toString().replace("-", "");
+        return UUID.randomUUID().toString().replace("-", "").substring(0,24);
     }
 	
 	/*public static void main(String[] args) {
@@ -345,6 +345,21 @@ public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
 		System.out.println("\n\n- MUIS : " + sapFunctionStr + ".getTableParameterList() = \n" + sapFunction.getTableParameterList());
 		System.out.println("\n\n- MUIS : " + sapFunctionStr + ".getFunctionTemplate() = \n" + sapFunction.getFunctionTemplate());
 		System.out.println("\n\n********************************* End of describing SAP function : " + sapFunctionStr + "  ************\n\n");
+	}
+	
+	
+	static void describeFunction(String sapFunctionStr) {
+
+		System.out.println("####################### Describing SAP function : " + sapFunctionStr + " ######################");
+
+		try {
+				JCoFunction sapFunction=dest.getRepository().getFunction(sapFunctionStr);
+				if (sapFunction != null)
+					describeFunction(sapFunction);
+		}
+		catch(Exception  e) { System.out.println(e.getMessage());}
+
+		System.out.println("####################### End of describing SAP function : " + sapFunctionStr + " ######################");
 	}
 	
 	static void describeAllAribaFunctions() {
