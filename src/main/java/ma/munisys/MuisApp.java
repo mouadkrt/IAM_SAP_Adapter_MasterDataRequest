@@ -3,7 +3,6 @@ package ma.munisys;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.Message;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,6 @@ import com.sap.conn.jco.JCoDestinationManager;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoStructure;
-import com.sap.conn.jco.server.JCoServer;
 import com.sap.conn.jco.server.JCoServerTIDHandler;
 import com.sap.conn.jco.server.JCoServerContext;
 import com.sap.conn.jco.JCoTable;
@@ -26,6 +24,7 @@ import com.sap.conn.jco.ext.Environment;
 import com.sap.conn.jco.JCoParameterList;
 
 import java.lang.reflect.Field;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,81 +32,25 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Properties;
-import java.util.UUID;
-import java.sql.Timestamp;
 
 
 import com.github.underscore.U;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
-  	
-	private final Map<String, Boolean> transactionMap = new HashMap<>();
-	
+public class MuisApp  extends RouteBuilder {
+  		
 	private static InMemoryDestinationDataProvider memoryProvider=new MuisApp.InMemoryDestinationDataProvider();
 	public  static JCoDestination dest;
 	static String MUIS_DEBUG = System.getenv().getOrDefault("MUIS_DEBUG", "0");
-	static String CAMEL_JMS_REQUEST_TIMEOUT = System.getenv().getOrDefault("CAMEL_JMS_REQUEST_TIMEOUT", "300s");
-
-	@Override
-    public boolean checkTID(JCoServerContext serverContext, String tid) {
-        // Check if the TID is valid (for example, if it exists in the map)
-        return transactionMap.containsKey(tid);
-    }
-
 	
-    @Override
-    public void rollback(JCoServerContext serverContext, String tid) {
-        // Rollback the transaction
-        
-        System.out.println("Rollback : " + tid);
-    }
-	
-	 @Override
-    public void commit(JCoServerContext serverContext, String tid) {
-                
-        System.out.println("commit : " + tid);
-    }
-	
-	 @Override
-    public void confirmTID(JCoServerContext serverContext, String tid) {
-               
-        System.out.println("confirmTID : " + tid);
-    }
-	
-	public static String generateTID() {
-        // Generate a new TID using a UUID
-        return UUID.randomUUID().toString().replace("-", "").substring(0,24);
-    }
-	
-	/*public static void main(String[] args) {
-		 registerDestinationDataProvider();
-		if(!MUIS_DEBUG.equals("0")) describeAllAribaFunctions();
-	}  */
-
 	public void configure() throws Exception {
 		
-		from("netty4-http:http://0.0.0.0:8088")
+		//from("netty4-http:http://0.0.0.0:8089?ssl=true&keyStoreFile=/certs/keystore_iam.jks&passphrase=changeit&trustStoreFile=/certs/keystore_iam.jks")
+		from("netty4-http:http://0.0.0.0:8089")
 			.routeId("muisRouteMasterDataRequest")
-			//.log(LoggingLevel.INFO, "-------------- SAP-muisRouteMasterDataRequest START version iam_0.1  -----------------------\n")
-			//.log(LoggingLevel.INFO, "Initial received message :\nHEADER :\n${in.headers}\nBODY :\n${body}\n")
-			//.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
-			//.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
-			//.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
+			.log(LoggingLevel.INFO, "Initial received message :\nHEADER :\n${in.headers}\nBODY :\n${body}\n")
 			.convertBodyTo(String.class)
-			/*.process(new Processor() {
-				public void process(Exchange exchange) throws Exception {
-					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-					System.out.println("sapFunction.execute(...) invoked at : timestamp = " + timestamp);
-				}
-			})*/
-			//.to("direct:exeSapMethod")
-			.process(MuisApp::execute_SapFunc_MasterDataImport)
-			//.process(MuisApp::execute_readRFCTable)
-		.end();
-		
-		from("direct:exeSapMethod")
 			.process(MuisApp::execute_SapFunc_MasterDataImport)
 		.end();
     }
@@ -494,16 +437,10 @@ public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
 							paramsStr += ", FILE_NAME=" + fileName;
 						}
 
-					String tid = generateTID();
-					System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params : " + paramsStr + " and Transaction ID = " + tid);
 					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-					System.out.println("sapFunction.execute(...) invoked at : timestamp = " + timestamp);
-					//sapFunction.execute(dest, tid);
-					sapFunction.execute(dest);
-					
-					Timestamp timestamp2 = new Timestamp(System.currentTimeMillis());
-					System.out.println("again sapFunction.execute(...) invoked at : timestamp = " + timestamp2);
-					sapFunction.execute(dest);
+					System.out.println("\nMUIS : Executing SAP function :" + sapFunctionStr + ", with params : " + paramsStr + "invoked at : timestamp = " + timestamp);
+					sapFunction.execute(dest);  // <============= To the real SAP target system
+
 				}
 				catch (AbapException e)
 				{
@@ -518,68 +455,37 @@ public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
         }
     }
 	
-	private static void execute_readRFCTable(final Exchange exchange)
+	/*private static void execute_readRFCTable(final Exchange exchange)
     {
-		
-        try {
-
+		try {
 
             JCoFunction function = dest.getRepository().getFunction("RFC_READ_TABLE");
-
             if (function == null) {
-
                 throw new RuntimeException("RFC_READ_TABLE not found in SAP.");
-
             }
  
             // Set input parameters for RFC_READ_TABLE
-
             JCoParameterList importParams = function.getImportParameterList();
-
             importParams.setValue("QUERY_TABLE", "TFDIR");
-
             importParams.setValue("DELIMITER", ";");
- 
             JCoTable options = function.getTableParameterList().getTable("OPTIONS");
-
             options.appendRow();
-
             options.setValue("TEXT", "FUNCNAME LIKE 'QRFC%'");
- 
             JCoTable fields = function.getTableParameterList().getTable("FIELDS");
-
             fields.appendRow();
-
             fields.setValue("FIELDNAME", "FUNCNAME");
- 
             // Execute the function
-
-            function.execute(dest);
- 
+            	function.execute(dest);
             // Get the result table
-
             JCoTable result = function.getTableParameterList().getTable("DATA");
- 
             // Print the result
-
             for (int i = 0; i < result.getNumRows(); i++) {
-
                 result.setRow(i);
-
                 String funcName = result.getString("WA");
-
                 System.out.println(funcName);
-
             }
-
         } catch (JCoException e) {
-
             e.printStackTrace();
-
         }
-
-    }
-	
-	
-
+    }*/
 }
