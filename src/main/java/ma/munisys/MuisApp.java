@@ -90,14 +90,25 @@ public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
 		
 		from("netty4-http:http://0.0.0.0:8088")
 			.routeId("muisRouteMasterDataRequest")
-			.log(LoggingLevel.INFO, "-------------- SAP-muisRouteMasterDataRequest START version iam_0.1  -----------------------\n")
-			.log(LoggingLevel.INFO, "Initial received message :\nHEADER :\n${in.headers}\nBODY :\n${body}\n")
-			.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
-			.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
-			.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
+			//.log(LoggingLevel.INFO, "-------------- SAP-muisRouteMasterDataRequest START version iam_0.1  -----------------------\n")
+			//.log(LoggingLevel.INFO, "Initial received message :\nHEADER :\n${in.headers}\nBODY :\n${body}\n")
+			//.setHeader("MUIS_SOAP_ROOT_TAG", xpath("/*/*[local-name()='Header']/*/*[local-name()='method']/text()", String.class))
+			//.log(LoggingLevel.INFO,"MUIS_SOAP_ROOT_TAG = ${in.headers.MUIS_SOAP_ROOT_TAG}")
+			//.log(LoggingLevel.INFO, "MUIS_SOAP_ROOT_TAG header resolved to ${in.headers.MUIS_SOAP_ROOT_TAG}")
 			.convertBodyTo(String.class)
+			/*.process(new Processor() {
+				public void process(Exchange exchange) throws Exception {
+					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+					System.out.println("sapFunction.execute(...) invoked at : timestamp = " + timestamp);
+				}
+			})*/
+			//.to("direct:exeSapMethod")
 			.process(MuisApp::execute_SapFunc_MasterDataImport)
 			//.process(MuisApp::execute_readRFCTable)
+		.end();
+		
+		from("direct:exeSapMethod")
+			.process(MuisApp::execute_SapFunc_MasterDataImport)
 		.end();
     }
 	
@@ -487,7 +498,12 @@ public class MuisApp  extends RouteBuilder  implements JCoServerTIDHandler {
 					System.out.println("\nMUIS : Execution SAP function " + sapFunctionStr + " with params : " + paramsStr + " and Transaction ID = " + tid);
 					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 					System.out.println("sapFunction.execute(...) invoked at : timestamp = " + timestamp);
-					sapFunction.execute(dest, tid);
+					//sapFunction.execute(dest, tid);
+					sapFunction.execute(dest);
+					
+					Timestamp timestamp2 = new Timestamp(System.currentTimeMillis());
+					System.out.println("again sapFunction.execute(...) invoked at : timestamp = " + timestamp2);
+					sapFunction.execute(dest);
 				}
 				catch (AbapException e)
 				{
