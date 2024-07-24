@@ -46,8 +46,8 @@ public class MuisApp  extends RouteBuilder {
 	
 	public void configure() throws Exception {
 		
-		//from("netty4-http:http://0.0.0.0:8089?ssl=true&keyStoreFile=/certs/keystore_iam.jks&passphrase=changeit&trustStoreFile=/certs/keystore_iam.jks")
-		from("netty4-http:http://0.0.0.0:8089")
+		from("netty4-http:http://0.0.0.0:8089?ssl=true&keyStoreFile=/certs/keystore_iam.jks&passphrase=changeit&trustStoreFile=/certs/keystore_iam.jks")
+		//from("netty4-http:http://0.0.0.0:8089")
 			.routeId("muisRouteMasterDataRequest")
 			.log(LoggingLevel.INFO, "Initial received message :\nHEADER :\n${in.headers}\nBODY :\n${body}\n")
 			.convertBodyTo(String.class)

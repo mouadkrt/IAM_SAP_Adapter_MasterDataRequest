@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>ma.munisys</groupId>
-  <artifactId>Muis-Fuse-SAP-Adapter</artifactId>
+  <artifactId>Muis-Fuse-SAP-Adapter-MasterData</artifactId>
   <version>1.0.0</version>
   <name>Munisys :: IAM :: RedHat FUSE :: Spring-Boot</name>
   <description>This app is intented to be run as a pod on openShift, which should expose an internal OCP cluster service to be used as a 3scale backend, responsible for translating ARIBA requests into SAP RFC calls (Based on sapjco library) </description>

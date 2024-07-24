@@ -3,12 +3,12 @@ FROM registry.redhat.io/ubi8/openjdk-11:1.14-12
 USER root
 RUN mkdir -p /opt/app/sap-libs /certs
 WORKDIR /opt/app
-ARG JAR_FILE=target/Muis-Fuse-SAP-Adapter-1.0.0.jar
+ARG JAR_FILE=target/Muis-Fuse-SAP-Adapter-MasterData-1.0.0.jar
 COPY ${JAR_FILE} app.jar
 #COPY certs/certs_prod/keystore_prod_iam.jks /certs/keystore_iam.jks
-##Disabled since iam_0.9.1 included : COPY certs/certs_rec/keystore_rec_iam.jks /certs/keystore_iam.jks
+##Disabled since iam_0.1 included : COPY certs/certs_rec/keystore_rec_iam.jks /certs/keystore_iam.jks
 
-# Starting from iam_0.9.1 included, the file /certs/keystore_iam.jks is expected to be mounted as a configMap, eg :
+# Starting from iam_0.1 included, the file /certs/keystore_iam.jks is expected to be mounted as a configMap, eg :
 #    kubectl create configmap sap-adapter-keystore-rec-iam-jks --from-file keystore_iam.jks
 #    Then, in the deployment yaml :
 #    spec:
@@ -26,9 +26,9 @@ COPY ${JAR_FILE} app.jar
 COPY sap-libs/* /opt/app/sap-libs
 #COPY src /opt/app/src
 #COPY pom.xml  /opt/app/pom.xml
-ENV LD_LIBRARY_PATH "/opt/app/sap-libs"
-ENV CLASSPATH "/opt/app/sap-libs/sapjco3.jar"
-ENV PATH "$PATH:/opt/app/sap-libs"
+ENV LD_LIBRARY_PATH="/opt/app/sap-libs"
+ENV CLASSPATH="/opt/app/sap-libs/sapjco3.jar"
+ENV PATH="$PATH:/opt/app/sap-libs"
 RUN echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH, CLASSPATH=$CLASSPATH, PATH=$PATH" 
 
 #ENTRYPOINT ["java","-classpath", "/opt/app/sap-libs/sapjco3.jar", "-jar","app.jar"]
@@ -43,11 +43,11 @@ ENTRYPOINT ["java","-cp", "sap-libs/sapjco3.jar:app.jar", "org.springframework.b
 
 # Start Docker deamon
 # docker login registry.redhat.io 
-#2 docker build -t muis-fuse-sap-adapter:iam_0.9.1 .
+#2 docker build -t muis-fuse-sap-adapter-masterdata:iam_0.1 .
 # Tag it and push to quay
-#3 docker tag muis-fuse-sap-adapter:iam_0.9.1 quay.io/msentissi/muis-fuse-sap-adapter:iam_0.9.1
-#4 docker push quay.io/msentissi/muis-fuse-sap-adapter:iam_0.9.1
+#3 docker tag muis-fuse-sap-adapter-masterdata:iam_0.1 quay.io/msentissi/muis-fuse-sap-adapter-masterdata:iam_0.1
+#4 docker push quay.io/msentissi/muis-fuse-sap-adapter-masterdata:iam_0.1
 # OR tag it and push to dockerhub
-#   docker push msentissi/muis-fuse-sap-adapter:iam_0.9.1
+#   docker push msentissi/muis-fuse-sap-adapter-masterdata:iam_0.1
 
-# docker run --rm -ti muis-fuse-sap-adapter:iam_0.9.1 bash
+# docker run --rm -ti muis-fuse-sap-adapter-masterdata:iam_0.1 bash
